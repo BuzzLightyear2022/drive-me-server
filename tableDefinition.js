@@ -27,8 +27,16 @@ const VehicleAttribute = sequelize.define('VehicleAttribute', {
 	hasTelevision: DataTypes.BOOLEAN,
 	hasExternalInput: DataTypes.BOOLEAN,
 	hasSpareKey: DataTypes.BOOLEAN,
-	otherFeatures: DataTypes.TEXT
+	otherFeatures: DataTypes.TEXT,
 });
+
+sequelize.sync()
+	.then(() => {
+		console.log('table is created.');
+	})
+	.catch ((err) => {
+		console.error('failed to create a table:', err);
+	});
 
 sequelize.
 	authenticate()
