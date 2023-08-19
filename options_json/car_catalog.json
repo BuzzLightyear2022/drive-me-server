@@ -1,0 +1,34 @@
+{
+	"CarModels": {
+		"ハイエース": {
+			"ハイエースワゴン・グランドキャビン": [
+				"3BA-TRH229W",
+				"CBA-TRH229W"
+			]
+		},
+		"FIT": [
+			"FIT",
+			"FIT HYBRID",
+			"FIT e:HEV",
+			"FIT e:HEV CROSSTAR"
+		],
+		"STEP WGN": [
+			"STEP WGN"
+		],
+		"FREED": [
+			"FREED",
+			"FREED HYBRID"
+		],
+		"VEZEL": [
+			"VEZEL HYBRID ホンダセンシング"
+		],
+		"N-BOX": [
+			"N-BOX",
+			"N-BOXカスタム"
+		],
+		"N-WGN": [
+			"N-WGN",
+			"N-WGNカスタム"
+		]
+	}
+}
