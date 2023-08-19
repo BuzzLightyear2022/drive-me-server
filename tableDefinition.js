@@ -1,9 +1,14 @@
 'use strict'
 
+require('dotenv').config();
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('drive_me_test_since20230703', 'root', 'WecwDOas3Rd9yQ7WKtPS', {
-	host: 'drive-me-test-mysql.cc9wcoa99lea.ap-northeast-1.rds.amazonaws.com',
+const rds_host = process.env.RDS_HOST;
+const rds_user = process.env.RDS_USER;
+const rds_password = process.env.RDS_PASSWORD;
+
+const sequelize = new Sequelize('drive_me_test_since20230703', rds_user, rds_password, {
+	host: rds_host,
 	dialect: 'mysql',
 });
 
