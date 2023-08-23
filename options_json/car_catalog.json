@@ -1,34 +1,101 @@
 {
-	"CarModels": {
-		"ハイエース": {
-			"ハイエースワゴン・グランドキャビン": [
-				"3BA-TRH229W",
-				"CBA-TRH229W"
-			]
+	"rentalClass": {
+		"P": {
+			"P2": {
+				"N-BOX": {
+					"carGrade": [
+						"N-BOX",
+						"N-BOXカスタム"
+					]
+				},
+				"N-WGN": {
+					"carGrade": [
+						"N-WGN",
+						"N-WGNカスタム"
+					]
+				}
+			},
+			"P3": {
+				"FIT": {
+					"carGrade": [
+						"FIT"
+					]
+				}
+			}
 		},
-		"FIT": [
-			"FIT",
-			"FIT HYBRID",
-			"FIT e:HEV",
-			"FIT e:HEV CROSSTAR"
-		],
-		"STEP WGN": [
-			"STEP WGN"
-		],
-		"FREED": [
-			"FREED",
-			"FREED HYBRID"
-		],
-		"VEZEL": [
-			"VEZEL HYBRID ホンダセンシング"
-		],
-		"N-BOX": [
-			"N-BOX",
-			"N-BOXカスタム"
-		],
-		"N-WGN": [
-			"N-WGN",
-			"N-WGNカスタム"
-		]
-	}
+		"H": {
+			"H3": {
+				"FIT": {
+					"carGrade": [
+						"FIT HYBRID",
+						"FIT e:HEV",
+						"FIT e:HEV CROSSTAR"
+					]
+				}
+			},
+			"H4": {
+				"FREED": {
+					"carGrade": [
+						"FREED HYBRID"
+					]
+				}
+			},
+			"H5": {
+				"VEZEL": {
+					"carGrade": [
+						"VEZEL HYBRID"
+					]
+				}
+			}
+		},
+		"W": {
+			"W2": {
+				"FREED": {
+					"carGrade": [
+						"FREED"
+					]
+				}
+			},
+			"W4": {
+				"STEP-WGN": {
+					"carGrade": [
+						"STEP-WGN"
+					]
+				}
+			},
+			"W8": {
+				"HIACE": {
+					"carGrade": [
+						"HIACE GrandCabin"
+					]
+				}
+			}
+		},
+		"A": {
+			"A1": {
+				"N-BOX": {
+					"carGrade": [
+						"N-BOX+"
+					]
+				}
+			}
+		},
+		"B": {
+			"B1": {
+				"ACTY": {
+					"carGrade": [
+						"ACTYトラック"
+					]
+				}
+			},
+			"B2": {
+				"N-VAN": {
+					"carGrade": [
+						"N-VAN"
+					]
+				}
+			}
+		}
+	},
+	"navigation": {}
 }
