@@ -3,96 +3,231 @@
 		"P": {
 			"P2": {
 				"N-BOX": {
-					"carGrade": [
-						"N-BOX",
-						"N-BOXカスタム"
-					]
+					"carModel": {
+						"N-BOX": {
+							"modelCode": [
+								"6BA-JF3",
+								"6BA-JF4"
+							]
+						},
+						"N-BOXカスタム": {
+							"modelCode": [
+								"6BA-JF3",
+								"6BA-JF4",
+								"DBA-JF4",
+								"DBA-JF3"
+							]
+						}
+					}
 				},
 				"N-WGN": {
-					"carGrade": [
-						"N-WGN",
-						"N-WGNカスタム"
-					]
+					"carModel": {
+						"N-WGN": {
+							"modelCode": [
+								"6BA-JH3",
+								"6BA-JH4",
+								"DBA-JH1",
+								"DBA-JH2"
+							]
+						},
+						"N-WGNカスタム": {
+							"modelCode": [
+								"6BA-JH3",
+								"6BA-JH4",
+								"DBA-JH1",
+								"DBA-JH2"
+							]
+						}
+					}
 				}
 			},
 			"P3": {
 				"FIT": {
-					"carGrade": [
-						"FIT"
-					]
+					"carModel": {
+						"FIT": {
+							"modelCode": [
+								"5BA-GS4",
+								"5BA-GS5",
+								"5BA-GS6",
+								"5BA-GS7",
+								"6BA-GR1",
+								"6BA-GR2",
+								"6BA-GR5",
+								"6BA-GR7",
+								"DBA-GK3",
+								"DBA-GK4",
+								"DBA-GK5",
+								"DBA-GK6",
+								"DBA-GE6",
+								"DBA-GE7",
+								"DBA-GE8",
+								"DBA-GE9"
+							]
+						}
+					}
 				}
 			}
 		},
 		"H": {
 			"H3": {
 				"FIT": {
-					"carGrade": [
-						"FIT HYBRID",
-						"FIT e:HEV",
-						"FIT e:HEV CROSSTAR"
-					]
+					"carModel": {
+						"FIT HYBRID": {
+							"modelCode": [
+								"DAA-GP1",
+								"DAA-GP4",
+								"DAA-GP5",
+								"DAA-GP6"
+							]
+						},
+						"FIT e:HEV": {
+							"modelCode": [
+								"6AA-GR3",
+								"6AA-GR4"
+							]
+						},
+						"FIT e:HEV CROSSTAR": {
+							"modelCode": [
+								"6AA-GR6",
+								"6AA-GR8"
+							]
+						}
+					}
 				}
 			},
 			"H4": {
 				"FREED": {
-					"carGrade": [
-						"FREED HYBRID"
-					]
+					"carModel": {
+						"FREED HYBRID": {
+							"modelCode": [
+								"6AA-GB7",
+								"6AA-GB8",
+								"DAA-GB7",
+								"DAA-GB8",
+								"DAA-GP3"
+							]
+						}
+					}
 				}
 			},
 			"H5": {
 				"VEZEL": {
-					"carGrade": [
-						"VEZEL HYBRID"
-					]
+					"carModel": {
+						"VEZEL HYBRID": {
+							"modelCode": [
+								"6AA-RU3",
+								"6AA-RU4",
+								"DAA-RU3",
+								"DAA-RU4"
+							]
+						}
+					}
 				}
 			}
 		},
 		"W": {
 			"W2": {
 				"FREED": {
-					"carGrade": [
-						"FREED"
-					]
+					"carModel": {
+						"FREED": {
+							"modelCode": [
+								"5BA-GB5",
+								"5BA-GB6",
+								"6BA-GB5",
+								"6BA-GB6",
+								"DBA-GB3",
+								"DBA-GB4",
+								"DBA-GB5",
+								"DBA-GB6"
+							]
+						}
+					}
 				}
 			},
 			"W4": {
 				"STEP-WGN": {
-					"carGrade": [
-						"STEP-WGN"
-					]
+					"carModel": {
+						"STEP-WGN": {
+							"modelCode": [
+								"5BA-RP6",
+								"5BA-RP7",
+								"6BA-RP1",
+								"6BA-RP2",
+								"6BA-RP3",
+								"DBA-RP1",
+								"DBA-RP2",
+								"DBA-RP3",
+								"DBA-RK1",
+								"DBA-RK2",
+								"DBA-RG1",
+								"DBA-RG2",
+								"DBA-RG3",
+								"DBA-RG4"
+							]
+						}
+					}
 				}
 			},
 			"W8": {
 				"HIACE": {
-					"carGrade": [
-						"HIACE GrandCabin"
-					]
+					"carModel": {
+						"HIACE GrandCabin": {
+							"modelCode": [
+								"3BA-TRH224W",
+								"3BA-TRH229W",
+								"CBA-TRH224W",
+								"CBA-TRH229W"
+							]
+						}
+					}
 				}
 			}
 		},
 		"A": {
 			"A1": {
 				"N-BOX": {
-					"carGrade": [
-						"N-BOX+"
-					]
+					"carModel": {
+						"N-BOX+": {
+							"modelCode": [
+								"DBA-JF1",
+								"DBA-JF2"
+							]
+						}
+					}
 				}
 			}
 		},
 		"B": {
 			"B1": {
 				"ACTY": {
-					"carGrade": [
-						"ACTYトラック"
-					]
+					"carModel": {
+						"ACTYトラック": {
+							"modelCode": [
+								"EBD-HA8",
+								"EBD-HA9",
+								"GBD-HA6",
+								"GBD-HA7",
+								"UE-HA6",
+								"UE-HA7",
+								"GD-HA6",
+								"GD-HA7"
+							]
+						}
+					}
 				}
 			},
 			"B2": {
 				"N-VAN": {
-					"carGrade": [
-						"N-VAN"
-					]
+					"carModel": {
+						"N-VAN": {
+							"modelCode": [
+								"5BD-JJ1",
+								"5BD-JJ2",
+								"HBD-JJ1",
+								"HBD-JJ2"
+							]
+						}
+					}
 				}
 			}
 		}
