@@ -3,9 +3,6 @@
 require('dotenv').config();
 const express = require('express');
 
-const tableDefinition = require('./tableDefinition.js');
-const dataInsertion = require('./dataInsertion.js');
-
 const app = express();
 const port = process.env.PORT;
 
@@ -16,4 +13,5 @@ app.listen(port, () => {
 module.exports = app;
 
 const responseJson = require('./responseJson.js');
-
+const tableDefinition = require('./tableDefinition.js');
+const dataInsertion = require('./dataInsertion.js');

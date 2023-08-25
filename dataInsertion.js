@@ -1,13 +1,12 @@
 'use strict'
 
 require('dotenv').config();
-const express = require('express');
+const app = require('./main.js');
 const fs = require('fs').promises;
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const { sequelize, VehicleAttribute } = require('./tableDefinition');
 
-const app = express();
 app.use(bodyParser.json());
 
 const port = process.env.PORT;
