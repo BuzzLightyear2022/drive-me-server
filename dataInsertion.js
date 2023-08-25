@@ -51,7 +51,3 @@ app.post('/insertVehicleData', upload.fields([{ name: 'imageData' }, {name: 'dat
 		res.status(400).json({ error: 'Invalid action.' });
 	}
 });
-
-app.listen(port, () => {
-	console.log(`server listening on port ${port}🦻`);
-});
