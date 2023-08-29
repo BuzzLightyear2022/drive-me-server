@@ -200,5 +200,8 @@
 				]
 			}
 		}
-	}
+	},
+	"navigation": [
+		"Gathers"
+	]
 }
