@@ -61,6 +61,15 @@
 					"DAA-GP4",
 					"DAA-GP5",
 					"DAA-GP6"
+				],
+				"driveType": [
+					"4WD"
+				],
+				"transmission": [
+					"7AT"
+				],
+				"bodyColor": [
+					"ルナシルバー・メタリック"
 				]
 			},
 			"FIT e:HEV": {
@@ -73,6 +82,15 @@
 				"modelCode": [
 					"6AA-GR6",
 					"6AA-GR8"
+				],
+				"driveType": [
+					"4WD"
+				],
+				"transmission": [
+					"CVT"
+				],
+				"bodyColor": [
+					"ダークブルーメタリック"
 				]
 			}
 		},
@@ -84,6 +102,15 @@
 					"DAA-GB7",
 					"DAA-GB8",
 					"DAA-GP3"
+				],
+				"driveType": [
+					"4WD"
+				],
+				"transmission": [
+					"7AT"
+				],
+				"bodyColor": [
+					"シトロンドロップ"
 				]
 			}
 		},
