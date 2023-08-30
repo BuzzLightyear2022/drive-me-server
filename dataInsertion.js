@@ -30,7 +30,7 @@ app.post('/insertVehicleData', upload.fields([{ name: 'imageData' }, {name: 'dat
 			return;
 		} else {
 			const originalFilename = imageFile.originalname;
-			const filePath = `${directoryPath}/${originalFilename}`;
+			const filePath = originalFilename;
 
 			fs.writeFile(filePath, imageFile.buffer)
 				.then(() => {
