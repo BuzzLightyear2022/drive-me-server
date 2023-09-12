@@ -3,10 +3,9 @@
 const app = require('./main.js');
 const { sequelize, VehicleAttribute } = require('./tableDefinition');
 
-app.post('/dataSubmission', async (req, res) => {
+app.post('/fetchVehicleData', async (req, res) => {
 	try {
 		const allData = await VehicleAttribute.findAll();
-
 		res.json(allData);
 
 	} catch (error) {

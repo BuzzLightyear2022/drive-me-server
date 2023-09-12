@@ -30,11 +30,11 @@ app.post('/insertVehicleData', upload.fields([{ name: 'imageData' }, {name: 'dat
 			return;
 		} else {
 			const originalFilename = imageFile.originalname;
-			const filePath = originalFilename;
+			const imageFileName = originalFilename;
 
 			fs.writeFile(filePath, imageFile.buffer)
 				.then(() => {
-					jsonData.data.imagePath = filePath;
+					jsonData.data.imagePath = imageFileName;
 					console.log('File saved successfully.');
 					return VehicleAttribute.create(jsonData.data);
 				})

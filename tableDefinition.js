@@ -13,7 +13,7 @@ const sequelize = new Sequelize('drive_me_test_since20230703', rds_user, rds_pas
 });
 
 const VehicleAttribute = sequelize.define('VehicleAttribute', {
-	imagePath: DataTypes.STRING,
+	imageFileName: DataTypes.STRING,
 	carModel: DataTypes.STRING,
 	modelCode: DataTypes.STRING,
 	nonSmoking: DataTypes.BOOLEAN,
