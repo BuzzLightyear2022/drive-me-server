@@ -14,16 +14,34 @@ app.post('/fetchVehicleData', async (req, res) => {
 	}
 });
 
-app.post('/fetchGrade', async (req, res) => {
+app.post('/fetchRentalClass', async (req, res) => {
 	try {
-		const dataByGrade = await VehicleAttribute.findAll({
-			attributes: ['grade', [sequelize.fn('COUNT', sequelize.col('grade')), 'count']],
-			group: ['grade'],
+		const dataByRentalClass = await VehicleAttribute.findAll({
+			attributes: ['rentalClass', [sequelize.fn('COUNT', sequelize.col('rentalClass')), 'count']],
+			group: ['rentalClass'],
 		});
 
-		res.json(dataByGrade);
+		res.json(dataByRentalClass);
 	} catch (error) {
 		console.error('Error while fetching data:', error);
 		res.status(500).json({ error: 'An error occurred while fetching data.' });
+	}
+});
+
+app.post('/fetchCarModel', async (req, res) => {
+	try {
+		const rentalClass = req.body.rentalClass;
+		const carModels = await VehicleAttribute.findAll({
+			attributes: ["carModel"],
+			where: {
+				rentalClass: rentalClass,
+			},
+			group: ['carModel'],
+		});
+
+		res.json(carModels);
+	} catch (error) {
+		console.error('Error while fetching data:', error);
+		res.status(500).json({ error: 'An error occurred while fetching data.'});
 	}
 });

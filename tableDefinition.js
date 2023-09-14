@@ -25,7 +25,7 @@ const VehicleAttribute = sequelize.define('VehicleAttribute', {
 	bodyColor: DataTypes.STRING,
 	driveType: DataTypes.STRING,
 	transmission: DataTypes.STRING,
-	grade: DataTypes.STRING,
+	rentalClass: DataTypes.STRING,
 	navigation: DataTypes.STRING,
 	hasBackCamera: DataTypes.BOOLEAN,
 	hasDVD: DataTypes.BOOLEAN,
