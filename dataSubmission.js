@@ -45,3 +45,19 @@ app.post('/fetchCarModel', async (req, res) => {
 		res.status(500).json({ error: 'An error occurred while fetching data.'});
 	}
 });
+
+app.post('/fetchLicensePlate', async (req, res) => {
+	try {
+		const carModel = req.body.carModel;
+		const licensePlate = await VehicleAttribute.findAll({
+			attributes: ["licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
+			where: {
+				carModel: carModel
+			}
+		});
+		res.json(licensePlate);
+	} catch (error) {
+		console.error('Error while fetching data:', error);
+		res.status(500).json({ error: 'An error occurred while fetching data.' });
+	}
+});
