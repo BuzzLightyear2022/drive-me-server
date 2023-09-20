@@ -14,32 +14,54 @@ app.post('/fetchVehicleData', async (req, res) => {
 	}
 });
 
-app.post('/fetchRentalClass', async (req, res) => {
+app.post('/selectRentalClasses', async (req, res) => {
 	try {
-		const dataByRentalClass = await VehicleAttribute.findAll({
-			attributes: ['rentalClass', [sequelize.fn('COUNT', sequelize.col('rentalClass')), 'count']],
+		const groupByRentalClass = await VehicleAttribute.findAll({
+			attributes: ['rentalClass'],
 			group: ['rentalClass'],
 		});
 
-		res.json(dataByRentalClass);
+		res.json(groupByRentalClass);
 	} catch (error) {
 		console.error('Error while fetching data:', error);
 		res.status(500).json({ error: 'An error occurred while fetching data.' });
 	}
 });
 
-app.post('/fetchCarModel', async (req, res) => {
+app.post('/selectCarModels', async (req, res) => {
 	try {
 		const rentalClass = req.body.rentalClass;
-		const carModels = await VehicleAttribute.findAll({
-			attributes: ["carModel"],
-			where: {
-				rentalClass: rentalClass,
-			},
-			group: ['carModel'],
-		});
-
-		res.json(carModels);
+		const nonSmoking = req.body.nonSmoking;
+		if (nonSmoking === 'none-specification') {
+			const carModels = await VehicleAttribute.findAll({
+				attributes: ["carModel"],
+				where: {
+					rentalClass: rentalClass,
+				},
+				group: ['carModel'],
+			});
+			res.json(carModels);
+		} else if (nonSmoking === 'non-smoking') {
+			const carModels = await VehicleAttribute.findAll({
+				attributes: ["carModel"],
+				where: {
+					nonSmoking: 1,
+					rentalClass: rentalClass
+				},
+				group: ["carModel"]
+			});
+			res.json(carModels);
+		} else if (nonSmoking === 'ok-smoking') {
+			const carModels = await VehicleAttribute.findAll({
+				attributes: ["carModel"],
+				where: {
+					nonSmoking: 0,
+					rentalClass: rentalClass
+				},
+				group: ["carModel"]
+			});
+			res.json(carModels);
+		}
 	} catch (error) {
 		console.error('Error while fetching data:', error);
 		res.status(500).json({ error: 'An error occurred while fetching data.'});
@@ -50,7 +72,7 @@ app.post('/fetchLicensePlate', async (req, res) => {
 	try {
 		const carModel = req.body.carModel;
 		const licensePlate = await VehicleAttribute.findAll({
-			attributes: ["licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
+			ttributes: ["imageFileName", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
 			where: {
 				carModel: carModel
 			}
