@@ -4,6 +4,23 @@ const app = require('../main.js');
 const { sequelize, VehicleAttribute } = require('./sql_tableDefinition');
 
 class selectCarData {
+	static selectAllCarAttribute = () => {
+		app.post('/selectAllCarAttribute', async (req, res) => {
+			try {
+				const carAttribute = await VehicleAttribute.findAll({
+					order: [
+						['rentalClass', 'DESC'],
+						['licensePlateNumber', 'DESC']
+					]
+				});
+				res.json(carAttribute);
+			} catch (error) {
+				console.error('Error while fetching data:', error);
+				res.status(500).json({ error: 'An error occurred while fetching data.' });
+			}
+		});
+	}
+	
 	static selectRentalClasses = () => {
 		app.post('/selectRentalClasses', async (req, res) => {
 			try {
@@ -126,6 +143,7 @@ class selectCarData {
 	}
 }
 
+selectCarData.selectAllCarAttribute();
 selectCarData.selectRentalClasses();
 selectCarData.selectCarModels();
 selectCarData.selectLicensePlateAndCarData();

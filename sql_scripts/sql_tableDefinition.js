@@ -37,10 +37,13 @@ const VehicleAttribute = sequelize.define('VehicleAttribute', {
 
 const Reservation = sequelize.define('Reservation', {
 	vehicleId: DataTypes.INTEGER,
+	reservationName: DataTypes.STRING,
+	rentalCategory: DataTypes.STRING,
 	departureStore: DataTypes.STRING,
 	returnStore: DataTypes.STRING,
 	departingDatetime: DataTypes.DATE,
 	returnDatetime: DataTypes.DATE,
+	nonSmoking: DataTypes.STRING,
 });
 
 sequelize.sync()
@@ -60,4 +63,4 @@ sequelize.
 		console.error('Unable to connect to the database:', error);
         }); 
 
-module.exports = { sequelize, VehicleAttribute };
+module.exports = { sequelize, VehicleAttribute, Reservation };
