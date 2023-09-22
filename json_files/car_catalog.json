@@ -155,6 +155,15 @@
 					"DBA-RG2",
 					"DBA-RG3",
 					"DBA-RG4"
+				],
+				"driveType": [
+					"フルタイム4WD"
+				],
+				"transmission": [
+					"CVT"
+				],
+				"bodyColor": [
+					"クリスタルブラック・パール"
 				]
 			}
 		},

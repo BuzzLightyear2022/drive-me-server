@@ -4,9 +4,8 @@ const app = require('../main.js');
 const path = require('path');
 const fs = require('fs');
 
-const jsonFilePath = path.join('..', 'json_files', 'car_catalog.json');
-
 app.post('/fetchCarCatalog', (req, res) => {
+	const jsonFilePath = path.join('json_files', 'car_catalog.json');
 	fs.readFile(jsonFilePath, 'utf8', (err, data) => {
 		if (err) {
 			console.error('Error reading JSON file:', err);
