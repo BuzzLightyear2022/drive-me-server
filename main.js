@@ -15,7 +15,7 @@ app.listen(port, () => {
 
 module.exports = app;
 
-const responseJson = require('./responseJson.js');
-const tableDefinition = require('./tableDefinition.js');
-const dataInsertion = require('./dataInsertion.js');
-const selectCarAttribute = require('./selectCarAttribute.js');
+const responseJson = require('./response_scripts/response_json.js');
+const sqlTableDefinition = require('./sql_scripts/sql_tableDefinition.js');
+const sqlInsert = require('./sql_scripts/sql_insert.js');
+const sqlSelect = require('./sql_scripts/sql_select.js');

@@ -35,6 +35,14 @@ const VehicleAttribute = sequelize.define('VehicleAttribute', {
 	otherFeatures: DataTypes.TEXT,
 });
 
+const Reservation = sequelize.define('Reservation', {
+	vehicleId: DataTypes.INTEGER,
+	departureStore: DataTypes.STRING,
+	returnStore: DataTypes.STRING,
+	departingDatetime: DataTypes.DATE,
+	returnDatetime: DataTypes.DATE,
+});
+
 sequelize.sync()
 	.then(() => {
 		console.log('table is created.');

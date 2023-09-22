@@ -1,10 +1,10 @@
 'use strict'
 
-const app = require('./main.js');
+const app = require('../main.js');
 const path = require('path');
 const fs = require('fs');
 
-const jsonFilePath = './options_json/car_catalog.json';
+const jsonFilePath = path.join('..', 'json_files', 'car_catalog.json');
 
 app.post('/fetchCarCatalog', (req, res) => {
 	fs.readFile(jsonFilePath, 'utf8', (err, data) => {

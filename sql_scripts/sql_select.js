@@ -1,7 +1,7 @@
 'use strict'
 
-const app = require('./main.js');
-const { sequelize, VehicleAttribute } = require('./tableDefinition');
+const app = require('../main.js');
+const { sequelize, VehicleAttribute } = require('./sql_tableDefinition');
 
 class selectCarData {
 	static selectRentalClasses = () => {

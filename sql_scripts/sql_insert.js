@@ -1,11 +1,11 @@
 'use strict'
 
 require('dotenv').config();
-const app = require('./main.js');
+const app = require('../main.js');
 const fs = require('fs').promises;
 const bodyParser = require('body-parser');
 const multer = require('multer');
-const { sequelize, VehicleAttribute } = require('./tableDefinition');
+const { sequelize, VehicleAttribute } = require('./sql_tableDefinition');
 
 app.use(bodyParser.json());
 
