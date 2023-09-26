@@ -6,7 +6,7 @@ const cors = require('cors');
 
 const app = express();
 app.use(cors());
-app.use('/publicImages', express.static('carImages'));
+app.use('/C2cFbaAZ', express.static('carImages'));
 const port = process.env.PORT;
 
 app.listen(port, () => {

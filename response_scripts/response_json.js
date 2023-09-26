@@ -12,7 +12,6 @@ app.post('/fetchCarCatalog', (req, res) => {
 			res.status(500).send('Internal Server Error');
 			return;
 		}
-
 		try {
 			const jsonData = JSON.parse(data);
 			res.json(jsonData);
