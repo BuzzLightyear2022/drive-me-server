@@ -28,7 +28,6 @@ class selectCarData {
 					attributes: ['rentalClass'],
 					group: ['rentalClass'],
 				});
-
 				res.json(groupByRentalClass);
 			} catch (error) {
 				console.error('Error while fetching data:', error);
@@ -42,21 +41,21 @@ class selectCarData {
 			try {
 				const rentalClass = req.body.rentalClass;
 				const nonSmoking = req.body.nonSmoking;
-				if (nonSmoking == 0) {
+				if (nonSmoking === 'smoking') {
 					const carModels = await VehicleAttribute.findAll({
 						attributes: ["carModel"],
 						where: {
-							nonSmoking: nonSmoking,
+							nonSmoking: 0,
 							rentalClass: rentalClass
 						},
 						group: ["carModel"]
 					});
 					res.json(carModels);
-				} else if (nonSmoking == 1) {
+				} else if (nonSmoking === 'non-smoking') {
 					const carModels = await VehicleAttribute.findAll({
 						attributes: ["carModel"],
 						where: {
-							nonSmoking: nonSmoking,
+							nonSmoking: 1,
 							rentalClass: rentalClass
 						},
 						group: ["carModel"]
