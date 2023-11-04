@@ -2,9 +2,9 @@
   "name": "drive-me-server",
   "version": "0.1.0",
   "description": "codeName: drive-me. server side version.",
-  "main": "./src/main.js",
+  "main": "./dist/main.js",
   "scripts": {
-    "start": "node ./src/main.js",
+    "start": "node ./dist/main.js",
     "build": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
