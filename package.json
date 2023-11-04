@@ -4,7 +4,7 @@
   "description": "codeName: drive-me. server side version.",
   "main": "./src/main.js",
   "scripts": {
-    "start": "node main.js",
+    "start": "node ./src/main.js",
     "build": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
