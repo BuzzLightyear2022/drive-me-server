@@ -1,7 +1,7 @@
 'use strict'
 
 const app = require('../main.js');
-const { sequelize, VehicleAttribute } = require('./sql_tableDefinition');
+const { sequelize, VehicleAttribute, Reservation } = require('./sql_tableDefinition');
 
 class selectCarData {
 	static selectAllCarAttribute = () => {
@@ -140,9 +140,21 @@ class selectCarData {
 			}
 		});
 	}
+	static reservationData = () => {
+		app.post('/reservationData', async (req, res) => {
+			try {
+				const reservation = await Reservation.findAll();
+				res.json(reservation);
+			} catch (error) {
+				console.error(error);
+				res.status(500);
+			}
+		});
+	}
 }
 
 selectCarData.selectAllCarAttribute();
 selectCarData.selectRentalClasses();
 selectCarData.selectCarModels();
 selectCarData.selectLicensePlateAndCarData();
+selectCarData.reservationData();
