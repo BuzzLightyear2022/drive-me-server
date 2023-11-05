@@ -8,7 +8,7 @@ const rds_user: string = process.env.RDS_USER as string;
 const rds_password: string = process.env.RDS_PASSWORD as string;
 
 const sqlConnection: Sequelize = new Sequelize(
-	"drive_me_test_since_20230703",
+	"drive_me_test_since20230703",
 	rds_user,
 	rds_password,
 	{
