@@ -2,6 +2,8 @@ require("dotenv").config();
 
 import express from "express";
 import cors from "cors";
+import path from "path";
+import fs from "fs";
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
 import { VehicleAttributes, ReservationData } from "./@types/types";
 
@@ -77,13 +79,30 @@ const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('R
 	}
 })();
 
+server.post("/fetchJSON/carCatalog", (request: express.Request, response: express.Response) => {
+	const jsonFilePath: string = path.join("../", "json_files", "car_catalog.json");
+
+	try {
+		fs.readFile(jsonFilePath, "utf8", (error: unknown, data: string) => {
+			if (error) {
+				return response.status(500).send("failed to fetch CarCatalog");
+			} else {
+				response.json(JSON.parse(data));
+			}
+		});
+	} catch (error: unknown) {
+		return response.status(500).send("Failed to fetch CarCatalog.");
+	}
+});
+
 server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
 	try {
-		const rentalClasses = await VehicleAttributes.findAll({
+		const rentalClasses: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributes.findAll({
 			group: [
 				"rentalClass"
 			]
 		});
+		return rentalClasses;
 	} catch (error: unknown) {
 		console.error("failed to fetch rentalClasses: ", error);
 	}
