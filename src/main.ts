@@ -4,18 +4,22 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import fs from "fs";
+import multer from "multer";
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
 import { VehicleAttributes, ReservationData, CarCatalog } from "./@types/types";
+
+const port: string = process.env.PORT as string;
 
 const server: express.Express = express();
 server.use(cors());
 server.use("/C2cFbaAZ", express.static("carImages"));
 
-const port: string = process.env.PORT as string;
-
 const rds_host: string = process.env.RDS_HOST as string;
 const rds_user: string = process.env.RDS_USER as string;
 const rds_password: string = process.env.RDS_PASSWORD as string;
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const sqlConnection: Sequelize = new Sequelize(
 	"drive_me_test_since20230703",
@@ -107,6 +111,18 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 		return rentalClasses;
 	} catch (error: unknown) {
 		console.error("failed to fetch rentalClasses: ", error);
+	}
+});
+
+server.post("/sqlInsert/vehicleAttributes", async (request: express.Request, response: express.Response) => {
+	const files: {
+		[fieldName: string]: File[];
+	} | File[] | undefined = request.files as { [fieldName: string]: File[]; } | File[] | undefined;
+
+	if (files && Array.isArray(files)) {
+		console.log(files[0]);
+	} else if (files && typeof files === "object") {
+		console.log(files["imageData"][0]);
 	}
 });
 
