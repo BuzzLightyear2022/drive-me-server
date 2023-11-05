@@ -20,3 +20,14 @@ export type VehicleAttributes = {
     hasSpareKey: boolean,
     otherFeatures: text
 }
+
+export type ReservationData = {
+    vehicleId: number,
+	reservationName: string,
+	rentalCategory: string,
+	departureStore: string,
+	returnStore: string,
+	departingDatetime: Date,
+	returnDatetime: Date,
+	nonSmoking: string,
+}

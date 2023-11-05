@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
-import { VehicleAttributes } from "./@types/types";
+import { VehicleAttributes, ReservationData } from "./@types/types";
 
 const rds_host: string = process.env.RDS_HOST as string;
 const rds_user: string = process.env.RDS_USER as string;
@@ -40,11 +40,31 @@ const VehicleAttributes: ModelStatic<Model<VehicleAttributes>> = sqlConnection.d
 	otherFeatures: DataTypes.TEXT,
 });
 
+const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('Reservation', {
+	vehicleId: DataTypes.INTEGER,
+	reservationName: DataTypes.STRING,
+	rentalCategory: DataTypes.STRING,
+	departureStore: DataTypes.STRING,
+	returnStore: DataTypes.STRING,
+	departingDatetime: DataTypes.DATE,
+	returnDatetime: DataTypes.DATE,
+	nonSmoking: DataTypes.STRING,
+});
+
 (async () => {
 	try {
 		await sqlConnection.authenticate();
 		console.log("Connected to the database successfully.");
 	} catch (error: unknown) {
-		console.error("Database Connection: ", error);
+		console.error("Database Connection is failed: ", error);
+	}
+})();
+
+(async () => {
+	try {
+		await sqlConnection.sync();
+		console.log("Tables are created.");
+	} catch (error: unknown) {
+		console.error("Create Tables is failed: ", error);
 	}
 })();
