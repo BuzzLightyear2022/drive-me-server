@@ -1,7 +1,16 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv").config();
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
 const sequelize_1 = require("sequelize");
+const server = (0, express_1.default)();
+server.use((0, cors_1.default)());
+server.use("/C2cFbaAZ", express_1.default.static("carImages"));
+const port = process.env.PORT;
 const rds_host = process.env.RDS_HOST;
 const rds_user = process.env.RDS_USER;
 const rds_password = process.env.RDS_PASSWORD;
@@ -59,3 +68,15 @@ const Reservation = sqlConnection.define('Reservation', {
         console.error("Create Tables is failed: ", error);
     }
 })();
+server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request, response) => {
+    try {
+        const rentalClasses = await VehicleAttributes.findAll({
+            group: [
+                "rentalClass"
+            ]
+        });
+    }
+    catch (error) {
+        console.error("failed to fetch rentalClasses: ", error);
+    }
+});

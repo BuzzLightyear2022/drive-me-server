@@ -1,7 +1,15 @@
 require("dotenv").config();
 
+import express from "express";
+import cors from "cors";
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
 import { VehicleAttributes, ReservationData } from "./@types/types";
+
+const server: express.Express = express();
+server.use(cors());
+server.use("/C2cFbaAZ", express.static("carImages"));
+
+const port: string = process.env.PORT as string;
 
 const rds_host: string = process.env.RDS_HOST as string;
 const rds_user: string = process.env.RDS_USER as string;
@@ -68,3 +76,15 @@ const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('R
 		console.error("Create Tables is failed: ", error);
 	}
 })();
+
+server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
+	try {
+		const rentalClasses = await VehicleAttributes.findAll({
+			group: [
+				"rentalClass"
+			]
+		});
+	} catch (error: unknown) {
+		console.error("failed to fetch rentalClasses: ", error);
+	}
+});
