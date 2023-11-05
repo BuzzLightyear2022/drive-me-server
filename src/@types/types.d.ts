@@ -1,0 +1,22 @@
+export type VehicleAttributes = {
+    imageFileName: string,
+    carModel: string,
+    modelCode: string,
+    nonSmoking: boolean,
+    insurancePriority: boolean,
+    licensePlateRegion: string,
+    licensePlateCode: string,
+    licensePlateHiragana: string,
+    licensePlateNumber: string,
+    bodyColor: string,
+    driveType: string,
+    transmission: string,
+    rentalClass: string,
+    navigation: string,
+    hasBackCamera: boolean,
+    hasDVD: boolean,
+    hasTelevision: boolean,
+    hasExternalInput: boolean,
+    hasSpareKey: boolean,
+    otherFeatures: text
+}
