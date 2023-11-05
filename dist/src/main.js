@@ -5,7 +5,7 @@ const sequelize_1 = require("sequelize");
 const rds_host = process.env.RDS_HOST;
 const rds_user = process.env.RDS_USER;
 const rds_password = process.env.RDS_PASSWORD;
-const sqlConnection = new sequelize_1.Sequelize("drive_me_test_since_20230703", rds_user, rds_password, {
+const sqlConnection = new sequelize_1.Sequelize("drive_me_test_since20230703", rds_user, rds_password, {
     host: rds_host,
     dialect: "mysql"
 });
@@ -31,12 +31,31 @@ const VehicleAttributes = sqlConnection.define("VehicleAttribute", {
     hasSpareKey: sequelize_1.DataTypes.BOOLEAN,
     otherFeatures: sequelize_1.DataTypes.TEXT,
 });
+const Reservation = sqlConnection.define('Reservation', {
+    vehicleId: sequelize_1.DataTypes.INTEGER,
+    reservationName: sequelize_1.DataTypes.STRING,
+    rentalCategory: sequelize_1.DataTypes.STRING,
+    departureStore: sequelize_1.DataTypes.STRING,
+    returnStore: sequelize_1.DataTypes.STRING,
+    departingDatetime: sequelize_1.DataTypes.DATE,
+    returnDatetime: sequelize_1.DataTypes.DATE,
+    nonSmoking: sequelize_1.DataTypes.STRING,
+});
 (async () => {
     try {
         await sqlConnection.authenticate();
         console.log("Connected to the database successfully.");
     }
     catch (error) {
-        console.error("Database Connection: ", error);
+        console.error("Database Connection is failed: ", error);
+    }
+})();
+(async () => {
+    try {
+        await sqlConnection.sync();
+        console.log("Tables are created.");
+    }
+    catch (error) {
+        console.error("Create Tables is failed: ", error);
     }
 })();
