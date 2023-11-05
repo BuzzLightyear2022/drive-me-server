@@ -5,7 +5,7 @@ const sequelize_1 = require("sequelize");
 const rds_host = process.env.RDS_HOST;
 const rds_user = process.env.RDS_USER;
 const rds_password = process.env.RDS_PASSWORD;
-const sqlConnection = new sequelize_1.Sequelize("drive_me_test_since_20230703", rds_user, rds_password, {
+const sqlConnection = new sequelize_1.Sequelize("drive_me_test_since20230703", rds_user, rds_password, {
     host: rds_host,
     dialect: "mysql"
 });
