@@ -80,7 +80,7 @@ const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('R
 })();
 
 server.post("/fetchJSON/carCatalog", (request: express.Request, response: express.Response) => {
-	const jsonFilePath: string = path.join("../", "json_files", "car_catalog.json");
+	const jsonFilePath: string = path.join("json_files", "car_catalog.json");
 
 	fs.readFile(jsonFilePath, "utf8", (error: unknown, data: string) => {
 		try {
