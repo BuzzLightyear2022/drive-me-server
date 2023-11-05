@@ -88,3 +88,7 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 		console.error("failed to fetch rentalClasses: ", error);
 	}
 });
+
+server.listen(port, () => {
+	console.log("Server start on port: ", port);
+});
