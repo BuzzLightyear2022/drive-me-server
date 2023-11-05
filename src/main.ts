@@ -5,7 +5,7 @@ import cors from "cors";
 import path from "path";
 import fs from "fs";
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
-import { VehicleAttributes, ReservationData } from "./@types/types";
+import { VehicleAttributes, ReservationData, CarCatalog } from "./@types/types";
 
 const server: express.Express = express();
 server.use(cors());
@@ -80,20 +80,21 @@ const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('R
 })();
 
 server.post("/fetchJSON/carCatalog", (request: express.Request, response: express.Response) => {
-	console.log("/fetchJSON/carCatalog");
 	const jsonFilePath: string = path.join("../", "json_files", "car_catalog.json");
 
-	try {
-		fs.readFile(jsonFilePath, "utf8", (error: unknown, data: string) => {
-			if (error) {
-				return response.status(500).send("failed to fetch CarCatalog");
-			} else {
-				response.json(JSON.parse(data));
-			}
-		});
-	} catch (error: unknown) {
-		return response.status(500).send("Failed to fetch CarCatalog.");
-	}
+	fs.readFile(jsonFilePath, "utf8", (error: unknown, data: string) => {
+		try {
+			const carCatalog: CarCatalog = JSON.parse(data);
+			response.json(carCatalog);
+		} catch (parseError: unknown) {
+			response.status(500).send("failed to parse carCatalog");
+		}
+
+		if (error) {
+			response.status(500).send("failed to fetch carCatalog");
+			return;
+		}
+	});
 });
 
 server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {

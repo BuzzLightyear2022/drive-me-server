@@ -23,11 +23,24 @@ export type VehicleAttributes = {
 
 export type ReservationData = {
     vehicleId: number,
-	reservationName: string,
-	rentalCategory: string,
-	departureStore: string,
-	returnStore: string,
-	departingDatetime: Date,
-	returnDatetime: Date,
-	nonSmoking: string,
+    reservationName: string,
+    rentalCategory: string,
+    departureStore: string,
+    returnStore: string,
+    departingDatetime: Date,
+    returnDatetime: Date,
+    nonSmoking: string,
+}
+
+export type CarCatalog = {
+    rentalClass: {
+        [rentalClassName: string]: {
+            [carModel: string]: {
+                modelCode?: string[],
+                driveType?: string[],
+                transmission?: string[],
+                bodyColor?: string[]
+            }
+        }
+    }
 }
