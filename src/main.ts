@@ -119,6 +119,7 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	{ name: "data" }
 ]), (request: express.Request, response: express.Response) => {
 	const jsonData: JSON = JSON.parse(request.body["data"]);
+	console.log(jsonData);
 });
 
 server.listen(port, () => {
