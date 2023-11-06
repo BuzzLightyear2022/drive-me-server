@@ -114,16 +114,11 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 	}
 });
 
-server.post("/sqlInsert/vehicleAttributes", async (request: express.Request, response: express.Response) => {
-	const files: {
-		[fieldName: string]: File[];
-	} | File[] | undefined = request.files as { [fieldName: string]: File[]; } | File[] | undefined;
-
-	if (files && Array.isArray(files)) {
-		console.log(files[0]);
-	} else if (files && typeof files === "object") {
-		console.log(files["imageData"][0]);
-	}
+server.post("/sqlInsert/vehicleAttributes", upload.fields([
+	{ name: "imageData" },
+	{ name: "data" }
+]), (request: express.Request, response: express.Response) => {
+	const jsonData: JSON = JSON.parse(request.body["data"]);
 });
 
 server.listen(port, () => {
