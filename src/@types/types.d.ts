@@ -44,3 +44,14 @@ export type CarCatalog = {
         }
     }
 }
+
+export type ImageFile = {
+    imageData: {
+        fieldname: string,
+        originalname: string,
+        encoding: string,
+        minetype: string,
+        buffer: string,
+        size: string
+    }
+}

@@ -6,7 +6,7 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
-import { VehicleAttributes, ReservationData, CarCatalog } from "./@types/types";
+import { VehicleAttributes, ReservationData, CarCatalog, ImageFile } from "./@types/types";
 
 const port: string = process.env.PORT as string;
 
@@ -118,9 +118,9 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	{ name: "imageData" },
 	{ name: "data" }
 ]), (request: express.Request, response: express.Response) => {
-	const imageData = request.files;
-	const jsonData: JSON = JSON.parse(request.body["data"]);
+	const imageData = request.file;
 	console.log(imageData);
+	const jsonData: JSON = JSON.parse(request.body["data"]);
 });
 
 server.listen(port, () => {
