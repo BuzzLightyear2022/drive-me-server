@@ -5,12 +5,14 @@ import cors from "cors";
 import path from "path";
 import fs from "fs";
 import multer from "multer";
+import bodyParser from "body-parser";
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
 import { VehicleAttributes, ReservationData, CarCatalog, FilesObject } from "./@types/types";
 
 const port: string = process.env.PORT as string;
 
 const server: express.Express = express();
+server.use(bodyParser.json());
 server.use(cors());
 server.use("/C2cFbaAZ", express.static("carImages"));
 
@@ -120,17 +122,19 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 ]), (request: express.Request, response: express.Response) => {
 	const targetDirectoryPath: string = "./car_images/";
 
-	const files: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
+	const imageFiles: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
+	const jsonData: JSON = request.body["data"];
+	console.log(jsonData);
 
-	if (files && Array.isArray(files["imageData"])) {
-		const imageDataField: Express.Multer.File = files["imageData"][0];
+	if (imageFiles && Array.isArray(imageFiles["imageData"])) {
+		const imageDataField: Express.Multer.File = imageFiles["imageData"][0];
 		const fileName: string = imageDataField.originalname;
 
 		fs.writeFile(targetDirectoryPath + fileName, imageDataField.buffer, "base64", (error: unknown) => {
 			return "Failed to write file: " + error;
 		});
 	}
-	const jsonData: JSON = JSON.parse(request.body["data"]);
+
 });
 
 server.listen(port, () => {
