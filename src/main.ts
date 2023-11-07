@@ -6,7 +6,7 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
-import { VehicleAttributes, ReservationData, CarCatalog, ImageFile } from "./@types/types";
+import { VehicleAttributes, ReservationData, CarCatalog, FilesObject } from "./@types/types";
 
 const port: string = process.env.PORT as string;
 
@@ -119,8 +119,10 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	{ name: "data" }
 ]), (request: express.Request, response: express.Response) => {
 	if (request.files) {
-		const imageData = request.files;
-		console.log(imageData);
+		const files: {
+			[fieldname: string]: Express.Multer.File[];
+		} | Express.Multer.File[] = request.files;
+		console.log(files);
 	}
 	const jsonData: JSON = JSON.parse(request.body["data"]);
 });
