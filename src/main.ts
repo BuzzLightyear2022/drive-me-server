@@ -118,11 +118,12 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	{ name: "imageData" },
 	{ name: "data" }
 ]), (request: express.Request, response: express.Response) => {
-	if (request.files) {
-		const files: {
-			[fieldname: string]: Express.Multer.File[];
-		} | Express.Multer.File[] = request.files;
-		console.log(files);
+	const files: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
+
+	if (files && Array.isArray(files["imageData"])) {
+		const imageDataField: Express.Multer.File = files["imageData"][0];
+		const originalname: string = imageDataField.originalname;
+		console.log(imageDataField);
 	}
 	const jsonData: JSON = JSON.parse(request.body["data"]);
 });
