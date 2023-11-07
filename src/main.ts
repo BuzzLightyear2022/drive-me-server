@@ -118,12 +118,17 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	{ name: "imageData" },
 	{ name: "data" }
 ]), (request: express.Request, response: express.Response) => {
+	const targetDirectoryPath: string = "./carImages";
+
 	const files: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
 
 	if (files && Array.isArray(files["imageData"])) {
 		const imageDataField: Express.Multer.File = files["imageData"][0];
-		const originalname: string = imageDataField.originalname;
-		console.log(imageDataField);
+		const fileName: string = imageDataField.originalname;
+
+		fs.writeFile(targetDirectoryPath + fileName, imageDataField.buffer, "base64", (error: unknown) => {
+			return "Failed to write file: " + error;
+		});
 	}
 	const jsonData: JSON = JSON.parse(request.body["data"]);
 });
