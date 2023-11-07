@@ -118,7 +118,7 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	{ name: "imageData" },
 	{ name: "data" }
 ]), (request: express.Request, response: express.Response) => {
-	const targetDirectoryPath: string = "./carImages";
+	const targetDirectoryPath: string = "./car_images/";
 
 	const files: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
 
