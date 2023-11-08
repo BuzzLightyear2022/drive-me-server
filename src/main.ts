@@ -85,7 +85,7 @@ const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('R
 	}
 })();
 
-server.post("/fetchJSON/carCatalog", (request: express.Request, response: express.Response) => {
+server.post("/fetchJSON/carCatalog", (request: express.Request, response: express.Response): void => {
 	const jsonFilePath: string = path.join("json_files", "car_catalog.json");
 
 	fs.readFile(jsonFilePath, "utf8", (error: unknown, data: string) => {
@@ -98,12 +98,11 @@ server.post("/fetchJSON/carCatalog", (request: express.Request, response: expres
 
 		if (error) {
 			response.status(500).send("failed to fetch carCatalog");
-			return;
 		}
 	});
 });
 
-server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
+server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response): Promise<Model<VehicleAttributes, VehicleAttributes>[] | string | undefined> => {
 	try {
 		const rentalClasses: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributes.findAll({
 			group: [
@@ -119,7 +118,7 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	{ name: "imageData" },
 	{ name: "data" }
-]), (request: express.Request, response: express.Response) => {
+]), (request: express.Request, response: express.Response): void | String => {
 	const targetDirectoryPath: string = "./car_images/";
 
 	const imageFiles: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
@@ -136,8 +135,11 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 		});
 	}
 
-	console.log(jsonData);
-	// return VehicleAttributes.create(jsonData);
+	try {
+		VehicleAttributes.create(jsonData);
+	} catch (error: unknown) {
+		return "failed to write image file: " + error;
+	}
 });
 
 server.listen(port, () => {
