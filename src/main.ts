@@ -129,6 +129,8 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 		const imageDataField: Express.Multer.File = imageFiles["imageData"][0];
 		const fileName: string = imageDataField.originalname;
 
+		jsonData.imageFileName = fileName;
+
 		fs.writeFile(targetDirectoryPath + fileName, imageDataField.buffer, "base64", (error: unknown) => {
 			return "Failed to write file: " + error;
 		});
