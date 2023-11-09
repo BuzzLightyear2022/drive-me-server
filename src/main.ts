@@ -126,6 +126,7 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 
 	if (imageFiles && Array.isArray(imageFiles["imageData"])) {
 		const imageDataField: Express.Multer.File = imageFiles["imageData"][0];
+		console.log(imageDataField);
 		const fileName: string = imageDataField.originalname;
 
 		jsonData.imageFileName = fileName;
