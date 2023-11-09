@@ -115,43 +115,36 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 	}
 });
 
-server.post("/sqlInsert/VehicleAttributes", (request: express.Request, response: express.Response) => {
-	console.log(request);
+server.post("/sqlInsert/vehicleAttributes", upload.fields([
+	{ name: "imageData" },
+	{ name: "data" }
+]), (request: express.Request, response: express.Response): void | String => {
+	const targetDirectoryPath: string = "./car_images/";
+
+	const imageFiles: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
+	const jsonData: VehicleAttributes = JSON.parse(request.body["data"]);
+
+	if (imageFiles && Array.isArray(imageFiles["imageData"])) {
+		const imageDataField: Express.Multer.File = imageFiles["imageData"][0];
+		const base64Image: Buffer = imageDataField.buffer;
+		const fileName: string = imageDataField.originalname;
+
+		jsonData.imageFileName = fileName;
+
+		fs.writeFile(targetDirectoryPath + fileName, base64Image, "base64", (error: unknown) => {
+			if (error) {
+				return response.status(500).send("Failed to write image file: " + error);
+			}
+
+			try {
+				VehicleAttributes.create(jsonData);
+				return response.status(200).send("Data saved successfully");
+			} catch (error: unknown) {
+				return response.status(500).send("failed to write data to the database: " + error);
+			}
+		});
+	}
 });
-
-// server.post("/sqlInsert/vehicleAttributes", upload.fields([
-// 	{ name: "imageData" },
-// 	{ name: "data" }
-// ]), (request: express.Request, response: express.Response): void | String => {
-// 	const imageData = request.body;
-// 	console.log(request);
-	
-	// const targetDirectoryPath: string = "./car_images/";
-
-	// const imageFiles: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
-	// const jsonData: VehicleAttributes = JSON.parse(request.body["data"]);
-
-	// if (imageFiles && Array.isArray(imageFiles["imageData"])) {
-	// 	const imageDataField: Express.Multer.File = imageFiles["imageData"][0];
-	// 	const base64Image: Buffer = imageDataField.buffer;
-	// 	const fileName: string = imageDataField.originalname;
-
-	// 	jsonData.imageFileName = fileName;
-
-	// 	fs.writeFile(targetDirectoryPath + fileName, base64Image, "base64", (error: unknown) => {
-	// 		if (error) {
-	// 			return response.status(500).send("Failed to write image file: " + error);
-	// 		}
-
-	// 		try {
-	// 			VehicleAttributes.create(jsonData);
-	// 			return response.status(200).send("Data saved successfully");
-	// 		} catch (error: unknown) {
-	// 			return response.status(500).send("failed to write data to the database: " + error);
-	// 		}
-	// 	});
-	// }
-// });
 
 server.listen(port, () => {
 	console.log("Server start on port: ", port);
