@@ -115,9 +115,8 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 	}
 });
 
-server.post("/postImage/VehicleAttributes", (request: express.Request, response: express.Response) => {
-	const imageData: BinaryData = request.body;
-	console.log(imageData);
+server.post("/sqlInsert/VehicleAttributes", (request: express.Request, response: express.Response) => {
+	console.log(request);
 });
 
 // server.post("/sqlInsert/vehicleAttributes", upload.fields([
