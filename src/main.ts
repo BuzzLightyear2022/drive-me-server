@@ -131,14 +131,17 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 		jsonData.imageFileName = fileName;
 
 		fs.writeFile(targetDirectoryPath + fileName, imageDataField.buffer, "base64", (error: unknown) => {
-			return "Failed to write file: " + error;
-		});
-	}
+			if (error) {
+				return response.status(500).send("Failed to write image file: " + error);
+			}
 
-	try {
-		VehicleAttributes.create(jsonData);
-	} catch (error: unknown) {
-		return "failed to write image file: " + error;
+			try {
+				VehicleAttributes.create(jsonData);
+				return response.status(200).send("Data saved successfully");
+			} catch (error: unknown) {
+				return response.status(500).send("failed to write data to the database: " + error);
+			}
+		});
 	}
 });
 
