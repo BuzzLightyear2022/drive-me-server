@@ -120,7 +120,7 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	{ name: "data" }
 ]), (request: express.Request, response: express.Response): void | String => {
 	const imageData = request.body;
-	console.log(imageData);
+	console.log(request);
 	
 	// const targetDirectoryPath: string = "./car_images/";
 
