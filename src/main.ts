@@ -115,12 +115,17 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 	}
 });
 
-server.post("/sqlInsert/vehicleAttributes", upload.fields([
-	{ name: "imageData" },
-	{ name: "data" }
-]), (request: express.Request, response: express.Response): void | String => {
-	const imageData = request.body;
-	console.log(request);
+server.post("/postImage/VehicleAttributes", (request: express.Request, response: express.Response) => {
+	const imageData: BinaryData = request.body;
+	console.log(imageData);
+});
+
+// server.post("/sqlInsert/vehicleAttributes", upload.fields([
+// 	{ name: "imageData" },
+// 	{ name: "data" }
+// ]), (request: express.Request, response: express.Response): void | String => {
+// 	const imageData = request.body;
+// 	console.log(request);
 	
 	// const targetDirectoryPath: string = "./car_images/";
 
@@ -147,7 +152,7 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	// 		}
 	// 	});
 	// }
-});
+// });
 
 server.listen(port, () => {
 	console.log("Server start on port: ", port);
