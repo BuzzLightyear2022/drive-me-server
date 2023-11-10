@@ -116,35 +116,33 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 });
 
 server.post("/sqlInsert/vehicleAttributes", upload.fields([
-	{ name: "imageData" },
+	{ name: "imageUrl" },
 	{ name: "data" }
 ]), (request: express.Request, response: express.Response): void | String => {
 	const targetDirectoryPath: string = "./car_images/";
 
 	const imageFiles: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
-	console.log(imageFiles);
 	const jsonData: VehicleAttributes = JSON.parse(request.body["data"]);
-	console.log(jsonData);
 
-	if (imageFiles && Array.isArray(imageFiles["imageData"])) {
-		const imageDataField: Express.Multer.File = imageFiles["imageData"][0];
-		const base64Image: Buffer = imageDataField.buffer;
-		const fileName: string = imageDataField.originalname;
+	if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
+		const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
+		// ここの処理でbase64分離してbufferせずに処理する？
+		console.log(imageDataField);
+		
+		// jsonData.imageFileName = fileName;
 
-		jsonData.imageFileName = fileName;
+		// fs.writeFile(targetDirectoryPath + fileName, base64Image, "base64", (error: unknown) => {
+		// 	if (error) {
+		// 		return response.status(500).send("Failed to write image file: " + error);
+		// 	}
 
-		fs.writeFile(targetDirectoryPath + fileName, base64Image, "base64", (error: unknown) => {
-			if (error) {
-				return response.status(500).send("Failed to write image file: " + error);
-			}
-
-			try {
-				VehicleAttributes.create(jsonData);
-				return response.status(200).send("Data saved successfully");
-			} catch (error: unknown) {
-				return response.status(500).send("failed to write data to the database: " + error);
-			}
-		});
+		// 	try {
+		// 		VehicleAttributes.create(jsonData);
+		// 		return response.status(200).send("Data saved successfully");
+		// 	} catch (error: unknown) {
+		// 		return response.status(500).send("failed to write data to the database: " + error);
+		// 	}
+		// });
 	}
 });
 
