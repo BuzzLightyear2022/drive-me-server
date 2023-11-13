@@ -7,7 +7,7 @@ import fs from "fs";
 import multer from "multer";
 import bodyParser from "body-parser";
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
-import { VehicleAttributes, ReservationData, CarCatalog } from "./@types/types";
+import { VehicleAttributes, ReservationData } from "./@types/types";
 
 const port: string = process.env.PORT as string;
 
