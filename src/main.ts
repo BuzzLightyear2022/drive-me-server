@@ -113,7 +113,7 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 			attributes: ["rentalClass"],
 			group: "rentalClass"
 		});
-		const rentalClassArray = result.map((rentalClass: RentalClassType) => result.rentalClass);
+		const rentalClassArray: string[] = result.map((record: RentalClassType) => record.rentalClass);
 		return response.json(rentalClassArray);
 	} catch (error: unknown) {
 		console.error("failed to fetch rentalClasses: ", error);
