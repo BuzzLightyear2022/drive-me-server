@@ -118,7 +118,7 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	{ name: "imageUrl" },
 	{ name: "data" }
-]), (request: express.Request, response: express.Response): void | String => {
+]), (request: express.Request, response: express.Response) => {
 	const targetDirectoryPath: string = "./car_images/";
 
 	const imageFiles: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
@@ -129,15 +129,16 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
 		const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
 		const bufferImageUrl: Buffer = imageDataField.buffer;
-		const fileName = imageDataField.originalname;
-		// エラーになる→const base64EncodedImageUrl: string = bufferImageUrl.toString("base64");
-
-		// ここの処理でbase64分離してbufferせずに処理する？
-		// console.log(base64EncodedImageUrl);
+		const fileName: string = imageDataField.originalname;
 		
+		if (!fileName.endsWith(".jpeg") && !fileName.endsWith(".jpg")) {
+			return response.status(400).send("Invalid file format. Expected JPEG file.");
+		}
+
 		jsonData.imageFileName = fileName;
 
 		fs.writeFile(targetDirectoryPath + fileName, bufferImageUrl, "base64", (error: unknown) => {
+			// エラーは出ないけど、書き込まれたファイルの中身がjpegじゃない
 			if (error) {
 				return response.status(500).send("Failed to write image file: " + error);
 			}
