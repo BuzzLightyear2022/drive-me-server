@@ -67,6 +67,27 @@ const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('R
 	nonSmoking: DataTypes.STRING,
 });
 
+const fetchJson = (args: { endPoint: string, fileName: string }): void => {
+	const { endPoint, fileName } = args;
+
+	server.post(endPoint, (request: express.Request, response: express.Response): void => {
+		const jsonFilePath: string = path.join("json_files", fileName);
+
+		fs.readFile(jsonFilePath, "utf8", (error: unknown, data: string): void => {
+			try {
+				const jsonData: JSON = JSON.parse(data);
+				response.json(jsonData);
+			} catch (parseError: unknown) {
+				response.status(500).send("failed to parse JSON.");
+			}
+
+			if (error) {
+				response.status(500).send("failed to fetch JSON.");
+			}
+		});
+	});
+}
+
 (async () => {
 	try {
 		await sqlConnection.authenticate();
@@ -85,22 +106,8 @@ const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('R
 	}
 })();
 
-server.post("/fetchJSON/carCatalog", (request: express.Request, response: express.Response): void => {
-	const jsonFilePath: string = path.join("json_files", "car_catalog.json");
-
-	fs.readFile(jsonFilePath, "utf8", (error: unknown, data: string) => {
-		try {
-			const carCatalog: CarCatalog = JSON.parse(data);
-			response.json(carCatalog);
-		} catch (parseError: unknown) {
-			response.status(500).send("failed to parse carCatalog");
-		}
-
-		if (error) {
-			response.status(500).send("failed to fetch carCatalog");
-		}
-	});
-});
+fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
+fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
 server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response): Promise<Model<VehicleAttributes, VehicleAttributes>[] | string | undefined> => {
 	try {
@@ -128,7 +135,7 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 		const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
 		const bufferImageUrl: Buffer = imageDataField.buffer;
 		const fileName: string = imageDataField.originalname;
-		
+
 		if (!fileName.endsWith(".jpeg") && !fileName.endsWith(".jpg")) {
 			return response.status(400).send("Invalid file format. Expected JPEG file.");
 		}
