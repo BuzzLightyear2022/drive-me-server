@@ -109,11 +109,13 @@ const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
-server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response): Promise<Model<VehicleAttributes, VehicleAttributes>[] | string | undefined> => {
+server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
 	try {
-		return await VehicleAttributes.findAll();
+		const result: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributes.findAll();
+		return response.json(result);
 	} catch (error: unknown) {
 		console.error("failed to fetch rentalClasses: ", error);
+		return response.status(500).json({ error: "Internal Server Error" });
 	}
 });
 
