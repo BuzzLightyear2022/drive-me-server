@@ -112,6 +112,7 @@ fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
 	try {
 		const result: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributes.findAll({
+			attributes: ["rentalClass"],
 			group: "rentalClass"
 		});
 		return response.json(result);
