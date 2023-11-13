@@ -127,9 +127,10 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
 		const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
 		const bufferImageUrl: Buffer = imageDataField.buffer;
-		const base64EncodedImageUrl = bufferImageUrl.toString("base64")
+		// const base64EncodedImageUrl: string = bufferImageUrl.toString("base64");
+
 		// ここの処理でbase64分離してbufferせずに処理する？
-		console.log(base64EncodedImageUrl);
+		// console.log(base64EncodedImageUrl);
 		
 		// jsonData.imageFileName = fileName;
 
