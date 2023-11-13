@@ -123,9 +123,10 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 
 	const imageFiles: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
 	const jsonData: VehicleAttributes = JSON.parse(request.body["data"]);
+	console.log(imageFiles);
 
-	if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
-		const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
+	// if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
+	// 	const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
 		// const bufferImageUrl: Buffer = imageDataField.buffer;
 		// const base64EncodedImageUrl: string = bufferImageUrl.toString("base64");
 
@@ -147,7 +148,7 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 		// 	}
 		// });
 	}
-});
+);
 
 server.listen(port, () => {
 	console.log("Server start on port: ", port);
