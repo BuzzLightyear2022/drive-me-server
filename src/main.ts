@@ -126,30 +126,31 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	console.log(imageFiles);
 	console.log(jsonData);
 
-	// if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
-	// 	const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
-		// const bufferImageUrl: Buffer = imageDataField.buffer;
-		// const base64EncodedImageUrl: string = bufferImageUrl.toString("base64");
+	if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
+		const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
+		const bufferImageUrl: Buffer = imageDataField.buffer;
+		const fileName = imageDataField.originalname;
+		// エラーになる→const base64EncodedImageUrl: string = bufferImageUrl.toString("base64");
 
 		// ここの処理でbase64分離してbufferせずに処理する？
 		// console.log(base64EncodedImageUrl);
 		
-		// jsonData.imageFileName = fileName;
+		jsonData.imageFileName = fileName;
 
-		// fs.writeFile(targetDirectoryPath + fileName, base64Image, "base64", (error: unknown) => {
-		// 	if (error) {
-		// 		return response.status(500).send("Failed to write image file: " + error);
-		// 	}
+		fs.writeFile(targetDirectoryPath + fileName, bufferImageUrl, "base64", (error: unknown) => {
+			if (error) {
+				return response.status(500).send("Failed to write image file: " + error);
+			}
 
-		// 	try {
-		// 		VehicleAttributes.create(jsonData);
-		// 		return response.status(200).send("Data saved successfully");
-		// 	} catch (error: unknown) {
-		// 		return response.status(500).send("failed to write data to the database: " + error);
-		// 	}
-		// });
+			try {
+				VehicleAttributes.create(jsonData);
+				return response.status(200).send("Data saved successfully");
+			} catch (error: unknown) {
+				return response.status(500).send("failed to write data to the database: " + error);
+			}
+		});
 	}
-);
+});
 
 server.listen(port, () => {
 	console.log("Server start on port: ", port);
