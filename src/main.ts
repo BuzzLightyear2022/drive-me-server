@@ -111,11 +111,7 @@ fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
 server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response): Promise<Model<VehicleAttributes, VehicleAttributes>[] | string | undefined> => {
 	try {
-		const rentalClasses: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributes.findAll({
-			group: [
-				"rentalClass"
-			]
-		});
+		const rentalClasses: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributes.findAll();
 		return rentalClasses;
 	} catch (error: unknown) {
 		console.error("failed to fetch rentalClasses: ", error);
