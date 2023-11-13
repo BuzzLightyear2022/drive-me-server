@@ -138,7 +138,6 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 		jsonData.imageFileName = fileName;
 
 		fs.writeFile(targetDirectoryPath + fileName, bufferImageUrl, "base64", (error: unknown) => {
-			// エラーは出ないけど、書き込まれたファイルの中身がjpegじゃない
 			if (error) {
 				return response.status(500).send("Failed to write image file: " + error);
 			}
