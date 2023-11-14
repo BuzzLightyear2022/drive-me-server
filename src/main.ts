@@ -5,14 +5,13 @@ import cors from "cors";
 import path from "path";
 import fs from "fs";
 import multer from "multer";
-import bodyParser from "body-parser";
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
 import { VehicleAttributes, ReservationData } from "./@types/types";
 
 const port: string = process.env.PORT as string;
 
 const server: express.Express = express();
-server.use(bodyParser.json());
+server.use(express.json());
 server.use(cors());
 server.use("/C2cFbaAZ", express.static("carImages"));
 
@@ -122,7 +121,7 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 });
 
 server.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Request, response: express.Response) => {
-	const selectedRentalClass: string = request.body.rentalClass;
+	const selectedRentalClass = request.body["selectedRentalClass"];
 	console.log(selectedRentalClass);
 	try {
 		// const result: any = await VehicleAttributes.findAll({
