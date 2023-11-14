@@ -122,8 +122,8 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 });
 
 server.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Request, response: express.Response) => {
-	const selectedRentalClass = request.body;
-	console.log(selectedRentalClass);
+	const selectedRentalClass = request;
+	console.log(request);
 	try {
 		// const result: any = await VehicleAttributes.findAll({
 		// 	attributes: ["carModel"],
