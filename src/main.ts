@@ -121,6 +121,20 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 	}
 });
 
+server.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Request, response: express.Response) => {
+	const selectedRentalClass = request.body;
+	console.log(selectedRentalClass);
+	try {
+		// const result: any = await VehicleAttributes.findAll({
+		// 	attributes: ["carModel"],
+		// 	group: "carModel"
+		// });
+	} catch (error: unknown) {
+		console.error(`failed to fetch carModels: ${error}`);
+		return response.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
 server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	{ name: "imageUrl" },
 	{ name: "data" }
