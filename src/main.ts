@@ -122,12 +122,14 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 
 server.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Request, response: express.Response) => {
 	const selectedRentalClass = request.body["selectedRentalClass"];
-	console.log(selectedRentalClass);
 	try {
-		// const result: any = await VehicleAttributes.findAll({
-		// 	attributes: ["carModel"],
-		// 	group: "carModel"
-		// });
+		const result: any = await VehicleAttributes.findAll({
+			attributes: ["carModel"],
+			where: {
+				rentalClass: selectedRentalClass
+			},
+			group: "carModel"
+		});
 	} catch (error: unknown) {
 		console.error(`failed to fetch carModels: ${error}`);
 		return response.status(500).json({ error: "Internal Server Error" });
