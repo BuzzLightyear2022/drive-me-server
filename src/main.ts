@@ -123,9 +123,10 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 server.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Request, response: express.Response) => {
 	type CarModelType = typeof VehicleAttributes["prototype"]["carModel"];
 
-	const selectedRentalClass = request.body["selectedRentalClass"];
+	const selectedRentalClass: string = request.body["selectedRentalClass"];
+
 	try {
-		const result: any = await VehicleAttributes.findAll({
+		const result: CarModelType = await VehicleAttributes.findAll({
 			attributes: ["carModel"],
 			where: {
 				rentalClass: selectedRentalClass
@@ -136,6 +137,29 @@ server.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Re
 		return response.json(carModelArray);
 	} catch (error: unknown) {
 		console.error(`failed to fetch carModels: ${error}`);
+		return response.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+server.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: express.Request, response: express.Response) => {
+	type LicensePlateType =
+		| typeof VehicleAttributes["prototype"]["licensePlateRegion"]
+		| typeof VehicleAttributes["prototype"]["licensePlateCode"]
+		| typeof VehicleAttributes["prototype"]["licensePlateHiragana"]
+		| typeof VehicleAttributes["prototype"]["licensePlateNumber"];
+
+	const selectedCarModel: string = request.body["selectedCarModel"];
+
+	try {
+		const result: LicensePlateType = await VehicleAttributes.findAll({
+			attributes: ["licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
+			where: {
+				carModel: selectedCarModel
+			}
+		});
+		return response.json(result);
+	} catch (error: unknown) {
+		console.error(`failed to fetch licensePlates: ${error}`);
 		return response.status(500).json({ error: "Internal Server Error" });
 	}
 });
