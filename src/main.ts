@@ -55,8 +55,6 @@ const VehicleAttributes: ModelStatic<Model<VehicleAttributes>> = sqlConnection.d
 	otherFeatures: DataTypes.TEXT,
 });
 
-type RentalClassType = typeof VehicleAttributes["prototype"]["rentalClass"];
-
 const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('Reservation', {
 	vehicleId: DataTypes.INTEGER,
 	reservationName: DataTypes.STRING,
@@ -107,6 +105,8 @@ fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
 server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
+	type RentalClassType = typeof VehicleAttributes["prototype"]["rentalClass"];
+
 	try {
 		const result: RentalClassType = await VehicleAttributes.findAll({
 			attributes: ["rentalClass"],
@@ -121,6 +121,8 @@ server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: expres
 });
 
 server.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Request, response: express.Response) => {
+	type CarModelType = typeof VehicleAttributes["prototype"]["carModel"];
+
 	const selectedRentalClass = request.body["selectedRentalClass"];
 	try {
 		const result: any = await VehicleAttributes.findAll({
@@ -130,6 +132,8 @@ server.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Re
 			},
 			group: "carModel"
 		});
+		const carModelArray: string[] = result.map((record: CarModelType) => record.carModel)
+		return response.json(carModelArray);
 	} catch (error: unknown) {
 		console.error(`failed to fetch carModels: ${error}`);
 		return response.status(500).json({ error: "Internal Server Error" });
