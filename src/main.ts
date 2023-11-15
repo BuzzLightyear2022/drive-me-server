@@ -142,6 +142,7 @@ server.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Re
 });
 
 server.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: express.Request, response: express.Response) => {
+	console.log("license plate req");
 	type LicensePlateType =
 		| typeof VehicleAttributes["prototype"]["licensePlateRegion"]
 		| typeof VehicleAttributes["prototype"]["licensePlateCode"]
