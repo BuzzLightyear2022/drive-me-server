@@ -158,7 +158,10 @@ server.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: expres
 				carModel: selectedCarModel
 			}
 		});
-		return response.json(result);
+		const licensePlateValue: string[] = result.map((licensePlateItem: LicensePlateType): string => {
+			return `${licensePlateItem.licensePlateRegion} ${licensePlateItem.licensePlateCode} ${licensePlateItem.licensePlateHiragana} ${licensePlateItem.licensePlateNumber}`;
+		});
+		return response.json(licensePlateValue);
 	} catch (error: unknown) {
 		console.error(`failed to fetch licensePlates: ${error}`);
 		return response.status(500).json({ error: "Internal Server Error" });
