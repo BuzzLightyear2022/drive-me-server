@@ -114,6 +114,7 @@ fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
 server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
 	const selectedSmoking: string = request.body.selectedSmoking;
+	console.log(selectedSmoking);
 
 	try {
 		switch (selectedSmoking) {
