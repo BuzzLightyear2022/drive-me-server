@@ -46,6 +46,11 @@ export type CarCatalog = {
     }
 }
 
+export type LicensePlatesData = {
+    id: string,
+    licensePlate: string
+}
+
 export interface FilesObject {
     [fieldname: string]: Express.Multer.File[];
 }

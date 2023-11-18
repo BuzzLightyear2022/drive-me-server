@@ -312,6 +312,18 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	}
 });
 
+server.post("/sqlInsert/reservationData", upload.fields([
+	{ name: "data" }
+]), (request: express.Request, response: express.Response) => {
+	const jsonData: ReservationData = JSON.parse(request.body.data);
+	try {
+		Reservation.create(jsonData);
+		return response.status(200).send("Reservation data saved successfully");
+	} catch (error: unknown) {
+		return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
+	}
+});
+
 server.listen(port, () => {
 	console.log("Server start on port: ", port);
 });
