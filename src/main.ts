@@ -114,7 +114,6 @@ fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
 server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
 	const selectedSmoking: string = request.body["selectedSmoking"];
-	console.log(selectedSmoking);
 
 	try {
 		switch (selectedSmoking) {
@@ -193,6 +192,9 @@ server.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Re
 			case "none-specification":
 				const carModels: partOfVehicleAttributes = await VehicleAttributes.findAll({
 					attributes: ["carModel"],
+					where: {
+						rentalClass: selectedRentalClass
+					},
 					group: "carModel"
 				});
 				const carModelsArray: string[] = carModels.map((carModel: partOfVehicleAttributes): string => {
