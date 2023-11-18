@@ -66,6 +66,14 @@ const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('R
 	nonSmoking: DataTypes.STRING,
 });
 
+type partOfVehicleAttributes =
+	| typeof VehicleAttributes["prototype"]["carModel"]
+	| typeof VehicleAttributes["prototype"]["rentalClass"]
+	| typeof VehicleAttributes["prototype"]["licensePlateRegion"]
+	| typeof VehicleAttributes["prototype"]["licensePlateCode"]
+	| typeof VehicleAttributes["prototype"]["licensePlateHiragana"]
+	| typeof VehicleAttributes["prototype"]["licensePlateNumber"];
+
 const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 	const { endPoint, fileName } = args;
 
@@ -105,36 +113,92 @@ fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
 server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
-	type RentalClassType = typeof VehicleAttributes["prototype"]["rentalClass"];
+	const selectedSmoking: string = request.body.selectedSmoking;
 
 	try {
-		const result: RentalClassType = await VehicleAttributes.findAll({
-			attributes: ["rentalClass"],
-			group: "rentalClass"
-		});
-		const rentalClassArray: string[] = result.map((record: RentalClassType) => record.rentalClass);
-		return response.json(rentalClassArray);
+		switch (selectedSmoking) {
+			case "non-smoking":
+				const nonSmokingRentalClasses: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["rentalClass"],
+					where: {
+						nonSmoking: true
+					},
+					group: "rentalClass"
+				});
+				const nonSmokingRentalClassesArray: string[] = nonSmokingRentalClasses.map((rentalClass: partOfVehicleAttributes): string => {
+					return rentalClass.rentalClass;
+				});
+				return response.json(nonSmokingRentalClassesArray);
+			case "ok-smoking":
+				const smokingRentalClasses: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["rentalClass"],
+					where: {
+						nonSmoking: false
+					},
+					group: "rentalClass"
+				});
+				const smokingRentalClassesArray: string[] = smokingRentalClasses.map((rentalClass: partOfVehicleAttributes): string => {
+					return rentalClass.rentalClass;
+				});
+				return response.json(smokingRentalClassesArray);
+			case "none-specification":
+				const rentalClasses: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["rentalClass"],
+					group: "rentalClass"
+				});
+				const rentalClassesArray: string[] = rentalClasses.map((rentalClass: partOfVehicleAttributes): string => {
+					return rentalClass.rentalClass;
+				});
+				return response.json(rentalClassesArray);
+		}
 	} catch (error: unknown) {
-		console.error("failed to fetch rentalClasses: ", error);
+		console.error(`failed to fetch rentalClass: ${error}`);
 		return response.status(500).json({ error: "Internal Server Error" });
 	}
 });
 
 server.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Request, response: express.Response) => {
-	type CarModelType = typeof VehicleAttributes["prototype"]["carModel"];
-
-	const selectedRentalClass: string = request.body["selectedRentalClass"];
+	const selectedSmoking: string = request.body.selectedSmoking;
+	const selectedRentalClass: string = request.body.selectedRentalClass;
 
 	try {
-		const result: CarModelType = await VehicleAttributes.findAll({
-			attributes: ["carModel"],
-			where: {
-				rentalClass: selectedRentalClass
-			},
-			group: "carModel"
-		});
-		const carModelArray: string[] = result.map((record: CarModelType) => record.carModel)
-		return response.json(carModelArray);
+		switch (selectedSmoking) {
+			case "non-smoking":
+				const nonSmokingCarModels: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["carModel"],
+					where: {
+						nonSmoking: true,
+						rentalClass: selectedRentalClass
+					},
+					group: "carModel"
+				});
+				const nonSmokingRentalClassesArray: string[] = nonSmokingCarModels.map((carModel: partOfVehicleAttributes): string => {
+					return carModel.carModel;
+				});
+				return response.json(nonSmokingRentalClassesArray);
+			case "ok-smoking":
+				const smokingCarModels: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["carModel"],
+					where: {
+						nonSmoking: false,
+						rentalClass: selectedRentalClass
+					},
+					group: "carModel"
+				});
+				const smokingCarModelsArray: string[] = smokingCarModels.map((carModel: partOfVehicleAttributes): string => {
+					return carModel.carModel;
+				});
+				return response.json(smokingCarModelsArray);
+			case "none-specification":
+				const carModels: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["carModel"],
+					group: "carModel"
+				});
+				const carModelsArray: string[] = carModels.map((carModel: partOfVehicleAttributes): string => {
+					return carModel.carModel;
+				});
+				return response.json(carModelsArray);
+		}
 	} catch (error: unknown) {
 		console.error(`failed to fetch carModels: ${error}`);
 		return response.status(500).json({ error: "Internal Server Error" });
@@ -142,26 +206,50 @@ server.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Re
 });
 
 server.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: express.Request, response: express.Response) => {
-	console.log("license plate req");
-	type LicensePlateType =
-		| typeof VehicleAttributes["prototype"]["licensePlateRegion"]
-		| typeof VehicleAttributes["prototype"]["licensePlateCode"]
-		| typeof VehicleAttributes["prototype"]["licensePlateHiragana"]
-		| typeof VehicleAttributes["prototype"]["licensePlateNumber"];
-
-	const selectedCarModel: string = request.body["selectedCarModel"];
+	const selectedSmoking: string = request.body.selectedSmoking;
+	const selectedCarModel: string = request.body.selectedCarModel;
 
 	try {
-		const result: LicensePlateType = await VehicleAttributes.findAll({
-			attributes: ["licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
-			where: {
-				carModel: selectedCarModel
-			}
-		});
-		const licensePlateValue: string[] = result.map((licensePlateItem: LicensePlateType): string => {
-			return `${licensePlateItem.licensePlateRegion} ${licensePlateItem.licensePlateCode} ${licensePlateItem.licensePlateHiragana} ${licensePlateItem.licensePlateNumber}`;
-		});
-		return response.json(licensePlateValue);
+		switch (selectedSmoking) {
+			case "non-smoking":
+				const nonSmokingLicensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
+					where: {
+						nonSmoking: true,
+						carModel: selectedCarModel
+					}
+				});
+				const nonSmokingLicensePlatesArray: string[] = nonSmokingLicensePlates.map((licensePlate: partOfVehicleAttributes): string => {
+					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
+					return licensePlateString;
+				});
+				return response.json(nonSmokingLicensePlatesArray);
+			case "ok-smoking":
+				const smokingLicensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
+					where: {
+						nonSmoking: false,
+						carModel: selectedCarModel
+					}
+				});
+				const smokingLicensePlatesArray: string[] = smokingLicensePlates.map((licensePlate: partOfVehicleAttributes): string => {
+					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
+					return licensePlateString;
+				});
+				return response.json(smokingLicensePlatesArray);
+			case "none-specification":
+				const licensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
+					where: {
+						carModel: selectedCarModel
+					}
+				});
+				const licensePlatesArray: string[] = licensePlates.map((licensePlate: partOfVehicleAttributes): string => {
+					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
+					return licensePlateString;
+				});
+				return response.json(licensePlatesArray);
+		}
 	} catch (error: unknown) {
 		console.error(`failed to fetch licensePlates: ${error}`);
 		return response.status(500).json({ error: "Internal Server Error" });
