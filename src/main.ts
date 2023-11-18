@@ -61,12 +61,14 @@ const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('R
 	rentalCategory: DataTypes.STRING,
 	departureStore: DataTypes.STRING,
 	returnStore: DataTypes.STRING,
-	departingDatetime: DataTypes.DATE,
+	departureDatetime: DataTypes.DATE,
 	returnDatetime: DataTypes.DATE,
 	nonSmoking: DataTypes.STRING,
+	comment: DataTypes.TEXT
 });
 
 type partOfVehicleAttributes =
+	| typeof VehicleAttributes["prototype"]["id"]
 	| typeof VehicleAttributes["prototype"]["carModel"]
 	| typeof VehicleAttributes["prototype"]["rentalClass"]
 	| typeof VehicleAttributes["prototype"]["licensePlateRegion"]
@@ -216,42 +218,54 @@ server.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: expres
 		switch (selectedSmoking) {
 			case "non-smoking":
 				const nonSmokingLicensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
-					attributes: ["licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
+					attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
 					where: {
 						nonSmoking: true,
 						carModel: selectedCarModel
 					}
 				});
-				const nonSmokingLicensePlatesArray: string[] = nonSmokingLicensePlates.map((licensePlate: partOfVehicleAttributes): string => {
+				const nonSmokingLicensePlatesData: string[] = nonSmokingLicensePlates.map((licensePlate: partOfVehicleAttributes) => {
 					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
-					return licensePlateString;
+					const licensePlateData = {
+						id: licensePlate.id,
+						licensePlate: licensePlateString
+					}
+					return licensePlateData;
 				});
-				return response.json(nonSmokingLicensePlatesArray);
+				return response.json(nonSmokingLicensePlatesData);
 			case "ok-smoking":
 				const smokingLicensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
-					attributes: ["licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
+					attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
 					where: {
 						nonSmoking: false,
 						carModel: selectedCarModel
 					}
 				});
-				const smokingLicensePlatesArray: string[] = smokingLicensePlates.map((licensePlate: partOfVehicleAttributes): string => {
+				const smokingLicensePlatesData: string[] = smokingLicensePlates.map((licensePlate: partOfVehicleAttributes) => {
 					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
-					return licensePlateString;
+					const licensePlateData = {
+						id: licensePlate.id,
+						licensePlate: licensePlateString
+					}
+					return licensePlateData;
 				});
-				return response.json(smokingLicensePlatesArray);
+				return response.json(smokingLicensePlatesData);
 			case "none-specification":
 				const licensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
-					attributes: ["licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
+					attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
 					where: {
 						carModel: selectedCarModel
 					}
 				});
-				const licensePlatesArray: string[] = licensePlates.map((licensePlate: partOfVehicleAttributes): string => {
+				const licensePlatesData: string[] = licensePlates.map((licensePlate: partOfVehicleAttributes) => {
 					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
-					return licensePlateString;
+					const licensePlateData = {
+						id: licensePlate.id,
+						licensePlate: licensePlateString
+					}
+					return licensePlateData;
 				});
-				return response.json(licensePlatesArray);
+				return response.json(licensePlatesData);
 		}
 	} catch (error: unknown) {
 		console.error(`failed to fetch licensePlates: ${error}`);

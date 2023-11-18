@@ -30,6 +30,7 @@ export type ReservationData = {
     departingDatetime: Date,
     returnDatetime: Date,
     nonSmoking: string,
+    comment: text
 }
 
 export type CarCatalog = {
