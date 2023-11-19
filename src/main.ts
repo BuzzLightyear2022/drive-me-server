@@ -114,6 +114,16 @@ const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
+server.post("/sqlSelect/vehicleAttributes", async (request: express.Request, response: express.Response) => {
+	try {
+		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributes.findAll();
+		return response.json(vehicleAttributes);
+	} catch (error: unknown) {
+		console.error(`Failed to select vehicleAttributes: ${error}`);
+		return response.status(500).json({ error: "Internal Server Error." });
+	}
+});
+
 server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
 	const selectedSmoking: string = request.body["selectedSmoking"];
 
