@@ -13,7 +13,7 @@ const port: string = process.env.PORT as string;
 const server: express.Express = express();
 server.use(express.json());
 server.use(cors());
-server.use("/C2cFbaAZ", express.static("carImages"));
+server.use("/C2cFbaAZ", express.static("./carImages"));
 
 const rds_host: string = process.env.RDS_HOST as string;
 const rds_user: string = process.env.RDS_USER as string;
