@@ -283,6 +283,10 @@ server.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: expres
 	}
 });
 
+server.post("/sqlSelect/reservationData", async (request: express.Request, response: express.Response) => {
+	console.log(request.body);
+});
+
 server.post("/sqlInsert/vehicleAttributes", upload.fields([
 	{ name: "imageUrl" },
 	{ name: "data" }
