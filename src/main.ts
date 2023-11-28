@@ -284,7 +284,11 @@ server.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: expres
 });
 
 server.post("/sqlSelect/reservationData", async (request: express.Request, response: express.Response) => {
-	console.log(request.body);
+	const startDate: Date = request.body.startDate;
+	const endDate: Date = request.body.endDate;
+
+	const reservationData: Model<ReservationData, ReservationData>[] = await Reservation.findAll();
+	console.log(reservationData);
 });
 
 server.post("/sqlInsert/vehicleAttributes", upload.fields([
