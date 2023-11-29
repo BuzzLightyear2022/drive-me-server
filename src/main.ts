@@ -287,17 +287,23 @@ server.post("/sqlSelect/reservationData", async (request: express.Request, respo
 	const startDate: Date = request.body.startDate;
 	const endDate: Date = request.body.endDate;
 
-	const reservationData: Model<ReservationData, ReservationData>[] = await Reservation.findAll({
-		where: {
-			departureDatetime: {
-				[Op.between]: [
-					startDate,
-					endDate
-				]
+	try {
+		const reservationData: Model<ReservationData, ReservationData>[] = await Reservation.findAll({
+			where: {
+				departureDatetime: {
+					[Op.between]: [
+						startDate,
+						endDate
+					]
+				}
 			}
-		}
-	});
-	console.log(reservationData);
+		});
+
+		return response.json(reservationData);
+	} catch (error: unknown) {
+		console.error(`Failed to select reservation data: ${error}`);
+		return response.status(500).json("Internal Server Error.");
+	}
 });
 
 server.post("/sqlInsert/vehicleAttributes", upload.fields([
