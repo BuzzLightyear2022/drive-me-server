@@ -5,7 +5,7 @@ import cors from "cors";
 import path from "path";
 import fs from "fs";
 import multer from "multer";
-import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
+import { DataTypes, Model, ModelStatic, Sequelize, Op } from "sequelize";
 import { VehicleAttributes, ReservationData } from "./@types/types";
 
 const port: string = process.env.PORT as string;
@@ -287,7 +287,16 @@ server.post("/sqlSelect/reservationData", async (request: express.Request, respo
 	const startDate: Date = request.body.startDate;
 	const endDate: Date = request.body.endDate;
 
-	const reservationData: Model<ReservationData, ReservationData>[] = await Reservation.findAll();
+	const reservationData: Model<ReservationData, ReservationData>[] = await Reservation.findAll({
+		where: {
+			departureDatetime: {
+				[Op.between]: [
+					startDate,
+					endDate
+				]
+			}
+		}
+	});
 	console.log(reservationData);
 });
 

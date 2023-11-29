@@ -27,7 +27,7 @@ export type ReservationData = {
     rentalCategory: string,
     departureStore: string,
     returnStore: string,
-    departingDatetime: Date,
+    departureDatetime: Date,
     returnDatetime: Date,
     nonSmoking: string,
     comment: text
