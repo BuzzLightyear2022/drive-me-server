@@ -283,7 +283,7 @@ server.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: expres
 	}
 });
 
-server.post("/sqlSelect/reservationData", async (request: express.Request, response: express.Response) => {
+server.post("/sqlSelect/reservationData/filterByDateRange", async (request: express.Request, response: express.Response) => {
 	const startDate: Date = request.body.startDate;
 	const endDate: Date = request.body.endDate;
 
@@ -304,6 +304,11 @@ server.post("/sqlSelect/reservationData", async (request: express.Request, respo
 		console.error(`Failed to select reservation data: ${error}`);
 		return response.status(500).json("Internal Server Error.");
 	}
+});
+
+server.post("/sqlSelect/reservationData/selectById", async (request: express.Request, response: express.Response) => {
+	const reservationId: string = request.body.reservationId;
+	console.log(reservationId);
 });
 
 server.post("/sqlInsert/vehicleAttributes", upload.fields([
