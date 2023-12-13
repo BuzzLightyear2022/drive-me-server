@@ -5,7 +5,7 @@ import cors from "cors";
 import path from "path";
 import fs from "fs";
 import multer from "multer";
-import { DataTypes, Model, ModelStatic, Sequelize, Op } from "sequelize";
+import { DataTypes, Model, ModelStatic, Sequelize, Op, where } from "sequelize";
 import { VehicleAttributes, ReservationData } from "./@types/types";
 
 const port: string = process.env.PORT as string;
@@ -308,7 +308,18 @@ server.post("/sqlSelect/reservationData/filterByDateRange", async (request: expr
 
 server.post("/sqlSelect/reservationData/selectById", async (request: express.Request, response: express.Response) => {
 	const reservationId: string = request.body.reservationId;
-	console.log(reservationId);
+
+	try {
+		const reservationDataById: Model<ReservationData, ReservationData>[] = await Reservation.findAll({
+			where: {
+				id: reservationId
+			}
+		});
+		return response.json(reservationDataById);
+	} catch (error: unknown) {
+		console.error(`Failed to select reservation data by id: ${error}`);
+		return response.status(500).json(`Internal server error: ${error}`);
+	}
 });
 
 server.post("/sqlInsert/vehicleAttributes", upload.fields([

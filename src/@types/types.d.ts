@@ -22,6 +22,7 @@ export type VehicleAttributes = {
 }
 
 export type ReservationData = {
+    id?: string,
     vehicleId: number,
     reservationName: string,
     rentalCategory: string,
