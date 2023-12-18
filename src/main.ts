@@ -310,12 +310,17 @@ server.post("/sqlSelect/reservationData/selectById", async (request: express.Req
 	const reservationId: string = request.body.reservationId;
 
 	try {
-		const reservationDataById: Model<ReservationData, ReservationData>[] = await Reservation.findAll({
+		const reservationDataById: Model<ReservationData, ReservationData> | null = await Reservation.findOne({
 			where: {
 				id: reservationId
 			}
 		});
-		return response.json(reservationDataById);
+
+		if (reservationDataById) {
+			return response.json(reservationDataById);
+		} else {
+			return response.status(404).json({ error: "Reservation not found" });
+		}
 	} catch (error: unknown) {
 		console.error(`Failed to select reservation data by id: ${error}`);
 		return response.status(500).json(`Internal server error: ${error}`);
