@@ -124,6 +124,27 @@ server.post("/sqlSelect/vehicleAttributes", async (request: express.Request, res
 	}
 });
 
+server.post("/sqlSelect/vehicleAttributesById", async (request: express.Request, response: express.Response) => {
+	const vehicleId: string = request.body.vehicleId;
+
+	try {
+		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributes.findOne({
+			where: {
+				id: vehicleId
+			}
+		});
+
+		if (vehicleAttributes) {
+			return response.json(vehicleAttributes);
+		} else {
+			return response.status(404).json({ error: "VehicleAttributes not found" });
+		}
+	} catch (error: unknown) {
+		console.error(`Failed to select VehicleAttributes by id: ${Error}`);
+		return response.status(500).json({ error: error });
+	}
+});
+
 server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
 	const selectedSmoking: string = request.body["selectedSmoking"];
 

@@ -1,4 +1,5 @@
 export type VehicleAttributes = {
+    id?: string
     imageFileName: string,
     carModel: string,
     modelCode: string,
