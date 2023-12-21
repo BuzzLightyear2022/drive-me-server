@@ -399,6 +399,17 @@ server.post("/sqlInsert/reservationData", upload.fields([
 	}
 });
 
+server.post("/sqlUpdate/reservationData", upload.fields([
+	{ name: "data" }
+]), (request: express.Request, response: express.Response) => {
+	const jsonData: ReservationData = JSON.parse(request.body.data);
+	try {
+		console.log(jsonData);
+	} catch (error: unknown) {
+		return response.status(500).send(`Failed to update reservation data: ${error}`);
+	}
+});
+
 server.listen(port, () => {
 	console.log("Server start on port: ", port);
 });
