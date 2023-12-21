@@ -389,7 +389,7 @@ server.post("/sqlInsert/vehicleAttributes", upload.fields([
 
 server.post("/sqlInsert/reservationData", upload.fields([
 	{ name: "data" }
-]), (request: express.Request, response: express.Response) => {
+]), async (request: express.Request, response: express.Response) => {
 	const jsonData: ReservationData = JSON.parse(request.body.data);
 	try {
 		Reservation.create(jsonData);
@@ -401,12 +401,35 @@ server.post("/sqlInsert/reservationData", upload.fields([
 
 server.post("/sqlUpdate/reservationData", upload.fields([
 	{ name: "data" }
-]), (request: express.Request, response: express.Response) => {
+]), async (request: express.Request, response: express.Response) => {
 	const jsonData: ReservationData = JSON.parse(request.body.data);
+
 	try {
-		console.log(jsonData);
+		const existingReservation: Model<ReservationData, ReservationData> | null = await Reservation.findByPk(jsonData.id);
+
+		if (!existingReservation) {
+			return response.status(404).send("Reservation not found");
+		}
+
+		const updateFields = {
+			id: jsonData.id,
+			vehicleId: jsonData.vehicleId,
+			reservationName: jsonData.reservationName,
+			rentalCategory: jsonData.rentalCategory,
+			departureStore: jsonData.departureStore,
+			returnStore: jsonData.returnStore,
+			departureDatetime: jsonData.departureDatetime,
+			returnDatetime: jsonData.returnDatetime,
+			nonSmoking: jsonData.nonSmoking,
+			comment: jsonData.comment
+		}
+
+		await existingReservation.update(updateFields);
+
+		Reservation.create(jsonData);
+		return response.status(200).send("Reservation data saved successfully");
 	} catch (error: unknown) {
-		return response.status(500).send(`Failed to update reservation data: ${error}`);
+		return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
 	}
 });
 
