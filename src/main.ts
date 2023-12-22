@@ -412,7 +412,6 @@ server.post("/sqlUpdate/reservationData", upload.fields([
 		}
 
 		const updateFields = {
-			id: jsonData.id,
 			vehicleId: jsonData.vehicleId,
 			reservationName: jsonData.reservationName,
 			rentalCategory: jsonData.rentalCategory,
