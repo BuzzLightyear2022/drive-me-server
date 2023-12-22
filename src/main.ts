@@ -426,7 +426,6 @@ server.post("/sqlUpdate/reservationData", upload.fields([
 
 		await existingReservation.update(updateFields);
 
-		Reservation.create(jsonData);
 		return response.status(200).send("Reservation data saved successfully");
 	} catch (error: unknown) {
 		return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
