@@ -21,18 +21,6 @@ const server: http.Server<typeof http.IncomingMessage, typeof http.ServerRespons
 
 const WsServer: WebSocket.Server<typeof WebSocket, typeof http.IncomingMessage> = new WebSocket.Server({ server });
 
-WsServer.on("connection", (ws) => {
-	console.log("WebSocket connected");
-
-	ws.on("message", (message) => {
-		console.log(`Received: ${message}`);
-	});
-
-	ws.on("close", () => {
-		console.log("WebSocket disconnected");
-	});
-});
-
 const rds_host: string = process.env.RDS_HOST as string;
 const rds_user: string = process.env.RDS_USER as string;
 const rds_password: string = process.env.RDS_PASSWORD as string;
@@ -94,360 +82,360 @@ type partOfVehicleAttributes =
 	| typeof VehicleAttributes["prototype"]["licensePlateHiragana"]
 	| typeof VehicleAttributes["prototype"]["licensePlateNumber"];
 
-// const fetchJson = (args: { endPoint: string, fileName: string }): void => {
-// 	const { endPoint, fileName } = args;
+const fetchJson = (args: { endPoint: string, fileName: string }): void => {
+	const { endPoint, fileName } = args;
 
-// 	server.post(endPoint, (request: express.Request, response: express.Response): void => {
-// 		const jsonFilePath: string = path.join("json_files", fileName);
+	app.post(endPoint, (request: express.Request, response: express.Response): void => {
+		const jsonFilePath: string = path.join("json_files", fileName);
 
-// 		fs.readFile(jsonFilePath, "utf8", (error: unknown, data: string): express.Response => {
-// 			try {
-// 				const jsonData: JSON = JSON.parse(data);
-// 				return response.json(jsonData);
-// 			} catch (parseError: unknown) {
-// 				return response.status(500).json({ "error": parseError });
-// 			}
-// 		});
-// 	});
-// }
+		fs.readFile(jsonFilePath, "utf8", (error: unknown, data: string): express.Response => {
+			try {
+				const jsonData: JSON = JSON.parse(data);
+				return response.json(jsonData);
+			} catch (parseError: unknown) {
+				return response.status(500).json({ "error": parseError });
+			}
+		});
+	});
+}
 
-// (async () => {
-// 	try {
-// 		await sqlConnection.authenticate();
-// 		console.log("Connected to the database successfully.");
-// 	} catch (error: unknown) {
-// 		console.error("Database Connection is failed: ", error);
-// 	}
-// })();
+fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
+fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
-// (async () => {
-// 	try {
-// 		await sqlConnection.sync();
-// 		console.log("Tables are created.");
-// 	} catch (error: unknown) {
-// 		console.error("Create Tables is failed: ", error);
-// 	}
-// })();
+app.post("/sqlSelect/vehicleAttributes", async (request: express.Request, response: express.Response) => {
+	try {
+		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributes.findAll();
+		return response.json(vehicleAttributes);
+	} catch (error: unknown) {
+		console.error(`Failed to select vehicleAttributes: ${error}`);
+		return response.status(500).json({ error: "Internal Server Error." });
+	}
+});
 
-// fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
-// fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
+app.post("/sqlSelect/vehicleAttributesById", async (request: express.Request, response: express.Response) => {
+	const vehicleId: string = request.body.vehicleId;
 
-// server.post("/sqlSelect/vehicleAttributes", async (request: express.Request, response: express.Response) => {
-// 	try {
-// 		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributes.findAll();
-// 		return response.json(vehicleAttributes);
-// 	} catch (error: unknown) {
-// 		console.error(`Failed to select vehicleAttributes: ${error}`);
-// 		return response.status(500).json({ error: "Internal Server Error." });
-// 	}
-// });
+	try {
+		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributes.findOne({
+			where: {
+				id: vehicleId
+			}
+		});
 
-// server.post("/sqlSelect/vehicleAttributesById", async (request: express.Request, response: express.Response) => {
-// 	const vehicleId: string = request.body.vehicleId;
+		if (vehicleAttributes) {
+			return response.json(vehicleAttributes);
+		} else {
+			return response.status(404).json({ error: "VehicleAttributes not found" });
+		}
+	} catch (error: unknown) {
+		console.error(`Failed to select VehicleAttributes by id: ${Error}`);
+		return response.status(500).json({ error: error });
+	}
+});
 
-// 	try {
-// 		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributes.findOne({
-// 			where: {
-// 				id: vehicleId
-// 			}
-// 		});
+app.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
+	const selectedSmoking: string = request.body["selectedSmoking"];
 
-// 		if (vehicleAttributes) {
-// 			return response.json(vehicleAttributes);
-// 		} else {
-// 			return response.status(404).json({ error: "VehicleAttributes not found" });
-// 		}
-// 	} catch (error: unknown) {
-// 		console.error(`Failed to select VehicleAttributes by id: ${Error}`);
-// 		return response.status(500).json({ error: error });
-// 	}
-// });
+	try {
+		switch (selectedSmoking) {
+			case "non-smoking":
+				const nonSmokingRentalClasses: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["rentalClass"],
+					where: {
+						nonSmoking: true
+					},
+					group: "rentalClass"
+				});
+				const nonSmokingRentalClassesArray: string[] = nonSmokingRentalClasses.map((rentalClass: partOfVehicleAttributes): string => {
+					return rentalClass.rentalClass;
+				});
+				return response.json(nonSmokingRentalClassesArray);
+			case "ok-smoking":
+				const smokingRentalClasses: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["rentalClass"],
+					where: {
+						nonSmoking: false
+					},
+					group: "rentalClass"
+				});
+				const smokingRentalClassesArray: string[] = smokingRentalClasses.map((rentalClass: partOfVehicleAttributes): string => {
+					return rentalClass.rentalClass;
+				});
+				return response.json(smokingRentalClassesArray);
+			case "none-specification":
+				const rentalClasses: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["rentalClass"],
+					group: "rentalClass"
+				});
+				const rentalClassesArray: string[] = rentalClasses.map((rentalClass: partOfVehicleAttributes): string => {
+					return rentalClass.rentalClass;
+				});
+				return response.json(rentalClassesArray);
+		}
+	} catch (error: unknown) {
+		console.error(`failed to fetch rentalClass: ${error}`);
+		return response.status(500).json({ error: "Internal Server Error" });
+	}
+});
 
-// server.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
-// 	const selectedSmoking: string = request.body["selectedSmoking"];
+app.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Request, response: express.Response) => {
+	const selectedSmoking: string = request.body.selectedSmoking;
+	const selectedRentalClass: string = request.body.selectedRentalClass;
 
-// 	try {
-// 		switch (selectedSmoking) {
-// 			case "non-smoking":
-// 				const nonSmokingRentalClasses: partOfVehicleAttributes = await VehicleAttributes.findAll({
-// 					attributes: ["rentalClass"],
-// 					where: {
-// 						nonSmoking: true
-// 					},
-// 					group: "rentalClass"
-// 				});
-// 				const nonSmokingRentalClassesArray: string[] = nonSmokingRentalClasses.map((rentalClass: partOfVehicleAttributes): string => {
-// 					return rentalClass.rentalClass;
-// 				});
-// 				return response.json(nonSmokingRentalClassesArray);
-// 			case "ok-smoking":
-// 				const smokingRentalClasses: partOfVehicleAttributes = await VehicleAttributes.findAll({
-// 					attributes: ["rentalClass"],
-// 					where: {
-// 						nonSmoking: false
-// 					},
-// 					group: "rentalClass"
-// 				});
-// 				const smokingRentalClassesArray: string[] = smokingRentalClasses.map((rentalClass: partOfVehicleAttributes): string => {
-// 					return rentalClass.rentalClass;
-// 				});
-// 				return response.json(smokingRentalClassesArray);
-// 			case "none-specification":
-// 				const rentalClasses: partOfVehicleAttributes = await VehicleAttributes.findAll({
-// 					attributes: ["rentalClass"],
-// 					group: "rentalClass"
-// 				});
-// 				const rentalClassesArray: string[] = rentalClasses.map((rentalClass: partOfVehicleAttributes): string => {
-// 					return rentalClass.rentalClass;
-// 				});
-// 				return response.json(rentalClassesArray);
-// 		}
-// 	} catch (error: unknown) {
-// 		console.error(`failed to fetch rentalClass: ${error}`);
-// 		return response.status(500).json({ error: "Internal Server Error" });
-// 	}
-// });
+	try {
+		switch (selectedSmoking) {
+			case "non-smoking":
+				const nonSmokingCarModels: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["carModel"],
+					where: {
+						nonSmoking: true,
+						rentalClass: selectedRentalClass
+					},
+					group: "carModel"
+				});
+				const nonSmokingRentalClassesArray: string[] = nonSmokingCarModels.map((carModel: partOfVehicleAttributes): string => {
+					return carModel.carModel;
+				});
+				return response.json(nonSmokingRentalClassesArray);
+			case "ok-smoking":
+				const smokingCarModels: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["carModel"],
+					where: {
+						nonSmoking: false,
+						rentalClass: selectedRentalClass
+					},
+					group: "carModel"
+				});
+				const smokingCarModelsArray: string[] = smokingCarModels.map((carModel: partOfVehicleAttributes): string => {
+					return carModel.carModel;
+				});
+				return response.json(smokingCarModelsArray);
+			case "none-specification":
+				const carModels: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["carModel"],
+					where: {
+						rentalClass: selectedRentalClass
+					},
+					group: "carModel"
+				});
+				const carModelsArray: string[] = carModels.map((carModel: partOfVehicleAttributes): string => {
+					return carModel.carModel;
+				});
+				return response.json(carModelsArray);
+		}
+	} catch (error: unknown) {
+		console.error(`failed to fetch carModels: ${error}`);
+		return response.status(500).json({ error: "Internal Server Error" });
+	}
+});
 
-// server.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Request, response: express.Response) => {
-// 	const selectedSmoking: string = request.body.selectedSmoking;
-// 	const selectedRentalClass: string = request.body.selectedRentalClass;
+app.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: express.Request, response: express.Response) => {
+	const selectedSmoking: string = request.body.selectedSmoking;
+	const selectedCarModel: string = request.body.selectedCarModel;
 
-// 	try {
-// 		switch (selectedSmoking) {
-// 			case "non-smoking":
-// 				const nonSmokingCarModels: partOfVehicleAttributes = await VehicleAttributes.findAll({
-// 					attributes: ["carModel"],
-// 					where: {
-// 						nonSmoking: true,
-// 						rentalClass: selectedRentalClass
-// 					},
-// 					group: "carModel"
-// 				});
-// 				const nonSmokingRentalClassesArray: string[] = nonSmokingCarModels.map((carModel: partOfVehicleAttributes): string => {
-// 					return carModel.carModel;
-// 				});
-// 				return response.json(nonSmokingRentalClassesArray);
-// 			case "ok-smoking":
-// 				const smokingCarModels: partOfVehicleAttributes = await VehicleAttributes.findAll({
-// 					attributes: ["carModel"],
-// 					where: {
-// 						nonSmoking: false,
-// 						rentalClass: selectedRentalClass
-// 					},
-// 					group: "carModel"
-// 				});
-// 				const smokingCarModelsArray: string[] = smokingCarModels.map((carModel: partOfVehicleAttributes): string => {
-// 					return carModel.carModel;
-// 				});
-// 				return response.json(smokingCarModelsArray);
-// 			case "none-specification":
-// 				const carModels: partOfVehicleAttributes = await VehicleAttributes.findAll({
-// 					attributes: ["carModel"],
-// 					where: {
-// 						rentalClass: selectedRentalClass
-// 					},
-// 					group: "carModel"
-// 				});
-// 				const carModelsArray: string[] = carModels.map((carModel: partOfVehicleAttributes): string => {
-// 					return carModel.carModel;
-// 				});
-// 				return response.json(carModelsArray);
-// 		}
-// 	} catch (error: unknown) {
-// 		console.error(`failed to fetch carModels: ${error}`);
-// 		return response.status(500).json({ error: "Internal Server Error" });
-// 	}
-// });
+	try {
+		switch (selectedSmoking) {
+			case "non-smoking":
+				const nonSmokingLicensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
+					where: {
+						nonSmoking: true,
+						carModel: selectedCarModel
+					}
+				});
+				const nonSmokingLicensePlatesData: string[] = nonSmokingLicensePlates.map((licensePlate: partOfVehicleAttributes) => {
+					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
+					const licensePlateData = {
+						id: licensePlate.id,
+						licensePlate: licensePlateString
+					}
+					return licensePlateData;
+				});
+				return response.json(nonSmokingLicensePlatesData);
+			case "ok-smoking":
+				const smokingLicensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
+					where: {
+						nonSmoking: false,
+						carModel: selectedCarModel
+					}
+				});
+				const smokingLicensePlatesData: string[] = smokingLicensePlates.map((licensePlate: partOfVehicleAttributes) => {
+					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
+					const licensePlateData = {
+						id: licensePlate.id,
+						licensePlate: licensePlateString
+					}
+					return licensePlateData;
+				});
+				return response.json(smokingLicensePlatesData);
+			case "none-specification":
+				const licensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
+					attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
+					where: {
+						carModel: selectedCarModel
+					}
+				});
+				const licensePlatesData: string[] = licensePlates.map((licensePlate: partOfVehicleAttributes) => {
+					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
+					const licensePlateData = {
+						id: licensePlate.id,
+						licensePlate: licensePlateString
+					}
+					return licensePlateData;
+				});
+				return response.json(licensePlatesData);
+		}
+	} catch (error: unknown) {
+		console.error(`failed to fetch licensePlates: ${error}`);
+		return response.status(500).json({ error: "Internal Server Error" });
+	}
+});
 
-// server.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: express.Request, response: express.Response) => {
-// 	const selectedSmoking: string = request.body.selectedSmoking;
-// 	const selectedCarModel: string = request.body.selectedCarModel;
+app.post("/sqlSelect/reservationData/filterByDateRange", async (request: express.Request, response: express.Response) => {
+	const startDate: Date = request.body.startDate;
+	const endDate: Date = request.body.endDate;
 
-// 	try {
-// 		switch (selectedSmoking) {
-// 			case "non-smoking":
-// 				const nonSmokingLicensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
-// 					attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
-// 					where: {
-// 						nonSmoking: true,
-// 						carModel: selectedCarModel
-// 					}
-// 				});
-// 				const nonSmokingLicensePlatesData: string[] = nonSmokingLicensePlates.map((licensePlate: partOfVehicleAttributes) => {
-// 					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
-// 					const licensePlateData = {
-// 						id: licensePlate.id,
-// 						licensePlate: licensePlateString
-// 					}
-// 					return licensePlateData;
-// 				});
-// 				return response.json(nonSmokingLicensePlatesData);
-// 			case "ok-smoking":
-// 				const smokingLicensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
-// 					attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
-// 					where: {
-// 						nonSmoking: false,
-// 						carModel: selectedCarModel
-// 					}
-// 				});
-// 				const smokingLicensePlatesData: string[] = smokingLicensePlates.map((licensePlate: partOfVehicleAttributes) => {
-// 					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
-// 					const licensePlateData = {
-// 						id: licensePlate.id,
-// 						licensePlate: licensePlateString
-// 					}
-// 					return licensePlateData;
-// 				});
-// 				return response.json(smokingLicensePlatesData);
-// 			case "none-specification":
-// 				const licensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
-// 					attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
-// 					where: {
-// 						carModel: selectedCarModel
-// 					}
-// 				});
-// 				const licensePlatesData: string[] = licensePlates.map((licensePlate: partOfVehicleAttributes) => {
-// 					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
-// 					const licensePlateData = {
-// 						id: licensePlate.id,
-// 						licensePlate: licensePlateString
-// 					}
-// 					return licensePlateData;
-// 				});
-// 				return response.json(licensePlatesData);
-// 		}
-// 	} catch (error: unknown) {
-// 		console.error(`failed to fetch licensePlates: ${error}`);
-// 		return response.status(500).json({ error: "Internal Server Error" });
-// 	}
-// });
+	try {
+		const reservationData: Model<ReservationData, ReservationData>[] = await Reservation.findAll({
+			where: {
+				departureDatetime: {
+					[Op.between]: [
+						startDate,
+						endDate
+					]
+				}
+			}
+		});
 
-// server.post("/sqlSelect/reservationData/filterByDateRange", async (request: express.Request, response: express.Response) => {
-// 	const startDate: Date = request.body.startDate;
-// 	const endDate: Date = request.body.endDate;
+		return response.json(reservationData);
+	} catch (error: unknown) {
+		console.error(`Failed to select reservation data: ${error}`);
+		return response.status(500).json("Internal Server Error.");
+	}
+});
 
-// 	try {
-// 		const reservationData: Model<ReservationData, ReservationData>[] = await Reservation.findAll({
-// 			where: {
-// 				departureDatetime: {
-// 					[Op.between]: [
-// 						startDate,
-// 						endDate
-// 					]
-// 				}
-// 			}
-// 		});
+app.post("/sqlSelect/reservationData/selectById", async (request: express.Request, response: express.Response) => {
+	const reservationId: string = request.body.reservationId;
 
-// 		return response.json(reservationData);
-// 	} catch (error: unknown) {
-// 		console.error(`Failed to select reservation data: ${error}`);
-// 		return response.status(500).json("Internal Server Error.");
-// 	}
-// });
+	try {
+		const reservationDataById: Model<ReservationData, ReservationData> | null = await Reservation.findOne({
+			where: {
+				id: reservationId
+			}
+		});
 
-// server.post("/sqlSelect/reservationData/selectById", async (request: express.Request, response: express.Response) => {
-// 	const reservationId: string = request.body.reservationId;
+		if (reservationDataById) {
+			return response.json(reservationDataById);
+		} else {
+			return response.status(404).json({ error: "Reservation not found" });
+		}
+	} catch (error: unknown) {
+		console.error(`Failed to select reservation data by id: ${error}`);
+		return response.status(500).json(`Internal server error: ${error}`);
+	}
+});
 
-// 	try {
-// 		const reservationDataById: Model<ReservationData, ReservationData> | null = await Reservation.findOne({
-// 			where: {
-// 				id: reservationId
-// 			}
-// 		});
+app.post("/sqlInsert/vehicleAttributes", upload.fields([
+	{ name: "imageUrl" },
+	{ name: "data" }
+]), (request: express.Request, response: express.Response) => {
+	const targetDirectoryPath: string = "./car_images/";
 
-// 		if (reservationDataById) {
-// 			return response.json(reservationDataById);
-// 		} else {
-// 			return response.status(404).json({ error: "Reservation not found" });
-// 		}
-// 	} catch (error: unknown) {
-// 		console.error(`Failed to select reservation data by id: ${error}`);
-// 		return response.status(500).json(`Internal server error: ${error}`);
-// 	}
-// });
+	const imageFiles: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
+	const jsonData: VehicleAttributes = JSON.parse(request.body["data"]);
 
-// server.post("/sqlInsert/vehicleAttributes", upload.fields([
-// 	{ name: "imageUrl" },
-// 	{ name: "data" }
-// ]), (request: express.Request, response: express.Response) => {
-// 	const targetDirectoryPath: string = "./car_images/";
+	if (!fs.existsSync(targetDirectoryPath)) {
+		fs.mkdirSync(targetDirectoryPath);
+	}
 
-// 	const imageFiles: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
-// 	const jsonData: VehicleAttributes = JSON.parse(request.body["data"]);
+	if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
+		const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
+		const bufferImageUrl: Buffer = imageDataField.buffer;
+		const fileName: string = imageDataField.originalname;
 
-// 	if (!fs.existsSync(targetDirectoryPath)) {
-// 		fs.mkdirSync(targetDirectoryPath);
-// 	}
+		if (!fileName.endsWith(".jpeg") && !fileName.endsWith(".jpg")) {
+			return response.status(400).send("Invalid file format. Expected JPEG file.");
+		}
 
-// 	if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
-// 		const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
-// 		const bufferImageUrl: Buffer = imageDataField.buffer;
-// 		const fileName: string = imageDataField.originalname;
+		jsonData.imageFileName = fileName;
 
-// 		if (!fileName.endsWith(".jpeg") && !fileName.endsWith(".jpg")) {
-// 			return response.status(400).send("Invalid file format. Expected JPEG file.");
-// 		}
+		fs.writeFile(targetDirectoryPath + fileName, bufferImageUrl, "base64", (error: unknown) => {
+			if (error) {
+				return response.status(500).send("Failed to write image file: " + error);
+			}
 
-// 		jsonData.imageFileName = fileName;
+			try {
+				VehicleAttributes.create(jsonData);
+				return response.status(200).send("Data saved successfully");
+			} catch (error: unknown) {
+				return response.status(500).send("failed to write data to the database: " + error);
+			}
+		});
+	}
+});
 
-// 		fs.writeFile(targetDirectoryPath + fileName, bufferImageUrl, "base64", (error: unknown) => {
-// 			if (error) {
-// 				return response.status(500).send("Failed to write image file: " + error);
-// 			}
+app.post("/sqlInsert/reservationData", upload.fields([
+	{ name: "data" }
+]), async (request: express.Request, response: express.Response) => {
+	const jsonData: ReservationData = JSON.parse(request.body.data);
+	try {
+		Reservation.create(jsonData);
+		return response.status(200).send("Reservation data saved successfully");
+	} catch (error: unknown) {
+		return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
+	}
+});
 
-// 			try {
-// 				VehicleAttributes.create(jsonData);
-// 				return response.status(200).send("Data saved successfully");
-// 			} catch (error: unknown) {
-// 				return response.status(500).send("failed to write data to the database: " + error);
-// 			}
-// 		});
-// 	}
-// });
+app.post("/sqlUpdate/reservationData", upload.fields([
+	{ name: "data" }
+]), async (request: express.Request, response: express.Response) => {
+	const jsonData: ReservationData = JSON.parse(request.body.data);
 
-// server.post("/sqlInsert/reservationData", upload.fields([
-// 	{ name: "data" }
-// ]), async (request: express.Request, response: express.Response) => {
-// 	const jsonData: ReservationData = JSON.parse(request.body.data);
-// 	try {
-// 		Reservation.create(jsonData);
-// 		return response.status(200).send("Reservation data saved successfully");
-// 	} catch (error: unknown) {
-// 		return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
-// 	}
-// });
+	try {
+		const existingReservation: Model<ReservationData, ReservationData> | null = await Reservation.findByPk(jsonData.id);
 
-// server.post("/sqlUpdate/reservationData", upload.fields([
-// 	{ name: "data" }
-// ]), async (request: express.Request, response: express.Response) => {
-// 	const jsonData: ReservationData = JSON.parse(request.body.data);
+		if (!existingReservation) {
+			return response.status(404).send("Reservation not found");
+		}
 
-// 	try {
-// 		const existingReservation: Model<ReservationData, ReservationData> | null = await Reservation.findByPk(jsonData.id);
+		const updateFields = {
+			vehicleId: jsonData.vehicleId,
+			reservationName: jsonData.reservationName,
+			rentalCategory: jsonData.rentalCategory,
+			departureStore: jsonData.departureStore,
+			returnStore: jsonData.returnStore,
+			departureDatetime: jsonData.departureDatetime,
+			returnDatetime: jsonData.returnDatetime,
+			nonSmoking: jsonData.nonSmoking,
+			comment: jsonData.comment
+		}
 
-// 		if (!existingReservation) {
-// 			return response.status(404).send("Reservation not found");
-// 		}
+		await existingReservation.update(updateFields);
 
-// 		const updateFields = {
-// 			vehicleId: jsonData.vehicleId,
-// 			reservationName: jsonData.reservationName,
-// 			rentalCategory: jsonData.rentalCategory,
-// 			departureStore: jsonData.departureStore,
-// 			returnStore: jsonData.returnStore,
-// 			departureDatetime: jsonData.departureDatetime,
-// 			returnDatetime: jsonData.returnDatetime,
-// 			nonSmoking: jsonData.nonSmoking,
-// 			comment: jsonData.comment
-// 		}
+		return response.status(200).send("Reservation data saved successfully");
+	} catch (error: unknown) {
+		return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
+	}
+});
 
-// 		await existingReservation.update(updateFields);
+(async () => {
+	try {
+		await sqlConnection.authenticate();
+		console.log("Connected to the database successfully.");
+	} catch (error: unknown) {
+		console.error("Database Connection is failed: ", error);
+	}
+})();
 
-// 		return response.status(200).send("Reservation data saved successfully");
-// 	} catch (error: unknown) {
-// 		return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
-// 	}
-// });
+(async () => {
+	try {
+		await sqlConnection.sync();
+		console.log("Tables are created.");
+	} catch (error: unknown) {
+		console.error("Create Tables is failed: ", error);
+	}
+})();
 
 server.listen(port, () => {
 	console.log("Server start on port: ", port);
