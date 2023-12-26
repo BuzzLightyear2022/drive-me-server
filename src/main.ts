@@ -413,6 +413,10 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 
 		await existingReservation.update(updateFields);
 
+		WsServer.clients.forEach((client: WebSocket) => {
+			client.send("Reservation data updated!");
+		});
+
 		return response.status(200).send("Reservation data saved successfully");
 	} catch (error: unknown) {
 		return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
@@ -438,5 +442,9 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 })();
 
 server.listen(port, () => {
-	console.log("Server start on port: ", port);
+	console.log(`Server start on port: ${port}`);
+});
+
+WsServer.on("connection", () => {
+	console.log("Client connected");
 });
