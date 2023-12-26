@@ -413,8 +413,11 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 
 		await existingReservation.update(updateFields);
 
-		WsServer.clients.forEach((client: WebSocket) => {
-			client.send("Reservation data updated!");
+		WsServer.clients.forEach(async (client: WebSocket) => {
+			const newReservation: Model<ReservationData, ReservationData> | null = await Reservation.findByPk(jsonData.id);
+			if (newReservation) {
+				client.send(JSON.stringify(newReservation));
+			}
 		});
 
 		return response.status(200).send("Reservation data saved successfully");
