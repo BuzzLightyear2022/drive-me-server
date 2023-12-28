@@ -260,6 +260,7 @@ app.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: express.R
 						carModel: selectedCarModel
 					}
 				});
+				console.log(smokingLicensePlates);
 				const smokingLicensePlatesData: string[] = smokingLicensePlates.map((licensePlate: partOfVehicleAttributes) => {
 					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
 					const licensePlateData = {
