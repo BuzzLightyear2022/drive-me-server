@@ -16,6 +16,9 @@ const app: express.Express = express();
 app.use(express.json());
 app.use(cors());
 app.use("/C2cFbaAZ", express.static("./car_images"));
+app.use("/C2cFbaAZ", (request, response) => {
+	response.status(404).send(null);
+});
 
 const server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse> = http.createServer(app);
 
