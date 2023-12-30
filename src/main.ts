@@ -364,14 +364,14 @@ app.post("/sqlInsert/vehicleAttributes", upload.fields([
 			if (error) {
 				return response.status(500).send("Failed to write image file: " + error);
 			}
-
-			try {
-				VehicleAttributes.create(jsonData);
-				return response.status(200).send("Data saved successfully");
-			} catch (error: unknown) {
-				return response.status(500).send("failed to write data to the database: " + error);
-			}
 		});
+
+		try {
+			VehicleAttributes.create(jsonData);
+			return response.status(200).send("Data saved successfully");
+		} catch (error: unknown) {
+			return response.status(500).send("failed to write data to the database: " + error);
+		}
 	}
 });
 
