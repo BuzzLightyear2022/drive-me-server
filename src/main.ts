@@ -260,7 +260,6 @@ app.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: express.R
 						carModel: selectedCarModel
 					}
 				});
-				console.log(smokingLicensePlates);
 				const smokingLicensePlatesData: string[] = smokingLicensePlates.map((licensePlate: partOfVehicleAttributes) => {
 					const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
 					const licensePlateData = {
@@ -417,7 +416,7 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 		WsServer.clients.forEach(async (client: WebSocket) => {
 			const newReservation: Model<ReservationData, ReservationData> | null = await Reservation.findByPk(jsonData.id);
 			if (newReservation) {
-				client.send(JSON.stringify(newReservation));
+				client.send("sqlUpdate:reservationData");
 			}
 		});
 
