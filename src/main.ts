@@ -405,7 +405,7 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 		fs.mkdirSync(targetDirectoryPath);
 	}
 
-	console.log(imageFiles);
+	console.log(request.body["imageUrl"]);
 	console.log(vehicleAttributes);
 });
 
