@@ -386,7 +386,7 @@ app.post("/sqlInsert/vehicleAttributes", upload.fields([
 app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 	{ name: "imageUrl" },
 	{ name: "data" }
-]), (request: express.Request, response: express.Response) => {
+]), async (request: express.Request, response: express.Response) => {
 	const targetDirectoryPath: string = "./car_images/";
 
 	const imageFiles: {
@@ -405,8 +405,21 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 		fs.mkdirSync(targetDirectoryPath);
 	}
 
-	console.log(request.body["imageUrl"]);
-	console.log(vehicleAttributes);
+	try {
+		const existingVehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributes.findByPk(vehicleAttributes.id);
+
+		if (!existingVehicleAttributes) {
+			return response.json(404).send("VehicleAttributes data not found.");
+		}
+
+		await existingVehicleAttributes.update(vehicleAttributes);
+
+		WsServer.clients.forEach(async (client: WebSocket) => {
+			client.send("sqlUpdate:vehicleAttributes");
+		});
+	} catch (error: unknown) {
+		return response.status(500).send(`Failed to updata data on the database: ${error}`);
+	}
 });
 
 app.post("/sqlInsert/reservationData", upload.fields([
@@ -448,10 +461,7 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 		await existingReservation.update(updateFields);
 
 		WsServer.clients.forEach(async (client: WebSocket) => {
-			const newReservation: Model<ReservationData, ReservationData> | null = await Reservation.findByPk(jsonData.id);
-			if (newReservation) {
-				client.send("sqlUpdate:reservationData");
-			}
+			client.send("sqlUpdate:reservationData");
 		});
 
 		return response.status(200).send("Reservation data saved successfully");
