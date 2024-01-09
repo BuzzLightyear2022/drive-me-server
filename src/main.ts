@@ -16,9 +16,6 @@ const app: express.Express = express();
 app.use(express.json());
 app.use(cors());
 app.use("/C2cFbaAZ", express.static("./car_images"));
-app.use("/C2cFbaAZ", (request, response) => {
-	response.status(404).send(null);
-});
 
 const server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse> = http.createServer(app);
 
@@ -345,7 +342,16 @@ app.post("/sqlInsert/vehicleAttributes", upload.fields([
 ]), (request: express.Request, response: express.Response) => {
 	const targetDirectoryPath: string = "./car_images/";
 
-	const imageFiles: { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] } = request.files as { [fieldname: string]: Express.Multer.File[] | Express.Multer.File[] };
+	const imageFiles: {
+		[fieldname: string]:
+		| Express.Multer.File[]
+		| null
+	} = request.files as {
+		[fieldname: string]:
+		| Express.Multer.File[]
+		| null
+	};
+
 	const jsonData: VehicleAttributes = JSON.parse(request.body["data"]);
 
 	if (!fs.existsSync(targetDirectoryPath)) {
@@ -375,6 +381,32 @@ app.post("/sqlInsert/vehicleAttributes", upload.fields([
 	} catch (error: unknown) {
 		return response.status(500).send("failed to write data to the database: " + error);
 	}
+});
+
+app.post("/sqlUpdate/vehicleAttributes", upload.fields([
+	{ name: "imageUrl" },
+	{ name: "data" }
+]), (request: express.Request, response: express.Response) => {
+	const targetDirectoryPath: string = "./car_images/";
+
+	const imageFiles: {
+		[fieldname: string]:
+		| Express.Multer.File[]
+		| null
+	} = request.files as {
+		[fieldname: string]:
+		| Express.Multer.File[]
+		| null
+	};
+
+	const vehicleAttributes: VehicleAttributes = JSON.parse(request.body["data"]);
+
+	if (!fs.existsSync(targetDirectoryPath)) {
+		fs.mkdirSync(targetDirectoryPath);
+	}
+
+	console.log(imageFiles);
+	console.log(vehicleAttributes);
 });
 
 app.post("/sqlInsert/reservationData", upload.fields([
