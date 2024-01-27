@@ -39,7 +39,12 @@ const sqlConnection: Sequelize = new Sequelize(
 );
 
 const VehicleAttributes: ModelStatic<Model<VehicleAttributes>> = sqlConnection.define("VehicleAttribute", {
-	id: DataTypes.STRING,
+	id: {
+		type: DataTypes.STRING,
+		primaryKey: true,
+		autoIncrement: true,
+		allowNull: false
+	},
 	imageFileName: DataTypes.STRING,
 	carModel: DataTypes.STRING,
 	modelCode: DataTypes.STRING,
@@ -66,7 +71,12 @@ const VehicleAttributes: ModelStatic<Model<VehicleAttributes>> = sqlConnection.d
 });
 
 const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('Reservation', {
-	id: DataTypes.INTEGER,
+	id: {
+		type: DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+		allowNull: false
+	},
 	vehicleId: DataTypes.INTEGER,
 	reservationName: DataTypes.STRING,
 	rentalCategory: DataTypes.STRING,
