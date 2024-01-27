@@ -460,7 +460,7 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 
 		await existingReservation.update(updateFields);
 
-		WsServer.clients.forEach(async (client: WebSocket) => {
+		WsServer.clients.forEach((client: WebSocket) => {
 			client.send("sqlUpdate:reservationData");
 		});
 
