@@ -1,6 +1,6 @@
 export type VehicleAttributes = {
     id?: string
-    imageFileName: string,
+    imageFileName?: string,
     carModel: string,
     modelCode: string,
     nonSmoking: boolean,
@@ -19,20 +19,23 @@ export type VehicleAttributes = {
     hasTelevision: boolean,
     hasExternalInput: boolean,
     hasSpareKey: boolean,
-    otherFeatures: text
+    hasJAFCard: boolean,
+    JAFCardNumber?: number,
+    JAFCardExp?: Date,
+    otherFeatures?: string
 }
 
 export type ReservationData = {
-    id?: string,
-    vehicleId: number,
+    id?: string
+    vehicleId: string,
     reservationName: string,
     rentalCategory: string,
-    departureStore: string,
-    returnStore: string,
-    departureDatetime: Date,
-    returnDatetime: Date,
+    pickupLocation: string,
+    returnLocation: string,
+    pickupDateObject: Date,
+    returnDateObject: Date,
     nonSmoking: string,
-    comment: text
+    comment?: string
 }
 
 export type CarCatalog = {

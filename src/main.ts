@@ -39,6 +39,7 @@ const sqlConnection: Sequelize = new Sequelize(
 );
 
 const VehicleAttributes: ModelStatic<Model<VehicleAttributes>> = sqlConnection.define("VehicleAttribute", {
+	id: DataTypes.STRING,
 	imageFileName: DataTypes.STRING,
 	carModel: DataTypes.STRING,
 	modelCode: DataTypes.STRING,
@@ -58,16 +59,20 @@ const VehicleAttributes: ModelStatic<Model<VehicleAttributes>> = sqlConnection.d
 	hasTelevision: DataTypes.BOOLEAN,
 	hasExternalInput: DataTypes.BOOLEAN,
 	hasSpareKey: DataTypes.BOOLEAN,
+	hasJAFCard: DataTypes.BOOLEAN,
+	JAFCardNumber: DataTypes.STRING,
+	JAFCardExp: DataTypes.DATE,
 	otherFeatures: DataTypes.TEXT,
 });
 
 const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('Reservation', {
+	id: DataTypes.INTEGER,
 	vehicleId: DataTypes.INTEGER,
 	reservationName: DataTypes.STRING,
 	rentalCategory: DataTypes.STRING,
-	departureStore: DataTypes.STRING,
-	returnStore: DataTypes.STRING,
-	departureDatetime: DataTypes.DATE,
+	pickupLocation: DataTypes.STRING,
+	returnLocation: DataTypes.STRING,
+	pickupDatetime: DataTypes.DATE,
 	returnDatetime: DataTypes.DATE,
 	nonSmoking: DataTypes.STRING,
 	comment: DataTypes.TEXT
@@ -299,7 +304,7 @@ app.post("/sqlSelect/reservationData/filterByDateRange", async (request: express
 	try {
 		const reservationData: Model<ReservationData, ReservationData>[] = await Reservation.findAll({
 			where: {
-				departureDatetime: {
+				pickupDateObject: {
 					[Op.between]: [
 						startDate,
 						endDate
@@ -450,10 +455,10 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 			vehicleId: jsonData.vehicleId,
 			reservationName: jsonData.reservationName,
 			rentalCategory: jsonData.rentalCategory,
-			departureStore: jsonData.departureStore,
-			returnStore: jsonData.returnStore,
-			departureDatetime: jsonData.departureDatetime,
-			returnDatetime: jsonData.returnDatetime,
+			departureStore: jsonData.pickupLocation,
+			returnStore: jsonData.returnLocation,
+			departureDatetime: jsonData.pickupDateObject,
+			returnDatetime: jsonData.returnDateObject,
 			nonSmoking: jsonData.nonSmoking,
 			comment: jsonData.comment
 		}
