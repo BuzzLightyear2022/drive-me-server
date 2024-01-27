@@ -82,8 +82,8 @@ const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('R
 	rentalCategory: DataTypes.STRING,
 	pickupLocation: DataTypes.STRING,
 	returnLocation: DataTypes.STRING,
-	pickupDatetime: DataTypes.DATE,
-	returnDatetime: DataTypes.DATE,
+	pickupDateObject: DataTypes.DATE,
+	returnDateObject: DataTypes.DATE,
 	nonSmoking: DataTypes.STRING,
 	comment: DataTypes.TEXT
 });
