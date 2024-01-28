@@ -465,10 +465,10 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 			vehicleId: jsonData.vehicleId,
 			reservationName: jsonData.reservationName,
 			rentalCategory: jsonData.rentalCategory,
-			departureStore: jsonData.pickupLocation,
-			returnStore: jsonData.returnLocation,
-			departureDatetime: jsonData.pickupDateObject,
-			returnDatetime: jsonData.returnDateObject,
+			pickupLocation: jsonData.pickupLocation,
+			returnLocation: jsonData.returnLocation,
+			pickupDateObject: jsonData.pickupDateObject,
+			returnDateObject: jsonData.returnDateObject,
 			nonSmoking: jsonData.nonSmoking,
 			comment: jsonData.comment
 		}
