@@ -454,20 +454,21 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 ]), async (request: express.Request, response: express.Response) => {
 	const jsonData: ReservationData = JSON.parse(request.body.data);
 	try {
-		const [rowCount, [updatedReservation]] = awat Reservation.update(updateFields, {
-			where: { id: jsonData.id },
-			returning: true	
-		});
+		console.log(jsonData);
+		// const [rowCount, [updatedReservation]] = await Reservation.update(updateFields, {
+		// 	where: { id: jsonData.id },
+		// 	returning: true	
+		// });
 
-		if (rowCount === 0) {
-			return response.status(404).send("Reservation not found");
-		}
-		consol.log(updatedReservation);
+		// if (rowCount === 0) {
+		// 	return response.status(404).send("Reservation not found");
+		// }
+		// console.log(updatedReservation);
 		// const existingReservation: Model<ReservationData, ReservationData> | null = await Reservation.findByPk(jsonData.id);
 
-		if (!existingReservation) {
-			return response.status(404).send("Reservation not found");
-		}
+		// if (!existingReservation) {
+		// return response.status(404).send("Reservation not found");
+		// }
 
 		const updateFields = {
 			vehicleId: jsonData.vehicleId,
@@ -481,7 +482,7 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 			comment: jsonData.comment
 		}
 
-		await existingReservation.update(updateFields);
+		// await existingReservation.update(updateFields);
 
 		WsServer.clients.forEach((client: WebSocket) => {
 			client.send("sqlUpdate:reservationData");
