@@ -463,28 +463,8 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 		if (rowCount === 0) {
 			return response.status(404).send("Reservation not found");
 		}
+
 		console.log(updatedReservation);
-
-		// const existingReservation: Model<ReservationData, ReservationData> | null = await Reservation.findByPk(jsonData.id);
-
-		// if (!existingReservation) {
-		// return response.status(404).send("Reservation not found");
-		// }
-
-		// const updateFields = {
-		// 	vehicleId: jsonData.vehicleId,
-		// 	reservationName: jsonData.reservationName,
-		// 	rentalCategory: jsonData.rentalCategory,
-		// 	pickupLocation: jsonData.pickupLocation,
-		// 	returnLocation: jsonData.returnLocation,
-		// 	pickupDateObject: jsonData.pickupDateObject,
-		// 	returnDateObject: jsonData.returnDateObject,
-		// 	nonSmoking: jsonData.nonSmoking,
-		// 	comment: jsonData.comment
-		// }
-
-		// await existingReservation.update(updateFields);
-
 		WsServer.clients.forEach((client: WebSocket) => {
 			client.send("sqlUpdate:reservationData");
 		});
