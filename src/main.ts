@@ -452,35 +452,36 @@ app.post("/sqlInsert/reservationData", upload.fields([
 app.post("/sqlUpdate/reservationData", upload.fields([
 	{ name: "data" }
 ]), async (request: express.Request, response: express.Response) => {
-	const jsonData: ReservationData = JSON.parse(request.body.data);
-	try {
-		console.log(jsonData);
-		// const [rowCount, [updatedReservation]] = await Reservation.update(updateFields, {
-		// 	where: { id: jsonData.id },
-		// 	returning: true	
-		// });
 
-		// if (rowCount === 0) {
-		// 	return response.status(404).send("Reservation not found");
-		// }
-		// console.log(updatedReservation);
+	try {
+		const updateFields: ReservationData = JSON.parse(request.body.data);
+		const [rowCount, [updatedReservation]] = await Reservation.update(updateFields, {
+			where: { id: updateFields.id },
+			returning: true
+		});
+
+		if (rowCount === 0) {
+			return response.status(404).send("Reservation not found");
+		}
+		console.log(updatedReservation);
+
 		// const existingReservation: Model<ReservationData, ReservationData> | null = await Reservation.findByPk(jsonData.id);
 
 		// if (!existingReservation) {
 		// return response.status(404).send("Reservation not found");
 		// }
 
-		const updateFields = {
-			vehicleId: jsonData.vehicleId,
-			reservationName: jsonData.reservationName,
-			rentalCategory: jsonData.rentalCategory,
-			pickupLocation: jsonData.pickupLocation,
-			returnLocation: jsonData.returnLocation,
-			pickupDateObject: jsonData.pickupDateObject,
-			returnDateObject: jsonData.returnDateObject,
-			nonSmoking: jsonData.nonSmoking,
-			comment: jsonData.comment
-		}
+		// const updateFields = {
+		// 	vehicleId: jsonData.vehicleId,
+		// 	reservationName: jsonData.reservationName,
+		// 	rentalCategory: jsonData.rentalCategory,
+		// 	pickupLocation: jsonData.pickupLocation,
+		// 	returnLocation: jsonData.returnLocation,
+		// 	pickupDateObject: jsonData.pickupDateObject,
+		// 	returnDateObject: jsonData.returnDateObject,
+		// 	nonSmoking: jsonData.nonSmoking,
+		// 	comment: jsonData.comment
+		// }
 
 		// await existingReservation.update(updateFields);
 
