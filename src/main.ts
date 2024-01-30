@@ -465,6 +465,7 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 		}
 
 		console.log(updatedReservation);
+		console.log(true);
 		WsServer.clients.forEach((client: WebSocket) => {
 			client.send("sqlUpdate:reservationData");
 		});
