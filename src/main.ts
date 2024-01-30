@@ -453,7 +453,6 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 	{ name: "data" }
 ]), async (request: express.Request, response: express.Response) => {
 	const jsonData: ReservationData = JSON.parse(request.body.data);
-	console.log(jsonData);
 	try {
 		const existingReservation: Model<ReservationData, ReservationData> | null = await Reservation.findByPk(jsonData.id);
 
