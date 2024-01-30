@@ -454,7 +454,16 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 ]), async (request: express.Request, response: express.Response) => {
 	const jsonData: ReservationData = JSON.parse(request.body.data);
 	try {
-		const existingReservation: Model<ReservationData, ReservationData> | null = await Reservation.findByPk(jsonData.id);
+		const [rowCount, [updatedReservation]] = awat Reservation.update(updateFields, {
+			where: { id: jsonData.id },
+			returning: true	
+		});
+
+		if (rowCount === 0) {
+			return response.status(404).send("Reservation not found");
+		}
+		consol.log(updatedReservation);
+		// const existingReservation: Model<ReservationData, ReservationData> | null = await Reservation.findByPk(jsonData.id);
 
 		if (!existingReservation) {
 			return response.status(404).send("Reservation not found");
