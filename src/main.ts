@@ -458,17 +458,8 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 			where: { id: updateFields.id }
 		});
 
-		const newReservation: Model<ReservationData, ReservationData> | null = await Reservation.findOne({
-			where: { id: updateFields.id }
-		});
-
-		console.log(newReservation);
-
 		WsServer.clients.forEach((client: WebSocket) => {
-			client.send(JSON.stringify({
-				type: "sqlUpdate:reservationData",
-				data: newReservation?.toJSON()
-			}));
+			client.send("sqlUpdate:reservationData");
 		});
 
 		return response.status(200).send("Reservation data saved successfully");
