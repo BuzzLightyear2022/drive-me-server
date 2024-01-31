@@ -471,7 +471,6 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 
 		return response.status(200).send("Reservation data saved successfully");
 	} catch (error: unknown) {
-		console.log(false)
 		return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
 	}
 });
