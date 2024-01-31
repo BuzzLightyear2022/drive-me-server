@@ -454,7 +454,7 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 ]), async (request: express.Request, response: express.Response) => {
 	try {
 		const updateFields: ReservationData = JSON.parse(request.body.data);
-		const [rowCount, [updatedReservation]] = await Reservation.update(updateFields, {
+		const [rowCount, updatedReservation] = await Reservation.update(updateFields, {
 			where: { id: updateFields.id },
 			returning: true
 		});
