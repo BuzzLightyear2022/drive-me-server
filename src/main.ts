@@ -454,23 +454,22 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 ]), async (request: express.Request, response: express.Response) => {
 	try {
 		const updateFields: ReservationData = JSON.parse(request.body.data);
-		const [rowCount, updatedReservation] = await Reservation.update(updateFields, {
-			where: { id: updateFields.id },
-			returning: true
+		await Reservation.update(updateFields, {
+			where: { id: updateFields.id }
 		});
 
-		if (rowCount === 0) {
-			return response.status(404).send("Reservation not found");
-		}
+		const newReservation: Model<ReservationData, ReservationData> | null = await Reservation.findOne({
+			where: { id: updateFields.id }
+		});
 
-		console.log(updatedReservation);
+		console.log(newReservation);
+
 		WsServer.clients.forEach((client: WebSocket) => {
 			client.send("sqlUpdate:reservationData");
 		});
 
 		return response.status(200).send("Reservation data saved successfully");
 	} catch (error: unknown) {
-		console.log(error);
 		return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
 	}
 });
