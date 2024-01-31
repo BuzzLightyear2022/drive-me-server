@@ -452,7 +452,6 @@ app.post("/sqlInsert/reservationData", upload.fields([
 app.post("/sqlUpdate/reservationData", upload.fields([
 	{ name: "data" }
 ]), async (request: express.Request, response: express.Response) => {
-
 	try {
 		const updateFields: ReservationData = JSON.parse(request.body.data);
 		const [rowCount, [updatedReservation]] = await Reservation.update(updateFields, {
@@ -472,6 +471,7 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 
 		return response.status(200).send("Reservation data saved successfully");
 	} catch (error: unknown) {
+		console.log(false)
 		return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
 	}
 });
