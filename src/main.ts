@@ -430,7 +430,7 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 		await existingVehicleAttributes.update(vehicleAttributes);
 
 		WsServer.clients.forEach(async (client: WebSocket) => {
-			client.send("sqlUpdate:vehicleAttributes");
+			client.send("wsUpdate:vehicleAttributes");
 		});
 	} catch (error: unknown) {
 		return response.status(500).send(`Failed to updata data on the database: ${error}`);
@@ -459,7 +459,7 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 		});
 
 		WsServer.clients.forEach((client: WebSocket) => {
-			client.send("sqlUpdate:reservationData");
+			client.send("wsUpdate:reservationData");
 		});
 
 		return response.status(200).send("Reservation data saved successfully");
