@@ -314,12 +314,24 @@ app.post("/sqlSelect/reservationData/filterByDateRange", async (request: express
 	try {
 		const reservationData: Model<ReservationData, ReservationData>[] = await Reservation.findAll({
 			where: {
-				pickupDateObject: {
-					[Op.between]: [
-						startDate,
-						endDate
-					]
-				}
+				[Op.or]: [
+					{
+						pickupDateObject: {
+							[Op.between]: [startDate, endDate]
+						}
+					},
+					{
+						returnDateObject: {
+							[Op.between]: [startDate, endDate]
+						}
+					},
+					{
+						[Op.and]: [
+							{ pickupDateObject: { [Op.lte]: startDate } },
+							{ returnDateObject: { [Op.gte]: endDate } }
+						]
+					}
+				]
 			}
 		});
 
