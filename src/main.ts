@@ -148,6 +148,27 @@ app.post("/sqlSelect/vehicleAttributesById", async (request: express.Request, re
 	}
 });
 
+app.post("/sqlSelect/vehicleAttributesByClass", async (request: express.Request, response: express.Response) => {
+	const rentalClass: string = request.body.rentalClass;
+
+	try {
+		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] | null = await VehicleAttributes.findAll({
+			where: {
+				rentalClass: rentalClass
+			}
+		});
+
+		if (vehicleAttributes) {
+			return response.json(vehicleAttributes);
+		} else {
+			return response.status(404).json({ error: "vehicleAttributes not found" });
+		}
+	} catch (error: unknown) {
+		console.error(`Failed to select VehicleAttributes by class ${error}`);
+		return response.status(500).json({ error: error });
+	}
+});
+
 app.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
 	const selectedSmoking: string = request.body["selectedSmoking"];
 	console.log(selectedSmoking);
