@@ -149,7 +149,7 @@ app.post("/sqlSelect/vehicleAttributesById", async (request: express.Request, re
 });
 
 app.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
-	const selectedSmoking: string = request.body;
+	const selectedSmoking: string = request.body["selectedSmoking"];
 	console.log(selectedSmoking);
 
 	try {
