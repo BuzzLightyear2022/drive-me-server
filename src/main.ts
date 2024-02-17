@@ -165,6 +165,7 @@ app.post("/sqlSelect/vehicleAttributesByClass", async (request: express.Request,
 		});
 
 		if (vehicleAttributes) {
+			console.log(vehicleAttributes);
 			return response.json(vehicleAttributes);
 		} else {
 			return response.status(404).json({ error: "vehicleAttributes not found" });
