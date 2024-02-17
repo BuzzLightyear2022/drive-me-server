@@ -152,10 +152,16 @@ app.post("/sqlSelect/vehicleAttributesByClass", async (request: express.Request,
 	const rentalClass: string = request.body.rentalClass;
 
 	try {
-		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] | null = await VehicleAttributes.findAll({
-			where: {
+		let whereClause = {};
+
+		if (rentalClass !== null) {
+			whereClause = {
 				rentalClass: rentalClass
 			}
+		}
+
+		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] | null = await VehicleAttributes.findAll({
+			where: whereClause
 		});
 
 		if (vehicleAttributes) {
