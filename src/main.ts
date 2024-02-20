@@ -418,7 +418,7 @@ app.post("/sqlInsert/vehicleAttributes", upload.fields([
 		const bufferImageUrl: Buffer = imageDataField.buffer;
 		const fileName: string = imageDataField.originalname;
 
-		if (!fileName.endsWith(".jpeg") && !fileName.endsWith(".jpg")) {
+		if (!fileName.endsWith(".jpeg") && !fileName.endsWith(".jpg" || "png")) {
 			return response.status(400).send("Invalid file format. Expected JPEG file.");
 		}
 
@@ -460,12 +460,15 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 		fs.mkdirSync(targetDirectoryPath);
 	}
 
-	if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
-		console.log(imageFiles["imageUrl"]);
-	}
-
 	try {
 		const existingVehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributes.findByPk(vehicleAttributes.id);
+		const existingVehicleAttributesJson: VehicleAttributes | undefined = existingVehicleAttributes?.get({ plain: true });
+
+		if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
+			if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
+				console.log(existingVehicleAttributesJson.imageFileName);
+			}
+		}
 
 		if (!existingVehicleAttributes) {
 			return response.json(404).send("VehicleAttributes data not found.");
