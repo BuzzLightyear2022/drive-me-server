@@ -464,31 +464,30 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 		const existingVehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributes.findByPk(vehicleAttributes.id);
 		const existingVehicleAttributesJson: VehicleAttributes | undefined = existingVehicleAttributes?.get({ plain: true });
 
-		if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
-			if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
-				const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
-				const bufferImageUrl: Buffer = imageDataField.buffer;
-				const fileName: string = imageDataField.originalname;
+		if (existingVehicleAttributes) {
+			if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
+				if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
+					const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
+					const bufferImageUrl: Buffer = imageDataField.buffer;
+					const fileName: string = imageDataField.originalname;
 
-				const currentImagePath = `./car_images/${existingVehicleAttributesJson.imageFileName}`;
+					const currentImagePath = `./car_images/${existingVehicleAttributesJson.imageFileName}`;
 
-				fs.access(currentImagePath, fs.constants.F_OK, (err) => {
-					if (err) {
-						fs.writeFile(targetDirectoryPath + fileName, bufferImageUrl, "base64", (error: unknown) => {
-							if (err) {
-								vehicleAttributes.imageFileName = fileName;
-								console.log(vehicleAttributes);
-								console.error(error);
-							}
-						});
-					} else {
-						console.log("exists");
-					}
-				});
+					fs.access(currentImagePath, fs.constants.F_OK, (err) => {
+						if (err) {
+							fs.writeFile(targetDirectoryPath + fileName, bufferImageUrl, "base64", async (error: unknown) => {
+								if (err) {
+									vehicleAttributes.imageFileName = fileName;
+									await existingVehicleAttributes.update(vehicleAttributes);
+								}
+							});
+						} else {
+							console.log("exists");
+						}
+					});
+				}
 			}
-		}
-
-		if (!existingVehicleAttributes) {
+		} else {
 			return response.json(404).send("VehicleAttributes data not found.");
 		}
 
