@@ -9,6 +9,7 @@ import http from "http";
 import { DataTypes, Model, ModelStatic, Sequelize, Op, where } from "sequelize";
 import { VehicleAttributes, ReservationData } from "./@types/types";
 import WebSocket from "ws";
+import { buffer } from "stream/consumers";
 
 const port: string = process.env.PORT as string;
 
@@ -467,7 +468,9 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 			if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
 				const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
 				const bufferImageUrl: Buffer = imageDataField.buffer;
+				console.log(bufferImageUrl);
 				const fileName: string = imageDataField.originalname;
+				console.log(fileName);
 
 				const currentImagePath = `./car_images/${existingVehicleAttributesJson.imageFileName}`;
 
@@ -490,6 +493,7 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 			return response.json(404).send("VehicleAttributes data not found.");
 		}
 
+		console.log(vehicleAttributes);
 		await existingVehicleAttributes.update(vehicleAttributes);
 
 		WsServer.clients.forEach(async (client: WebSocket) => {
