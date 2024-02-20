@@ -177,7 +177,6 @@ app.post("/sqlSelect/vehicleAttributesByClass", async (request: express.Request,
 
 app.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
 	const selectedSmoking: string = request.body["selectedSmoking"];
-	console.log(selectedSmoking);
 
 	try {
 		switch (selectedSmoking) {
@@ -466,10 +465,19 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 
 		if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
 			if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
-				const currentImagePath = `./car_images/${existingVehicleAttributesJson.imageFileName}`
+				const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
+				const bufferImageUrl: Buffer = imageDataField.buffer;
+				const fileName: string = imageDataField.originalname;
+
+				const currentImagePath = `./car_images/${existingVehicleAttributesJson.imageFileName}`;
+
 				fs.access(currentImagePath, fs.constants.F_OK, (err) => {
 					if (err) {
-						console.error(err);
+						fs.writeFile(targetDirectoryPath + fileName, bufferImageUrl, "base64", (error: unknown) => {
+							if (err) {
+								console.error(err);
+							}
+						});
 					} else {
 						console.log("exists");
 					}
