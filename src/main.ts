@@ -455,11 +455,13 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 	};
 
 	const vehicleAttributes: VehicleAttributes = JSON.parse(request.body["data"]);
-	console.log(imageFiles);
-	console.log(vehicleAttributes);
 
 	if (!fs.existsSync(targetDirectoryPath)) {
 		fs.mkdirSync(targetDirectoryPath);
+	}
+
+	if (imageFiles) {
+		console.log(imageFiles);
 	}
 
 	try {
@@ -469,7 +471,7 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 			return response.json(404).send("VehicleAttributes data not found.");
 		}
 
-		// await existingVehicleAttributes.update(vehicleAttributes);
+		await existingVehicleAttributes.update(vehicleAttributes);
 
 		WsServer.clients.forEach(async (client: WebSocket) => {
 			client.send("wsUpdate:vehicleAttributes");
