@@ -498,8 +498,6 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 						}
 					});
 				}
-			} else {
-				return response.json(404).send("VehicleAttributes data not found.");
 			}
 
 			await existingVehicleAttributes.update(newVehicleAttributes);
