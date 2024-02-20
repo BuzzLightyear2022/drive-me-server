@@ -466,7 +466,14 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 
 		if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
 			if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
-				console.log(existingVehicleAttributesJson.imageFileName);
+				const currentImagePath = `./car_images/${existingVehicleAttributesJson.imageFileName}`
+				fs.access(currentImagePath, fs.constants.F_OK, (err) => {
+					if (err) {
+						console.error(err);
+					} else {
+						console.log("exists");
+					}
+				});
 			}
 		}
 
