@@ -468,9 +468,7 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 			if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
 				const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
 				const bufferImageUrl: Buffer = imageDataField.buffer;
-				console.log(bufferImageUrl);
 				const fileName: string = imageDataField.originalname;
-				console.log(fileName);
 
 				const currentImagePath = `./car_images/${existingVehicleAttributesJson.imageFileName}`;
 
@@ -479,6 +477,7 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 						fs.writeFile(targetDirectoryPath + fileName, bufferImageUrl, "base64", (error: unknown) => {
 							if (err) {
 								vehicleAttributes.imageFileName = fileName;
+								console.log(vehicleAttributes);
 								console.error(error);
 							}
 						});
