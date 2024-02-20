@@ -475,6 +475,7 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 					if (err) {
 						fs.writeFile(targetDirectoryPath + fileName, bufferImageUrl, "base64", (error: unknown) => {
 							if (err) {
+								vehicleAttributes.imageFileName = fileName;
 								console.error(error);
 							}
 						});
