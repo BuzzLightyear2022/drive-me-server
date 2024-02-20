@@ -468,7 +468,7 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 			return response.json(404).send("VehicleAttributes data not found.");
 		}
 
-		await existingVehicleAttributes.update(vehicleAttributes);
+		// await existingVehicleAttributes.update(vehicleAttributes);
 
 		WsServer.clients.forEach(async (client: WebSocket) => {
 			client.send("wsUpdate:vehicleAttributes");
