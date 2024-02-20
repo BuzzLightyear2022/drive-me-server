@@ -460,8 +460,8 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 		fs.mkdirSync(targetDirectoryPath);
 	}
 
-	if (imageFiles) {
-		console.log(imageFiles);
+	if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
+		console.log(imageFiles["imageUrl"]);
 	}
 
 	try {
