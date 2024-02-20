@@ -442,6 +442,7 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 	{ name: "imageUrl" },
 	{ name: "data" }
 ]), async (request: express.Request, response: express.Response) => {
+	const newVehicleAttributes: VehicleAttributes = JSON.parse(request.body["data"]);
 	const targetDirectoryPath: string = "./car_images/";
 
 	const imageFiles: {
@@ -454,49 +455,59 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 		| null
 	};
 
-	const vehicleAttributes: VehicleAttributes = JSON.parse(request.body["data"]);
-
 	if (!fs.existsSync(targetDirectoryPath)) {
 		fs.mkdirSync(targetDirectoryPath);
 	}
 
 	try {
-		const existingVehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributes.findByPk(vehicleAttributes.id);
+		const existingVehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributes.findByPk(newVehicleAttributes.id);
 		const existingVehicleAttributesJson: VehicleAttributes | undefined = existingVehicleAttributes?.get({ plain: true });
 
 		if (existingVehicleAttributes) {
 			if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
-				if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
-					const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
-					const bufferImageUrl: Buffer = imageDataField.buffer;
-					const fileName: string = imageDataField.originalname;
+				const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
+				const bufferImageUrl: Buffer = imageDataField.buffer;
+				const fileName: string = imageDataField.originalname;
 
+				if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
 					const currentImagePath = `./car_images/${existingVehicleAttributesJson.imageFileName}`;
 
-					fs.access(currentImagePath, fs.constants.F_OK, (err) => {
-						if (err) {
-							fs.writeFile(targetDirectoryPath + fileName, bufferImageUrl, "base64", async (error: unknown) => {
-								if (err) {
-									vehicleAttributes.imageFileName = fileName;
-									await existingVehicleAttributes.update(vehicleAttributes);
+					fs.access(currentImagePath, fs.constants.F_OK, (imageNotFoundError: unknown) => {
+						if (!imageNotFoundError) {
+							fs.unlink(currentImagePath, (unlinkError: unknown) => {
+								console.error(`Failed to delete existing image file: ${unlinkError}`);
+							});
+
+							fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
+								if (writeError) {
+									console.error(`Failed to write new image file: ${writeError}`);
+								} else {
+									newVehicleAttributes.imageFileName = fileName;
+									await existingVehicleAttributes.update(newVehicleAttributes);
 								}
 							});
 						} else {
-							console.log("exists");
+							fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
+								if (writeError) {
+									console.error(`Failed to write new image file: ${writeError}`);
+								} else {
+									newVehicleAttributes.imageFileName = fileName;
+									await existingVehicleAttributes.update(newVehicleAttributes);
+								}
+							});
 						}
 					});
 				}
+			} else {
+				return response.json(404).send("VehicleAttributes data not found.");
 			}
-		} else {
-			return response.json(404).send("VehicleAttributes data not found.");
+
+			await existingVehicleAttributes.update(newVehicleAttributes);
+
+			WsServer.clients.forEach(async (client: WebSocket) => {
+				client.send("wsUpdate:vehicleAttributes");
+			});
 		}
-
-		console.log(vehicleAttributes);
-		await existingVehicleAttributes.update(vehicleAttributes);
-
-		WsServer.clients.forEach(async (client: WebSocket) => {
-			client.send("wsUpdate:vehicleAttributes");
-		});
 	} catch (error: unknown) {
 		return response.status(500).send(`Failed to updata data on the database: ${error}`);
 	}
