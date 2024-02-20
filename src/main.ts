@@ -455,6 +455,7 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 	};
 
 	const vehicleAttributes: VehicleAttributes = JSON.parse(request.body["data"]);
+	console.log(imageFiles);
 	console.log(vehicleAttributes);
 
 	if (!fs.existsSync(targetDirectoryPath)) {
