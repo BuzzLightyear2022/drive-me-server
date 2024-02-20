@@ -475,7 +475,9 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 					fs.access(currentImagePath, fs.constants.F_OK, (imageNotFoundError: unknown) => {
 						if (!imageNotFoundError) {
 							fs.unlink(currentImagePath, (unlinkError: unknown) => {
-								console.error(`Failed to delete existing image file: ${unlinkError}`);
+								if (unlinkError) {
+									console.error(`Failed to delete existing image file: ${unlinkError}`);
+								}
 							});
 
 							fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
