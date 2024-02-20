@@ -486,15 +486,15 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 									await existingVehicleAttributes.update(newVehicleAttributes);
 								}
 							});
+						}
+					});
+				} else {
+					fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
+						if (writeError) {
+							console.error(`Failed to write new image file: ${writeError}`);
 						} else {
-							fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
-								if (writeError) {
-									console.error(`Failed to write new image file: ${writeError}`);
-								} else {
-									newVehicleAttributes.imageFileName = fileName;
-									await existingVehicleAttributes.update(newVehicleAttributes);
-								}
-							});
+							newVehicleAttributes.imageFileName = fileName;
+							await existingVehicleAttributes.update(newVehicleAttributes);
 						}
 					});
 				}
