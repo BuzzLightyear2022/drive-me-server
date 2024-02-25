@@ -41,7 +41,7 @@ const sqlConnection: Sequelize = new Sequelize(
 
 const VehicleAttributes: ModelStatic<Model<VehicleAttributes>> = sqlConnection.define("VehicleAttribute", {
 	id: {
-		type: DataTypes.STRING,
+		type: DataTypes.INTEGER,
 		primaryKey: true,
 		autoIncrement: true,
 		allowNull: false
