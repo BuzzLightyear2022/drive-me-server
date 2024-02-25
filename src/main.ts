@@ -57,6 +57,7 @@ const VehicleAttributes: ModelStatic<Model<VehicleAttributes>> = sqlConnection.d
 	licensePlateNumber: DataTypes.STRING,
 	bodyColor: DataTypes.STRING,
 	driveType: DataTypes.STRING,
+	seatingCapacity: DataTypes.INTEGER,
 	transmission: DataTypes.STRING,
 	rentalClass: DataTypes.STRING,
 	navigation: DataTypes.STRING,
