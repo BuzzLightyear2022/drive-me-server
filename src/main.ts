@@ -5,24 +5,44 @@ import cors from "cors";
 import path from "path";
 import fs from "fs";
 import multer from "multer";
-import http from "http";
 import https from "https";
 import { DataTypes, Model, ModelStatic, Sequelize, Op } from "sequelize";
 import { VehicleAttributes, ReservationData } from "./@types/types";
 import WebSocket from "ws";
 import bcrypt from "bcrypt";
 
-const httpsPort: string = process.env.HTTPS_PORT as string;
-const port: string = process.env.PORT as string;
-
 const app: express.Express = express();
 app.use(express.json());
 app.use(cors());
 app.use("/C2cFbaAZ", express.static("./car_images"));
 
-const server = http.createServer(app);
+const httpsPort: string = process.env.HTTPS_PORT as string;
 
-const WsServer: WebSocket.Server<typeof WebSocket, typeof http.IncomingMessage> = new WebSocket.Server({ server });
+const letsencryptDirectory = path.join("/", "etc", "letsencrypt", "live", "drive-me-test.com");
+const privateKeyPath = path.join(letsencryptDirectory, "privkey.pem");
+const certificatePath = path.join(letsencryptDirectory, "cert.pem");
+const chainFilePath = path.join(letsencryptDirectory, "chain.pem");
+
+const privateKey = fs.readFileSync(privateKeyPath, "utf8");
+const certificate = fs.readFileSync(certificatePath, "utf8");
+const chainFile = fs.readFileSync(chainFilePath, "utf8");
+
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+	ca: chainFile
+}
+
+const httpsServer = https.createServer(credentials, app);
+const wsServer = new WebSocket.Server({ noServer: true });
+
+httpsServer.listen(httpsPort, () => {
+	console.log(`HTTPS Server running on port: ${httpsPort}`);
+});
+
+wsServer.on("connection", (ws) => {
+	console.log("Client connected");
+});
 
 const rds_host: string = process.env.RDS_HOST as string;
 const rds_user: string = process.env.RDS_USER as string;
@@ -520,7 +540,7 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 
 			await existingVehicleAttributes.update(newVehicleAttributes);
 
-			WsServer.clients.forEach(async (client: WebSocket) => {
+			wsServer.clients.forEach(async (client: WebSocket) => {
 				client.send("wsUpdate:vehicleAttributes");
 			});
 		}
@@ -550,7 +570,7 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 			where: { id: updateFields.id }
 		});
 
-		WsServer.clients.forEach((client: WebSocket) => {
+		wsServer.clients.forEach((client: WebSocket) => {
 			client.send("wsUpdate:reservationData");
 		});
 
@@ -577,32 +597,3 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 		console.error("Create Tables is failed: ", error);
 	}
 })();
-
-const letsencryptDirectory = path.join("/", "etc", "letsencrypt", "live", "drive-me-test.com");
-const privateKeyPath = path.join(letsencryptDirectory, "privkey.pem");
-const certificatePath = path.join(letsencryptDirectory, "cert.pem");
-const chainFilePath = path.join(letsencryptDirectory, "chain.pem");
-
-const privateKey = fs.readFileSync(privateKeyPath, "utf8");
-const certificate = fs.readFileSync(certificatePath, "utf8");
-const chainFile = fs.readFileSync(chainFilePath, "utf8");
-
-const credentials = {
-	key: privateKey,
-	cert: certificate,
-	ca: chainFile
-}
-
-const httpsServer = https.createServer(credentials, app);
-
-httpsServer.listen(httpsPort, () => {
-	console.log(`HTTPS Server running on port: ${httpsPort}`);
-});
-
-server.listen(port, () => {
-	console.log(`Server start on port: ${port}`);
-});
-
-WsServer.on("connection", () => {
-	console.log("Client connected");
-});
