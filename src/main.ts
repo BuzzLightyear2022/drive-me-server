@@ -6,7 +6,6 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 import http from "http";
-import https from "https";
 import { DataTypes, Model, ModelStatic, Sequelize, Op } from "sequelize";
 import { VehicleAttributes, ReservationData } from "./@types/types";
 import WebSocket from "ws";
@@ -14,18 +13,12 @@ import bcrypt from "bcrypt";
 
 const port: string = process.env.PORT as string;
 
-const sslOptions = {
-	key: fs.readFileSync("/etc/letsencrypt/live/drive-me-test.com/privkey.pem"),
-	cert: fs.readFileSync("/etc/letsencrypt/live/drive-me-test.com/cert.pem"),
-	ca: fs.readFileSync("/etc/letsencrypt/live/drive-me-test.com/chain.pem")
-}
-
 const app: express.Express = express();
 app.use(express.json());
 app.use(cors());
 app.use("/C2cFbaAZ", express.static("./car_images"));
 
-const server = https.createServer(sslOptions, app);
+const server = http.createServer(app);
 
 const WsServer: WebSocket.Server<typeof WebSocket, typeof http.IncomingMessage> = new WebSocket.Server({ server });
 
