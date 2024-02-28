@@ -123,7 +123,7 @@ const Users = sqlConnection.define("Users", {
 		type: DataTypes.STRING,
 		allowNull: false
 	},
-	password_hash: {
+	hashed_password: {
 		type: DataTypes.STRING,
 		allowNull: false
 	}
@@ -168,7 +168,8 @@ app.post("/login/userData", async (request: express.Request, response: express.R
 		}
 	});
 
-	console.log(userData);
+	const userPassword = userData.hashed_password
+	console.log(userPassword);
 	// bcrypt.compare();
 });
 
