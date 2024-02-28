@@ -1,3 +1,9 @@
+export type Users = {
+    id?: number,
+    username: string,
+    hashed_password: string
+}
+
 export type VehicleAttributes = {
     id?: string
     imageFileName?: string,

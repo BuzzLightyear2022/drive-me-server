@@ -7,7 +7,7 @@ import fs from "fs";
 import multer from "multer";
 import https from "https";
 import { DataTypes, Model, ModelStatic, Sequelize, Op, where } from "sequelize";
-import { VehicleAttributes, ReservationData } from "./@types/types";
+import { Users, VehicleAttributes, ReservationData } from "./@types/types";
 import WebSocket from "ws";
 import bcrypt from "bcrypt";
 
@@ -112,7 +112,7 @@ const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('R
 	comment: DataTypes.TEXT
 });
 
-const Users = sqlConnection.define("Users", {
+const Users: ModelStatic<Model<Users>> = sqlConnection.define("Users", {
 	id: {
 		type: DataTypes.INTEGER,
 		primaryKey: true,
@@ -162,14 +162,21 @@ app.post("/login/userData", async (request: express.Request, response: express.R
 	const username = request.body.username;
 	const hashedPassword = request.body.password;
 
-	const userData = await Users.findOne({
-		where: {
-			username: username
-		}
-	});
+	try {
+		const userData = await Users.findOne({
+			where: {
+				username: username
+			}
+		});
 
-	const userPassword = userData.hashed_password
-	console.log(userPassword);
+		if (userData) {
+			const userPassword = userData.dataValues.hashed_password;
+			console.log(userPassword);
+		}
+	} catch (error) {
+		return error;
+	}
+
 	// bcrypt.compare();
 });
 
