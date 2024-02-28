@@ -6,11 +6,13 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 import http from "http";
+import https from "https";
 import { DataTypes, Model, ModelStatic, Sequelize, Op } from "sequelize";
 import { VehicleAttributes, ReservationData } from "./@types/types";
 import WebSocket from "ws";
 import bcrypt from "bcrypt";
 
+const httpsPort: string = process.env.HTTPS_PORT as string;
 const port: string = process.env.PORT as string;
 
 const app: express.Express = express();
@@ -18,6 +20,7 @@ app.use(express.json());
 app.use(cors());
 app.use("/C2cFbaAZ", express.static("./car_images"));
 
+const httpsServer = https.createServer(app);
 const server = http.createServer(app);
 
 const WsServer: WebSocket.Server<typeof WebSocket, typeof http.IncomingMessage> = new WebSocket.Server({ server });
@@ -575,6 +578,10 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 		console.error("Create Tables is failed: ", error);
 	}
 })();
+
+httpsServer.listen(httpsPort, () => {
+	console.log(`Server start on port: ${httpsPort}`);
+});
 
 server.listen(port, () => {
 	console.log(`Server start on port: ${port}`);
