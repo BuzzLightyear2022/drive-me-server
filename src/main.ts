@@ -119,7 +119,7 @@ const Users = sqlConnection.define("Users", {
 		autoIncrement: true,
 		allowNull: false
 	},
-	userName: {
+	username: {
 		type: DataTypes.STRING,
 		allowNull: false
 	},
