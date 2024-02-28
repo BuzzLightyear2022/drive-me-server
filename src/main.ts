@@ -172,12 +172,18 @@ app.post("/login/userData", async (request: express.Request, response: express.R
 
 		if (userData) {
 			const storedPassword = userData.dataValues.hashed_password;
+			console.log(storedPassword);
 
-			bcrypt.compare(inputtedPassword, storedPassword, (err: unknown, result: string) => {
+			bcrypt.compare(inputtedPassword, "$2b$10$5OY9UxFZ8bCmKA30iRFTiuUtU7leByXPaS9MrVE4nbIt.Dyp4JH7u", (err: unknown, result: boolean) => {
+				if (err) {
+					console.error(err);
+					return;
+				}
+				
 				if (result) {
 					console.log("login");
 				} else {
-					console.log(err);
+					console.log("Incorrect password");
 				}
 			});
 		}
