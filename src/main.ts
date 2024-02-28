@@ -171,13 +171,18 @@ app.post("/login/userData", async (request: express.Request, response: express.R
 
 		if (userData) {
 			const userPassword = userData.dataValues.hashed_password;
-			console.log(userPassword);
+
+			bcrypt.compare(hashedPassword, userPassword, (err, result) => {
+				if (result) {
+					console.log("login");
+				} else {
+					console.log("failed");
+				}
+			});
 		}
 	} catch (error) {
 		return error;
 	}
-
-	// bcrypt.compare();
 });
 
 app.post("/sqlSelect/vehicleAttributes", async (request: express.Request, response: express.Response) => {
