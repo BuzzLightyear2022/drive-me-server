@@ -173,7 +173,7 @@ app.post("/login/userData", async (request: express.Request, response: express.R
 
 		if (userData) {
 			const storedPassword = userData.dataValues.hashed_password;
-			console.log("plane:", pPassword);
+			console.log("plain:", pPassword);
 			console.log("input:", inputtedPassword);
 			console.log("stored:", storedPassword);
 
