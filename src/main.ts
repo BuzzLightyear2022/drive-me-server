@@ -162,7 +162,6 @@ fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 app.post("/login/userData", async (request: express.Request, response: express.Response) => {
 	const username = request.body.username;
 	const inputtedPassword = request.body.password;
-	console.log(inputtedPassword);
 
 	try {
 		const userData = await Users.findOne({
@@ -174,11 +173,10 @@ app.post("/login/userData", async (request: express.Request, response: express.R
 		if (userData) {
 			const storedPassword = userData.dataValues.hashed_password;
 
-			bcrypt.compare(storedPassword, inputtedPassword, (err: unknown, result: string) => {
+			bcrypt.compare(inputtedPassword, storedPassword, (err: unknown, result: string) => {
 				if (result) {
 					console.log("login");
 				} else {
-					console.log(storedPassword);
 					console.log(err);
 				}
 			});
