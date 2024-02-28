@@ -6,7 +6,7 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 import https from "https";
-import { DataTypes, Model, ModelStatic, Sequelize, Op } from "sequelize";
+import { DataTypes, Model, ModelStatic, Sequelize, Op, where } from "sequelize";
 import { VehicleAttributes, ReservationData } from "./@types/types";
 import WebSocket from "ws";
 import bcrypt from "bcrypt";
@@ -112,6 +112,23 @@ const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('R
 	comment: DataTypes.TEXT
 });
 
+const Users = sqlConnection.define("Users", {
+	id: {
+		type: DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+		allowNull: false
+	},
+	userName: {
+		type: DataTypes.STRING,
+		allowNull: false
+	},
+	password_hash: {
+		type: DataTypes.STRING,
+		allowNull: false
+	}
+})
+
 type partOfVehicleAttributes =
 	| typeof VehicleAttributes["prototype"]["id"]
 	| typeof VehicleAttributes["prototype"]["carModel"]
@@ -142,7 +159,17 @@ fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
 app.post("/login/userData", async (request: express.Request, response: express.Response) => {
-	console.log(request.body);
+	const username = request.body.username;
+	const hashedPassword = request.body.password;
+
+	const userData = await Users.findOne({
+		where: {
+			username: username
+		}
+	});
+
+	console.log(userData);
+	// bcrypt.compare();
 });
 
 app.post("/sqlSelect/vehicleAttributes", async (request: express.Request, response: express.Response) => {
