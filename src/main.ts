@@ -9,7 +9,8 @@ import https from "https";
 import { DataTypes, Model, ModelStatic, Sequelize, Op, where } from "sequelize";
 import { Users, VehicleAttributes, ReservationData } from "./@types/types";
 import WebSocket from "ws";
-import bcrypt from "bcrypt";
+
+const bcrypt = require("bcrypt");
 
 const app: express.Express = express();
 app.use(express.json());
@@ -160,7 +161,8 @@ fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
 app.post("/login/userData", async (request: express.Request, response: express.Response) => {
 	const username = request.body.username;
-	const hashedPassword = request.body.password;
+	const inputtedPassword = request.body.password;
+	console.log(inputtedPassword);
 
 	try {
 		const userData = await Users.findOne({
@@ -170,13 +172,14 @@ app.post("/login/userData", async (request: express.Request, response: express.R
 		});
 
 		if (userData) {
-			const userPassword = userData.dataValues.hashed_password;
+			const storedPassword = userData.dataValues.hashed_password;
 
-			bcrypt.compare(hashedPassword, userPassword, (err, result) => {
+			bcrypt.compare(storedPassword, inputtedPassword, (err: unknown, result: string) => {
 				if (result) {
 					console.log("login");
 				} else {
-					console.log("failed");
+					console.log(storedPassword);
+					console.log(err);
 				}
 			});
 		}
