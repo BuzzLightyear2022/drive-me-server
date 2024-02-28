@@ -162,6 +162,7 @@ fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 app.post("/login/userData", async (request: express.Request, response: express.Response) => {
 	const username = request.body.username;
 	const inputtedPassword = request.body.password;
+	const pPassword = request.body.pPassword;
 
 	try {
 		const userData = await Users.findOne({
@@ -172,6 +173,7 @@ app.post("/login/userData", async (request: express.Request, response: express.R
 
 		if (userData) {
 			const storedPassword = userData.dataValues.hashed_password;
+			console.log("plane:", pPassword);
 			console.log("input:", inputtedPassword);
 			console.log("stored:", storedPassword);
 
