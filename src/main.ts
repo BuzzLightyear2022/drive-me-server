@@ -178,7 +178,7 @@ app.post("/login/userData", async (request: express.Request, response: express.R
 				if (result) {
 					console.log("login");
 				} else {
-					console.log("Incorrect password");
+					console.log(result);
 				}
 			});
 		}
