@@ -15,8 +15,8 @@ import bcrypt from "bcrypt";
 const port: string = process.env.PORT as string;
 
 const sslOptions = {
-	key: fs.readFileSync("../private-key.pem"),
-	cert: fs.readFileSync("../certificate.csr")
+	key: fs.readFileSync("private-key.pem"),
+	cert: fs.readFileSync("certificate.pem")
 }
 
 const app: express.Express = express();
