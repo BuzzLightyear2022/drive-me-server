@@ -578,7 +578,7 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 	}
 })();
 
-const letsencryptDirectory = path.join("etc", "letsencrypt", "live", "drive-me-test.com");
+const letsencryptDirectory = path.join("/", "etc", "letsencrypt", "live", "drive-me-test.com");
 const privateKeyPath = path.join(letsencryptDirectory, "privkey.pem");
 const certificatePath = path.join(letsencryptDirectory, "cert.pem");
 const chainFilePath = path.join(letsencryptDirectory, "chain.pem");
