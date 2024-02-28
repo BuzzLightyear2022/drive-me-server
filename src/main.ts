@@ -6,19 +6,25 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 import http from "http";
-import { DataTypes, Model, ModelStatic, Sequelize, Op, where } from "sequelize";
+import https from "https";
+import { DataTypes, Model, ModelStatic, Sequelize, Op } from "sequelize";
 import { VehicleAttributes, ReservationData } from "./@types/types";
 import WebSocket from "ws";
-import { buffer } from "stream/consumers";
+import bcrypt from "bcrypt";
 
 const port: string = process.env.PORT as string;
+
+const sslOptions = {
+	key: fs.readFileSync("../private-key.pem"),
+	cert: fs.readFileSync("../certificate.csr")
+}
 
 const app: express.Express = express();
 app.use(express.json());
 app.use(cors());
 app.use("/C2cFbaAZ", express.static("./car_images"));
 
-const server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse> = http.createServer(app);
+const server = https.createServer(sslOptions, app);
 
 const WsServer: WebSocket.Server<typeof WebSocket, typeof http.IncomingMessage> = new WebSocket.Server({ server });
 
@@ -118,6 +124,10 @@ const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 
 fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
+
+app.post("/login", async (request: express.Request, response: express.Response) => {
+
+});
 
 app.post("/sqlSelect/vehicleAttributes", async (request: express.Request, response: express.Response) => {
 	try {
