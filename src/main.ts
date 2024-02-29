@@ -177,7 +177,7 @@ app.post("/login/userData", async (request: express.Request, response: express.R
 			console.log("input:", inputtedPassword);
 			console.log("stored:", storedPassword);
 
-			await bcrypt.compare(inputtedPassword, storedPassword, (err: unknown, result: string) => {
+			await bcrypt.compare(storedPassword, inputtedPassword, (err: unknown, result: boolean) => {
 				if (err) {
 					console.error(err);
 				} else {
