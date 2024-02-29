@@ -159,10 +159,8 @@ const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
-app.post("/login/sendUserData", async (request: express.Request, response: express.Response) => {
+app.post("/login/getUserData", async (request: express.Request, response: express.Response) => {
 	const username = request.body.username;
-	const inputtedPassword = request.body.password;
-	const pPassword = request.body.pPassword;
 
 	try {
 		const userData = await Users.findOne({
@@ -172,19 +170,7 @@ app.post("/login/sendUserData", async (request: express.Request, response: expre
 		});
 
 		if (userData) {
-			const username = userData.dataValues.username;
-
-			// await bcrypt.compare(pPassword, storedPassword, (err: unknown, result: boolean) => {
-			// 	if (err) {
-			// 		console.error(err);
-			// 	} else {
-			// 		if (result) {
-			// 			console.log(result);
-			// 		} else {
-			// 			console.log(result);
-			// 		}
-			// 	}
-			// });
+			return response.json(userData.dataValues);
 		}
 	} catch (error) {
 		return error;
