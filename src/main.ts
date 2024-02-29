@@ -173,7 +173,6 @@ app.post("/login/sendUserData", async (request: express.Request, response: expre
 
 		if (userData) {
 			const username = userData.dataValues.username;
-			console.log(username);
 
 			// await bcrypt.compare(pPassword, storedPassword, (err: unknown, result: boolean) => {
 			// 	if (err) {
