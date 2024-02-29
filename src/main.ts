@@ -159,7 +159,8 @@ const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
-app.post("/login/sendUserData", async (request: express.Request, response: express.Response) => {
+app.post("/login/getUserData", async (request: express.Request, response: express.Response) => {
+	console.log(request);
 	const username = request.body.username;
 	const inputtedPassword = request.body.password;
 	const pPassword = request.body.pPassword;
