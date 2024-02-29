@@ -159,7 +159,7 @@ const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
-app.post("/login/userData", async (request: express.Request, response: express.Response) => {
+app.post("/login/sendUserData", async (request: express.Request, response: express.Response) => {
 	const username = request.body.username;
 	const inputtedPassword = request.body.password;
 	const pPassword = request.body.pPassword;
@@ -172,22 +172,20 @@ app.post("/login/userData", async (request: express.Request, response: express.R
 		});
 
 		if (userData) {
-			const storedPassword = userData.dataValues.hashed_password;
-			console.log("plain:", pPassword);
-			console.log("input:", inputtedPassword);
-			console.log("stored:", storedPassword);
+			const username = userData.dataValues.username;
+			console.log(username);
 
-			await bcrypt.compare(pPassword, storedPassword, (err: unknown, result: boolean) => {
-				if (err) {
-					console.error(err);
-				} else {
-					if (result) {
-						console.log(result);
-					} else {
-						console.log(result);
-					}
-				}
-			});
+			// await bcrypt.compare(pPassword, storedPassword, (err: unknown, result: boolean) => {
+			// 	if (err) {
+			// 		console.error(err);
+			// 	} else {
+			// 		if (result) {
+			// 			console.log(result);
+			// 		} else {
+			// 			console.log(result);
+			// 		}
+			// 	}
+			// });
 		}
 	} catch (error) {
 		return error;
