@@ -11,14 +11,22 @@ import { Users, VehicleAttributes, ReservationData } from "./@types/types";
 import WebSocket from "ws";
 
 const bcrypt = require("bcrypt");
-const csrf = require("ucsrf");
-const csrfProtection = csrf({ cokkie: true });
+const csurf = require("csurf");
+const bodyParser = require("body-parser");
 
 const app: express.Express = express();
 app.use(express.json());
-app.use(csrfProtection);
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(csurf({ cookie: true }));
 app.use(cors());
 app.use("/C2cFbaAZ", express.static("./car_images"));
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+	if (err && err.code === "EBADCSRFTOKEN") {
+		res.status(400).send("Invalid CSRF token");
+	} else {
+		next(err);
+	}
+});
 
 const httpsPort: string = process.env.HTTPS_PORT as string;
 
@@ -178,6 +186,10 @@ app.post("/login/getUserData", async (request: express.Request, response: expres
 	} catch (error) {
 		return error;
 	}
+});
+
+app.post("/login/getToken", async (request: express.Request, response: express.Response) => {
+	console.log(request.body);
 });
 
 app.post("/sqlSelect/vehicleAttributes", async (request: express.Request, response: express.Response) => {
