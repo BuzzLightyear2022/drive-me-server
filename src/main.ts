@@ -15,6 +15,7 @@ const csurf = require("csurf");
 const bodyParser = require("body-parser");
 
 const app: express.Express = express();
+
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(csurf({ cookie: true }));
