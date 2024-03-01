@@ -11,9 +11,12 @@ import { Users, VehicleAttributes, ReservationData } from "./@types/types";
 import WebSocket from "ws";
 
 const bcrypt = require("bcrypt");
+const csrf = require("ucsrf");
+const csrfProtection = csrf({ cokkie: true });
 
 const app: express.Express = express();
 app.use(express.json());
+app.use(csrfProtection);
 app.use(cors());
 app.use("/C2cFbaAZ", express.static("./car_images"));
 
