@@ -16,6 +16,8 @@ export const getUserData = async () => {
                 }
             });
 
+	    console.log(userData.dataValues);
+
             if (userData) {
                 return response.json(userData.dataValues);
             }
