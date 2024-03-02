@@ -9,8 +9,11 @@ import { VehicleAttributesModel, ReservationDataModel, UsersModel } from "./sql_
 import { Users, VehicleAttributes, ReservationData } from "./@types/types.js";
 // import { getUserData, getSessionData } from "./login.mjs";
 import WebSocket from "ws";
+import dotenv from "dotenv";
 
-require("dotenv").config();
+dotenv.config();
+
+// require("dotenv").config();
 const bcrypt = require("bcrypt");
 const csurf = require("csurf");
 const bodyParser = require("body-parser");
