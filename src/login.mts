@@ -1,6 +1,6 @@
 import { app } from "./main.mjs";
 import express from "express";
-import { UsersModel } from "./table_definition.mjs";
+import { UsersModel } from "./sql_handler.mjs";
 
 export const getUserData = () => {
     app.post("/login/getUserData", async (request: express.Request, response: express.Response) => {

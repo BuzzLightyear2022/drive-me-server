@@ -1,6 +1,19 @@
-import { sqlConnection } from "./main.mjs";
 import { VehicleAttributes, ReservationData, Users } from "./@types/types.js";
-import { DataTypes, Model, ModelStatic, } from "sequelize";
+import { Sequelize, DataTypes, Model, ModelStatic } from "sequelize";
+
+const rds_host: string = process.env.RDS_HOST as string;
+const rds_user: string = process.env.RDS_USER as string;
+const rds_password: string = process.env.RDS_PASSWORD as string;
+
+export const sqlConnection: Sequelize = new Sequelize(
+    "drive_me_test_since20230703",
+    rds_user,
+    rds_password,
+    {
+        host: rds_host,
+        dialect: "mysql"
+    }
+);
 
 export const VehicleAttributesModel: ModelStatic<Model<VehicleAttributes>> = sqlConnection.define("VehicleAttribute", {
     id: {
@@ -69,3 +82,17 @@ export const UsersModel: ModelStatic<Model<Users>> = sqlConnection.define("Users
         allowNull: false
     }
 });
+
+(async () => {
+    try {
+		await sqlConnection.authenticate();
+	} catch (error: unknown) {
+		console.error("Database Connection is failed: ", error);
+	}
+
+    try {
+		await sqlConnection.sync();
+	} catch (error: unknown) {
+		console.error("Create Tables is failed: ", error);
+	}
+})();

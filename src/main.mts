@@ -8,21 +8,7 @@ import multer from "multer";
 import https from "https";
 import { Model, Sequelize, Op } from "sequelize";
 
-const rds_host: string = process.env.RDS_HOST as string;
-const rds_user: string = process.env.RDS_USER as string;
-const rds_password: string = process.env.RDS_PASSWORD as string;
-
-export const sqlConnection: Sequelize = new Sequelize(
-	"drive_me_test_since20230703",
-	rds_user,
-	rds_password,
-	{
-		host: rds_host,
-		dialect: "mysql"
-	}
-);
-
-import { VehicleAttributesModel, ReservationDataModel, UsersModel } from "./table_definition.mjs";
+import { VehicleAttributesModel, ReservationDataModel, UsersModel } from "./sql_handler.mjs";
 import { Users, VehicleAttributes, ReservationData } from "./@types/types.js";
 // import { getUserData, getSessionData } from "./login.mjs";
 import WebSocket from "ws";
@@ -78,24 +64,6 @@ wsServer.on("connection", (ws) => {
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-
-(async () => {
-	try {
-		await sqlConnection.authenticate();
-		console.log("Connected to the database successfully.");
-	} catch (error: unknown) {
-		console.error("Database Connection is failed: ", error);
-	}
-})();
-
-(async () => {
-	try {
-		await sqlConnection.sync();
-		console.log("Tables are created.");
-	} catch (error: unknown) {
-		console.error("Create Tables is failed: ", error);
-	}
-})();
 
 type partOfVehicleAttributes =
 	| typeof VehicleAttributesModel["prototype"]["id"]
