@@ -191,7 +191,11 @@ app.post("/login/getUserData", async (request: express.Request, response: expres
 	}
 });
 
-app.post("/login/getCsurfToken", async (request: any, response: express.Response) => {
+app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
+
+});
+
+app.post("/login/getToken", async (request: any, response: express.Response) => {
 	const csrfToken: string | undefined = request.csrfToken();
 
 	response.json({ csurfToken: csrfToken });
