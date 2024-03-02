@@ -1,5 +1,4 @@
 import { app } from "./main.mjs";
-console.log(app);
 import express from "express";
 import { UsersModel } from "./sql_handler.mjs";
 

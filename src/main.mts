@@ -1,5 +1,3 @@
-export const app: express.Express = express();
-
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -11,12 +9,11 @@ import { VehicleAttributesModel, ReservationDataModel, UsersModel } from "./sql_
 import { Users, VehicleAttributes, ReservationData } from "./@types/types.js";
 import WebSocket from "ws";
 import dotenv from "dotenv";
+dotenv.config();
 import bcrypt from "bcrypt";
 import { getUserData } from "./login.mjs";
 
-dotenv.config();
-
-
+export const app: express.Express = express();
 
 // app.use(csurf({ cookie: true }));
 app.use(cors());
