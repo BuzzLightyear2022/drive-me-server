@@ -6,8 +6,9 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 import https from "https";
-import { DataTypes, Model, ModelStatic, Sequelize, Op, where } from "sequelize";
-import { Users, VehicleAttributes, ReservationData } from "./@types/types";
+import { Model, Sequelize, Op } from "sequelize";
+import { VehicleAttributesModel, ReservationDataModel, UsersModel } from "./table_definition.mjs";
+import { Users, VehicleAttributes, ReservationData } from "./@types/types.js";
 import WebSocket from "ws";
 
 const bcrypt = require("bcrypt");
@@ -15,7 +16,7 @@ const csurf = require("csurf");
 const bodyParser = require("body-parser");
 const cookiePaser = require("cookie-parser");
 
-const app: express.Express = express();
+export const app: express.Express = express();
 
 app.use(express.json());
 app.use(cookiePaser())
@@ -66,7 +67,7 @@ const rds_password: string = process.env.RDS_PASSWORD as string;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const sqlConnection: Sequelize = new Sequelize(
+export const sqlConnection: Sequelize = new Sequelize(
 	"drive_me_test_since20230703",
 	rds_user,
 	rds_password,
@@ -76,82 +77,14 @@ const sqlConnection: Sequelize = new Sequelize(
 	}
 );
 
-const VehicleAttributes: ModelStatic<Model<VehicleAttributes>> = sqlConnection.define("VehicleAttribute", {
-	id: {
-		type: DataTypes.INTEGER,
-		primaryKey: true,
-		autoIncrement: true,
-		allowNull: false
-	},
-	imageFileName: DataTypes.STRING,
-	carModel: DataTypes.STRING,
-	modelCode: DataTypes.STRING,
-	nonSmoking: DataTypes.BOOLEAN,
-	insurancePriority: DataTypes.BOOLEAN,
-	licensePlateRegion: DataTypes.STRING,
-	licensePlateCode: DataTypes.STRING,
-	licensePlateHiragana: DataTypes.STRING,
-	licensePlateNumber: DataTypes.STRING,
-	bodyColor: DataTypes.STRING,
-	driveType: DataTypes.STRING,
-	seatingCapacity: DataTypes.INTEGER,
-	transmission: DataTypes.STRING,
-	rentalClass: DataTypes.STRING,
-	navigation: DataTypes.STRING,
-	hasBackCamera: DataTypes.BOOLEAN,
-	hasDVD: DataTypes.BOOLEAN,
-	hasTelevision: DataTypes.BOOLEAN,
-	hasExternalInput: DataTypes.BOOLEAN,
-	hasSpareKey: DataTypes.BOOLEAN,
-	hasJAFCard: DataTypes.BOOLEAN,
-	JAFCardNumber: DataTypes.STRING,
-	JAFCardExp: DataTypes.DATE,
-	otherFeatures: DataTypes.TEXT,
-});
-
-const Reservation: ModelStatic<Model<ReservationData>> = sqlConnection.define('Reservation', {
-	id: {
-		type: DataTypes.INTEGER,
-		primaryKey: true,
-		autoIncrement: true,
-		allowNull: false
-	},
-	vehicleId: DataTypes.INTEGER,
-	reservationName: DataTypes.STRING,
-	rentalCategory: DataTypes.STRING,
-	pickupLocation: DataTypes.STRING,
-	returnLocation: DataTypes.STRING,
-	pickupDateObject: DataTypes.DATE,
-	returnDateObject: DataTypes.DATE,
-	nonSmoking: DataTypes.STRING,
-	comment: DataTypes.TEXT
-});
-
-const Users: ModelStatic<Model<Users>> = sqlConnection.define("Users", {
-	id: {
-		type: DataTypes.INTEGER,
-		primaryKey: true,
-		autoIncrement: true,
-		allowNull: false
-	},
-	username: {
-		type: DataTypes.STRING,
-		allowNull: false
-	},
-	hashed_password: {
-		type: DataTypes.STRING,
-		allowNull: false
-	}
-})
-
 type partOfVehicleAttributes =
-	| typeof VehicleAttributes["prototype"]["id"]
-	| typeof VehicleAttributes["prototype"]["carModel"]
-	| typeof VehicleAttributes["prototype"]["rentalClass"]
-	| typeof VehicleAttributes["prototype"]["licensePlateRegion"]
-	| typeof VehicleAttributes["prototype"]["licensePlateCode"]
-	| typeof VehicleAttributes["prototype"]["licensePlateHiragana"]
-	| typeof VehicleAttributes["prototype"]["licensePlateNumber"];
+	| typeof VehicleAttributesModel["prototype"]["id"]
+	| typeof VehicleAttributesModel["prototype"]["carModel"]
+	| typeof VehicleAttributesModel["prototype"]["rentalClass"]
+	| typeof VehicleAttributesModel["prototype"]["licensePlateRegion"]
+	| typeof VehicleAttributesModel["prototype"]["licensePlateCode"]
+	| typeof VehicleAttributesModel["prototype"]["licensePlateHiragana"]
+	| typeof VehicleAttributesModel["prototype"]["licensePlateNumber"];
 
 const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 	const { endPoint, fileName } = args;
@@ -173,25 +106,6 @@ const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
-app.post("/login/getUserData", async (request: express.Request, response: express.Response) => {
-	const username = request.body.username;
-
-	try {
-		const userData = await Users.findOne({
-			where: {
-				username: username
-			}
-		});
-
-		if (userData) {
-			console.log(userData.dataValues);
-			return response.json(userData.dataValues);
-		}
-	} catch (error) {
-		return error;
-	}
-});
-
 app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
 
 });
@@ -205,7 +119,7 @@ app.post("/login/getToken", async (request: any, response: express.Response) => 
 
 app.post("/sqlSelect/vehicleAttributes", async (request: express.Request, response: express.Response) => {
 	try {
-		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributes.findAll();
+		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributesModel.findAll();
 		return response.json(vehicleAttributes);
 	} catch (error: unknown) {
 		console.error(`Failed to select vehicleAttributes: ${error}`);
@@ -217,7 +131,7 @@ app.post("/sqlSelect/vehicleAttributesById", async (request: express.Request, re
 	const vehicleId: string = request.body.vehicleId;
 
 	try {
-		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributes.findOne({
+		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributesModel.findOne({
 			where: {
 				id: vehicleId
 			}
@@ -246,7 +160,7 @@ app.post("/sqlSelect/vehicleAttributesByClass", async (request: express.Request,
 			}
 		}
 
-		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] | null = await VehicleAttributes.findAll({
+		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] | null = await VehicleAttributesModel.findAll({
 			where: whereClause
 		});
 
@@ -267,7 +181,7 @@ app.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.R
 	try {
 		switch (selectedSmoking) {
 			case "non-smoking":
-				const nonSmokingRentalClasses: partOfVehicleAttributes = await VehicleAttributes.findAll({
+				const nonSmokingRentalClasses: partOfVehicleAttributes = await VehicleAttributesModel.findAll({
 					attributes: ["rentalClass"],
 					where: {
 						nonSmoking: true
@@ -279,7 +193,7 @@ app.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.R
 				});
 				return response.json(nonSmokingRentalClassesArray);
 			case "ok-smoking":
-				const smokingRentalClasses: partOfVehicleAttributes = await VehicleAttributes.findAll({
+				const smokingRentalClasses: partOfVehicleAttributes = await VehicleAttributesModel.findAll({
 					attributes: ["rentalClass"],
 					where: {
 						nonSmoking: false
@@ -291,7 +205,7 @@ app.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.R
 				});
 				return response.json(smokingRentalClassesArray);
 			case "none-specification":
-				const rentalClasses: partOfVehicleAttributes = await VehicleAttributes.findAll({
+				const rentalClasses: partOfVehicleAttributes = await VehicleAttributesModel.findAll({
 					attributes: ["rentalClass"],
 					group: "rentalClass"
 				});
@@ -313,7 +227,7 @@ app.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Reque
 	try {
 		switch (selectedSmoking) {
 			case "non-smoking":
-				const nonSmokingCarModels: partOfVehicleAttributes = await VehicleAttributes.findAll({
+				const nonSmokingCarModels: partOfVehicleAttributes = await VehicleAttributesModel.findAll({
 					attributes: ["carModel"],
 					where: {
 						nonSmoking: true,
@@ -326,7 +240,7 @@ app.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Reque
 				});
 				return response.json(nonSmokingRentalClassesArray);
 			case "ok-smoking":
-				const smokingCarModels: partOfVehicleAttributes = await VehicleAttributes.findAll({
+				const smokingCarModels: partOfVehicleAttributes = await VehicleAttributesModel.findAll({
 					attributes: ["carModel"],
 					where: {
 						nonSmoking: false,
@@ -339,7 +253,7 @@ app.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Reque
 				});
 				return response.json(smokingCarModelsArray);
 			case "none-specification":
-				const carModels: partOfVehicleAttributes = await VehicleAttributes.findAll({
+				const carModels: partOfVehicleAttributes = await VehicleAttributesModel.findAll({
 					attributes: ["carModel"],
 					where: {
 						rentalClass: selectedRentalClass
@@ -364,7 +278,7 @@ app.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: express.R
 	try {
 		switch (selectedSmoking) {
 			case "non-smoking":
-				const nonSmokingLicensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
+				const nonSmokingLicensePlates: partOfVehicleAttributes = await VehicleAttributesModel.findAll({
 					attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
 					where: {
 						nonSmoking: true,
@@ -381,7 +295,7 @@ app.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: express.R
 				});
 				return response.json(nonSmokingLicensePlatesData);
 			case "ok-smoking":
-				const smokingLicensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
+				const smokingLicensePlates: partOfVehicleAttributes = await VehicleAttributesModel.findAll({
 					attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
 					where: {
 						nonSmoking: false,
@@ -398,7 +312,7 @@ app.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: express.R
 				});
 				return response.json(smokingLicensePlatesData);
 			case "none-specification":
-				const licensePlates: partOfVehicleAttributes = await VehicleAttributes.findAll({
+				const licensePlates: partOfVehicleAttributes = await VehicleAttributesModel.findAll({
 					attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
 					where: {
 						carModel: selectedCarModel
@@ -425,7 +339,7 @@ app.post("/sqlSelect/reservationData/filterByDateRange", async (request: express
 	const endDate: Date = request.body.endDate;
 
 	try {
-		const reservationData: Model<ReservationData, ReservationData>[] = await Reservation.findAll({
+		const reservationData: Model<ReservationData, ReservationData>[] = await ReservationDataModel.findAll({
 			where: {
 				[Op.or]: [
 					{
@@ -459,7 +373,7 @@ app.post("/sqlSelect/reservationData/selectById", async (request: express.Reques
 	const reservationId: string = request.body.reservationId;
 
 	try {
-		const reservationDataById: Model<ReservationData, ReservationData> | null = await Reservation.findOne({
+		const reservationDataById: Model<ReservationData, ReservationData> | null = await ReservationDataModel.findOne({
 			where: {
 				id: reservationId
 			}
@@ -516,7 +430,7 @@ app.post("/sqlInsert/vehicleAttributes", upload.fields([
 		});
 	}
 	try {
-		VehicleAttributes.create(jsonData);
+		VehicleAttributesModel.create(jsonData);
 		return response.status(200).send("Data saved successfully");
 	} catch (error: unknown) {
 		return response.status(500).send("failed to write data to the database: " + error);
@@ -545,7 +459,7 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 	}
 
 	try {
-		const existingVehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributes.findByPk(newVehicleAttributes.id);
+		const existingVehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributesModel.findByPk(newVehicleAttributes.id);
 		const existingVehicleAttributesJson: VehicleAttributes | undefined = existingVehicleAttributes?.get({ plain: true });
 
 		if (existingVehicleAttributes) {
@@ -612,7 +526,7 @@ app.post("/sqlInsert/reservationData", upload.fields([
 ]), async (request: express.Request, response: express.Response) => {
 	const jsonData: ReservationData = JSON.parse(request.body.data);
 	try {
-		Reservation.create(jsonData);
+		ReservationDataModel.create(jsonData);
 		return response.status(200).send("Reservation data saved successfully");
 	} catch (error: unknown) {
 		return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
@@ -624,7 +538,7 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 ]), async (request: express.Request, response: express.Response) => {
 	try {
 		const updateFields: ReservationData = JSON.parse(request.body.data);
-		await Reservation.update(updateFields, {
+		await ReservationDataModel.update(updateFields, {
 			where: { id: updateFields.id }
 		});
 
