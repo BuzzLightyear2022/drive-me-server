@@ -26,6 +26,6 @@ export const getUserData = async () => {
 
 export const getSessionData = () => {
     app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
-        console.log(request);
+        console.log("pichi");
     });
 }
