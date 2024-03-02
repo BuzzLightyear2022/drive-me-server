@@ -2,7 +2,7 @@ import { app } from "./main.mjs";
 import express from "express";
 import { UsersModel } from "./sql_handler.mjs";
 
-export const getUserData = () => {
+export const getUserData = async () => {
     app.post("/login/getUserData", async (request: express.Request, response: express.Response) => {
         const username = request.body.username;
         console.log(username);
