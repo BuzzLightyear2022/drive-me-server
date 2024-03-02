@@ -187,7 +187,7 @@ app.post("/login/getUserData", async (request: express.Request, response: expres
 		// if (userData) {
 			// console.log(userData.dataValues);
 			// return response.json(userData.dataValues);
-		}
+		// }
 	// } catch (error) {
 		// return error;
 	// }
