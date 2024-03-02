@@ -13,14 +13,8 @@ import bcrypt from "bcrypt";
 
 dotenv.config();
 
-const bodyParser = require("body-parser");
-const cookiePaser = require("cookie-parser");
-
 export const app: express.Express = express();
 
-app.use(express.json());
-app.use(cookiePaser())
-app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(csurf({ cookie: true }));
 app.use(cors());
 app.use("/C2cFbaAZ", express.static("./car_images"));
