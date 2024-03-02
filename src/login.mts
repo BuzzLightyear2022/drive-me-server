@@ -2,11 +2,14 @@ import { app } from "./app_setup.mjs";
 import express from "express";
 import { UsersModel } from "./sql_handler.mjs";
 
+const bcrypt = require("csurf");
+
 app.use(express.json());
 
-export const getUserData = async () => {
-    app.post("/login/getUserData", async (request: express.Request, response: express.Response) => {
+export const getSessionData = async () => {
+    app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
         const username = request.body.username;
+        const password = request.body.password;
 
         try {
             const userData = await UsersModel.findOne({
@@ -16,16 +19,22 @@ export const getUserData = async () => {
             });
 
             if (userData) {
-                return response.json(userData.dataValues);
+                const hashedPassword: string = userData.dataValues.hashed_password;
+
+                const isPwCorrect = await bcrypt.compare(password, hashedPassword);
+
+                if (isPwCorrect) {
+                    return response.json({
+                        token: "token"
+                    });
+                } else {
+                    return response.json({
+                        error: "Invalid username or password"
+                    });
+                }
             }
         } catch (error) {
-            return error;
+            return "An error occurred";
         }
-    });
-}
-
-export const getSessionData = () => {
-    app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
-        console.log("pichi");
     });
 }
