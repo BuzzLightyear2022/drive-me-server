@@ -1,13 +1,16 @@
 import { app } from "./main.mjs";
-import express from "express";
+import express, { Request } from "express";
 import { UsersModel } from "./sql_handler.mjs";
 
 export const getUserData = () => {
     app.post("/login/getUserData", async (request: express.Request, response: express.Response) => {
-        const username = request.body.username;
+        const username = request;
+	console.log(username);
 
         try {
-            const userData = await UsersModel.findOne({
+            const userData: {
+	    	where: { username: string }
+	    } = await UsersModel.findOne({
                 where: {
                     username: username
                 }
