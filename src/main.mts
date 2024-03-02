@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -7,12 +5,12 @@ import fs from "fs";
 import multer from "multer";
 import https from "https";
 import { Model, Sequelize, Op } from "sequelize";
-
 import { VehicleAttributesModel, ReservationDataModel, UsersModel } from "./sql_handler.mjs";
 import { Users, VehicleAttributes, ReservationData } from "./@types/types.js";
 // import { getUserData, getSessionData } from "./login.mjs";
 import WebSocket from "ws";
 
+require("dotenv").config();
 const bcrypt = require("bcrypt");
 const csurf = require("csurf");
 const bodyParser = require("body-parser");
