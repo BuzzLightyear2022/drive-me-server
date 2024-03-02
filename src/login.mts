@@ -24,6 +24,6 @@ export const getUserData = () => {
 
 export const getSessionData = () => {
     app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
-
+        console.log(request);
     });
 }
