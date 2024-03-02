@@ -7,15 +7,12 @@ import https from "https";
 import { Model, Sequelize, Op } from "sequelize";
 import { VehicleAttributesModel, ReservationDataModel, UsersModel } from "./sql_handler.mjs";
 import { Users, VehicleAttributes, ReservationData } from "./@types/types.js";
-// import { getUserData, getSessionData } from "./login.mjs";
 import WebSocket from "ws";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 
 dotenv.config();
 
-// require("dotenv").config();
-const bcrypt = require("bcrypt");
-const csurf = require("csurf");
 const bodyParser = require("body-parser");
 const cookiePaser = require("cookie-parser");
 
