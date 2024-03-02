@@ -67,7 +67,7 @@ type partOfVehicleAttributes =
 	| typeof VehicleAttributesModel["prototype"]["licensePlateHiragana"]
 	| typeof VehicleAttributesModel["prototype"]["licensePlateNumber"];
 
-await getUserData();
+getUserData();
 
 const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 	const { endPoint, fileName } = args;
