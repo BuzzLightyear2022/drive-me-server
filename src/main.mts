@@ -78,6 +78,24 @@ export const sqlConnection: Sequelize = new Sequelize(
 	}
 );
 
+(async () => {
+	try {
+		await sqlConnection.authenticate();
+		console.log("Connected to the database successfully.");
+	} catch (error: unknown) {
+		console.error("Database Connection is failed: ", error);
+	}
+})();
+
+(async () => {
+	try {
+		await sqlConnection.sync();
+		console.log("Tables are created.");
+	} catch (error: unknown) {
+		console.error("Create Tables is failed: ", error);
+	}
+})();
+
 type partOfVehicleAttributes =
 	| typeof VehicleAttributesModel["prototype"]["id"]
 	| typeof VehicleAttributesModel["prototype"]["carModel"]
@@ -541,21 +559,3 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 		return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
 	}
 });
-
-(async () => {
-	try {
-		await sqlConnection.authenticate();
-		console.log("Connected to the database successfully.");
-	} catch (error: unknown) {
-		console.error("Database Connection is failed: ", error);
-	}
-})();
-
-(async () => {
-	try {
-		await sqlConnection.sync();
-		console.log("Tables are created.");
-	} catch (error: unknown) {
-		console.error("Create Tables is failed: ", error);
-	}
-})();
