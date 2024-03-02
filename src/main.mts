@@ -7,6 +7,21 @@ import fs from "fs";
 import multer from "multer";
 import https from "https";
 import { Model, Sequelize, Op } from "sequelize";
+
+const rds_host: string = process.env.RDS_HOST as string;
+const rds_user: string = process.env.RDS_USER as string;
+const rds_password: string = process.env.RDS_PASSWORD as string;
+
+export const sqlConnection: Sequelize = new Sequelize(
+	"drive_me_test_since20230703",
+	rds_user,
+	rds_password,
+	{
+		host: rds_host,
+		dialect: "mysql"
+	}
+);
+
 import { VehicleAttributesModel, ReservationDataModel, UsersModel } from "./table_definition.mjs";
 import { Users, VehicleAttributes, ReservationData } from "./@types/types.js";
 // import { getUserData, getSessionData } from "./login.mjs";
@@ -61,22 +76,8 @@ wsServer.on("connection", (ws) => {
 	console.log("Client connected");
 });
 
-const rds_host: string = process.env.RDS_HOST as string;
-const rds_user: string = process.env.RDS_USER as string;
-const rds_password: string = process.env.RDS_PASSWORD as string;
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-
-export const sqlConnection: Sequelize = new Sequelize(
-	"drive_me_test_since20230703",
-	rds_user,
-	rds_password,
-	{
-		host: rds_host,
-		dialect: "mysql"
-	}
-);
 
 (async () => {
 	try {
