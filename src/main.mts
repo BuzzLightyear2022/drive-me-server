@@ -1,3 +1,5 @@
+export const app: express.Express = express();
+
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -14,7 +16,7 @@ import { getUserData } from "./login.mjs";
 
 dotenv.config();
 
-export const app: express.Express = express();
+
 
 // app.use(csurf({ cookie: true }));
 app.use(cors());
