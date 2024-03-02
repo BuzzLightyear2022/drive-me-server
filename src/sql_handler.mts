@@ -1,5 +1,8 @@
 import { VehicleAttributes, ReservationData, Users } from "./@types/types.js";
 import { Sequelize, DataTypes, Model, ModelStatic } from "sequelize";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const rds_host: string = process.env.RDS_HOST as string;
 const rds_user: string = process.env.RDS_USER as string;
@@ -85,14 +88,14 @@ export const UsersModel: ModelStatic<Model<Users>> = sqlConnection.define("Users
 
 (async () => {
     try {
-		await sqlConnection.authenticate();
-	} catch (error: unknown) {
-		console.error("Database Connection is failed: ", error);
-	}
+        await sqlConnection.authenticate();
+    } catch (error: unknown) {
+        console.error("Database Connection is failed: ", error);
+    }
 
     try {
-		await sqlConnection.sync();
-	} catch (error: unknown) {
-		console.error("Create Tables is failed: ", error);
-	}
+        await sqlConnection.sync();
+    } catch (error: unknown) {
+        console.error("Create Tables is failed: ", error);
+    }
 })();
