@@ -10,6 +10,7 @@ import { Users, VehicleAttributes, ReservationData } from "./@types/types.js";
 import WebSocket from "ws";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import { getUserData } from "./login.mjs";
 
 dotenv.config();
 
@@ -65,6 +66,8 @@ type partOfVehicleAttributes =
 	| typeof VehicleAttributesModel["prototype"]["licensePlateCode"]
 	| typeof VehicleAttributesModel["prototype"]["licensePlateHiragana"]
 	| typeof VehicleAttributesModel["prototype"]["licensePlateNumber"];
+
+getUserData();
 
 const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 	const { endPoint, fileName } = args;
