@@ -23,6 +23,8 @@ export const getSessionData = async () => {
                 const isPwCorrect = await bcrypt.compare(password, hashedPassword);
 
                 if (isPwCorrect) {
+                    const csrfToken: string = crypto.randomUUID();
+                    console.log(csrfToken);
                     return response.json({
                         token: "token"
                     });
