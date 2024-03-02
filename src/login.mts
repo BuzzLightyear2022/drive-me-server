@@ -1,4 +1,4 @@
-import { app } from "./main.mjs";
+import { app } from "./app_setup.mjs";
 import express from "express";
 import { UsersModel } from "./sql_handler.mjs";
 

@@ -1,3 +1,4 @@
+import { app } from "./app_setup.mjs";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -12,8 +13,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import bcrypt from "bcrypt";
 import { getUserData } from "./login.mjs";
-
-export const app: express.Express = express();
 
 // app.use(csurf({ cookie: true }));
 app.use(cors());
