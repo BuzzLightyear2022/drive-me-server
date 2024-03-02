@@ -7,7 +7,6 @@ app.use(express.json());
 export const getUserData = async () => {
     app.post("/login/getUserData", async (request: express.Request, response: express.Response) => {
         const username = request.body.username;
-        console.log(username);
 
         try {
             const userData = await UsersModel.findOne({

@@ -12,7 +12,7 @@ import WebSocket from "ws";
 import dotenv from "dotenv";
 dotenv.config();
 import bcrypt from "bcrypt";
-import { getUserData } from "./login.mjs";
+import { getUserData, getSessionData } from "./login.mjs";
 
 // app.use(csurf({ cookie: true }));
 app.use(cors());
@@ -66,6 +66,7 @@ type partOfVehicleAttributes =
 	| typeof VehicleAttributesModel["prototype"]["licensePlateNumber"];
 
 getUserData();
+getSessionData();
 
 const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 	const { endPoint, fileName } = args;
