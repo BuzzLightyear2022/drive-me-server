@@ -11,7 +11,7 @@ import { Users, VehicleAttributes, ReservationData } from "./@types/types";
 import WebSocket from "ws";
 
 const bcrypt = require("bcrypt");
-const csrf = require("ucsrf");
+const csrf = require("csurf");
 const csrfProtection = csrf({ cokkie: true });
 
 const app: express.Express = express();
