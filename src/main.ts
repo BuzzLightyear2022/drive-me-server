@@ -174,22 +174,23 @@ fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
 app.post("/login/getUserData", async (request: express.Request, response: express.Response) => {
-	const username = request.body.username;
+	console.log(request);
+	// const username = request.body.username;
 
-	try {
-		const userData = await Users.findOne({
-			where: {
-				username: username
-			}
-		});
+	// try {
+		//const userData = await Users.findOne({
+			// where: {
+				//username: username
+			// }
+		// });
 
-		if (userData) {
-			console.log(userData.dataValues);
-			return response.json(userData.dataValues);
+		// if (userData) {
+			// console.log(userData.dataValues);
+			// return response.json(userData.dataValues);
 		}
-	} catch (error) {
-		return error;
-	}
+	// } catch (error) {
+		// return error;
+	// }
 });
 
 app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
