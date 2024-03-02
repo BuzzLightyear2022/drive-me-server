@@ -13,10 +13,12 @@ import WebSocket from "ws";
 const bcrypt = require("bcrypt");
 const csurf = require("csurf");
 const bodyParser = require("body-parser");
+const cookiePaser = require("cookie-parser");
 
 const app: express.Express = express();
 
 app.use(express.json());
+app.use(cookiePaser())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(csurf({ cookie: true }));
 app.use(cors());
@@ -189,7 +191,10 @@ app.post("/login/getUserData", async (request: express.Request, response: expres
 	}
 });
 
-app.post("/login/getToken", async (request: express.Request, response: express.Response) => {
+app.post("/login/getCsurfToken", async (request: any, response: express.Response) => {
+	const csrfToken: string | undefined = request.csrfToken();
+
+	response.json({ csurfToken: csrfToken });
 	console.log(request.body);
 });
 
