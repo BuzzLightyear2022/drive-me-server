@@ -9,7 +9,7 @@ import https from "https";
 import { Model, Sequelize, Op } from "sequelize";
 import { VehicleAttributesModel, ReservationDataModel, UsersModel } from "./table_definition.mjs";
 import { Users, VehicleAttributes, ReservationData } from "./@types/types.js";
-import { getUserData, getSessionData } from "./login.mjs";
+// import { getUserData, getSessionData } from "./login.mjs";
 import WebSocket from "ws";
 
 const bcrypt = require("bcrypt");
