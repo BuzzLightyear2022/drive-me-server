@@ -23,13 +23,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(csurf({ cookie: true }));
 app.use(cors());
 app.use("/C2cFbaAZ", express.static("./car_images"));
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-	if (err && err.code === "EBADCSRFTOKEN") {
-		res.status(400).send("Invalid CSRF token");
-	} else {
-		next(err);
-	}
-});
+// app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+// 	if (err && err.code === "EBADCSRFTOKEN") {
+// 		res.status(400).send("Invalid CSRF token");
+// 	} else {
+// 		next(err);
+// 	}
+// });
 
 const httpsPort: string = process.env.HTTPS_PORT as string;
 
@@ -178,18 +178,18 @@ app.post("/login/getUserData", async (request: express.Request, response: expres
 	// const username = request.body.username;
 
 	// try {
-		//const userData = await Users.findOne({
-			// where: {
-				//username: username
-			// }
-		// });
+	//const userData = await Users.findOne({
+	// where: {
+	//username: username
+	// }
+	// });
 
-		// if (userData) {
-			// console.log(userData.dataValues);
-			// return response.json(userData.dataValues);
-		// }
+	// if (userData) {
+	// console.log(userData.dataValues);
+	// return response.json(userData.dataValues);
+	// }
 	// } catch (error) {
-		// return error;
+	// return error;
 	// }
 });
 
