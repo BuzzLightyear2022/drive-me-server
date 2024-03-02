@@ -44,15 +44,15 @@ const credentials = {
 }
 
 const httpsServer = https.createServer(credentials, app);
-const wsServer = new WebSocket.Server({ noServer: true });
+// const wsServer = new WebSocket.Server({ noServer: true });
 
 httpsServer.listen(httpsPort, () => {
 	console.log(`HTTPS Server running on port: ${httpsPort}`);
 });
 
-wsServer.on("connection", (ws) => {
-	console.log("Client connected");
-});
+// wsServer.on("connection", (ws) => {
+// 	console.log("Client connected");
+// });
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -481,9 +481,9 @@ app.post("/sqlUpdate/vehicleAttributes", upload.fields([
 
 			await existingVehicleAttributes.update(newVehicleAttributes);
 
-			wsServer.clients.forEach(async (client: WebSocket) => {
-				client.send("wsUpdate:vehicleAttributes");
-			});
+			// wsServer.clients.forEach(async (client: WebSocket) => {
+			// 	client.send("wsUpdate:vehicleAttributes");
+			// });
 		}
 	} catch (error: unknown) {
 		return response.status(500).send(`Failed to updata data on the database: ${error}`);
@@ -511,9 +511,9 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 			where: { id: updateFields.id }
 		});
 
-		wsServer.clients.forEach((client: WebSocket) => {
-			client.send("wsUpdate:reservationData");
-		});
+		// wsServer.clients.forEach((client: WebSocket) => {
+		// 	client.send("wsUpdate:reservationData");
+		// });
 
 		return response.status(200).send("Reservation data saved successfully");
 	} catch (error: unknown) {
