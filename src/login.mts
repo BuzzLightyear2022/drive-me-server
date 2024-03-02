@@ -1,8 +1,7 @@
 import { app } from "./app_setup.mjs";
 import express from "express";
 import { UsersModel } from "./sql_handler.mjs";
-
-const bcrypt = require("csurf");
+import * as bcrypt from "bcrypt";
 
 app.use(express.json());
 
