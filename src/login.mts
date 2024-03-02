@@ -1,6 +1,5 @@
 import { app } from "./main.mjs";
 import express from "express";
-import { Users } from "./@types/types.js";
 import { UsersModel } from "./table_definition.mjs";
 
 export class loginProcess {
@@ -22,6 +21,12 @@ export class loginProcess {
             } catch (error) {
                 return error;
             }
+        });
+    }
+
+    static getSessionData = () => {
+        app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
+
         });
     }
 }

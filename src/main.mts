@@ -106,17 +106,6 @@ const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
-app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
-
-});
-
-app.post("/login/getToken", async (request: any, response: express.Response) => {
-	const csrfToken: string | undefined = request.csrfToken();
-
-	response.json({ csurfToken: csrfToken });
-	console.log(request.body);
-});
-
 app.post("/sqlSelect/vehicleAttributes", async (request: express.Request, response: express.Response) => {
 	try {
 		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributesModel.findAll();
