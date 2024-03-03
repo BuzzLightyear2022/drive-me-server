@@ -2,6 +2,7 @@ import { app } from "./app_setup.mjs";
 import express from "express";
 import { UsersModel } from "./sql_handler.mjs";
 import * as bcrypt from "bcrypt";
+import crypto from "crypto";
 
 app.use(express.json());
 
@@ -23,10 +24,9 @@ export const getSessionData = async () => {
                 const isPwCorrect = await bcrypt.compare(password, hashedPassword);
 
                 if (isPwCorrect) {
-                    const csrfToken: string = crypto.randomUUID();
-                    console.log(csrfToken);
+                    const csrfToken: string = crypto.randomBytes(32).toString("hex");
                     return response.json({
-                        token: "token"
+                        token: csrfToken
                     });
                 } else {
                     return response.json({
