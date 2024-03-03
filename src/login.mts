@@ -27,6 +27,7 @@ export const getSessionData = async () => {
                 if (isPwCorrect) {
                     const userSecretKey: string = crypto.randomBytes(32).toString("hex");
                     const token = jwt.sign(userData, userSecretKey, { expiresIn: "1h" });
+		    console.log(token);
                     return token;
                 } else {
                     return response.json({
