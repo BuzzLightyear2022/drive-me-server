@@ -3,6 +3,7 @@ import express from "express";
 import { UsersModel } from "./sql_handler.mjs";
 import * as bcrypt from "bcrypt";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
 
 app.use(express.json());
 
@@ -24,10 +25,9 @@ export const getSessionData = async () => {
                 const isPwCorrect = await bcrypt.compare(password, hashedPassword);
 
                 if (isPwCorrect) {
-                    const csrfToken: string = crypto.randomBytes(32).toString("hex");
-                    return response.json({
-                        token: csrfToken
-                    });
+                    const userSecretKey: string = crypto.randomBytes(32).toString("hex");
+                    const token = jwt.sign(userData, userSecretKey, { expiresIn: "1h" });
+                    return token;
                 } else {
                     return response.json({
                         error: "Invalid username or password"
