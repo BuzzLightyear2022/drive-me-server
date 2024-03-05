@@ -10,6 +10,7 @@ app.use(express.json());
 
 export const getSessionData = async () => {
     app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
+        console.log(request);
         const username = request.body.username;
         const password = request.body.password;
 
