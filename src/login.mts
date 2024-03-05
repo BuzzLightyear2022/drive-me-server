@@ -1,5 +1,6 @@
 import { app } from "./app_setup.mjs";
 import express from "express";
+import session from "express-session";
 import { UsersModel } from "./sql_handler.mjs";
 import * as bcrypt from "bcrypt";
 import crypto from "crypto";
@@ -25,6 +26,16 @@ export const getSessionData = async () => {
                 const isPwCorrect = await bcrypt.compare(password, hashedPassword);
 
                 if (isPwCorrect) {
+                    // @ts-ignore
+                    request.session.user = {
+                        userId: userData.dataValues.id,
+                        username: userData.dataValues.username,
+                        role: "admin"
+                    }
+
+                    // @ts-ignore
+                    console.log(request.session.user);
+
                     const userSecretKey: string = crypto.randomBytes(32).toString("hex");
 
                     const payload = {
