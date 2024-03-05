@@ -118,7 +118,7 @@ app.post("/sqlSelect/vehicleAttributesById", async (request: express.Request, re
 	}
 });
 
-app.post("/sqlSelect/vehicleAttributesByClass", authenticateToken, async (request: express.Request, response: express.Response) => {
+app.post("/sqlSelect/vehicleAttributesByClass", async (request: express.Request, response: express.Response) => {
 	const rentalClass: string = request.body.rentalClass;
 
 	try {
@@ -145,7 +145,7 @@ app.post("/sqlSelect/vehicleAttributesByClass", authenticateToken, async (reques
 	}
 });
 
-app.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
+app.post("/sqlSelect/vehicleAttributes/rentalClasses", authenticateToken, async (request: express.Request, response: express.Response) => {
 	const selectedSmoking: string = request.body["selectedSmoking"];
 
 	try {
