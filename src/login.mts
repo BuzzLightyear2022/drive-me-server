@@ -12,8 +12,7 @@ app.use(express.json());
 
 export const getSessionData = async () => {
     app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
-	const secretKey = process.env.SECRET_KEY;
-	console.log(secretKey);
+        const secretKey = process.env.SECRET_KEY as string;
 
         const username = request.body.username;
         const password = request.body.password;
@@ -31,8 +30,13 @@ export const getSessionData = async () => {
                 const isPwCorrect = await bcrypt.compare(password, hashedPassword);
 
                 if (isPwCorrect) {
-                    // const token = jwt.sign(payload, privateKey, { expiresIn: "1h" });
-                    // console.log(token);
+                    const payload = {
+                        userID: userData.dataValues.id,
+                        username: userData.dataValues.username
+                    }
+
+                    const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
+                    console.log(token);
 
                     return response.json();
                 } else {
