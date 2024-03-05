@@ -36,9 +36,8 @@ export const getSessionData = async () => {
                     }
 
                     const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
-                    console.log(token);
 
-                    return response.json();
+                    return response.json(token);
                 } else {
                     return response.json({
                         error: "Invalid username or password"
