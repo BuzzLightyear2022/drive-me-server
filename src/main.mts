@@ -146,7 +146,7 @@ app.post("/sqlSelect/vehicleAttributesByClass", async (request: express.Request,
 });
 
 app.post("/sqlSelect/vehicleAttributes/rentalClasses", authenticateToken, async (request: express.Request, response: express.Response) => {
-	const selectedSmoking: string = request.body["selectedSmoking"];
+	const selectedSmoking: string = request.body;
 	console.log(selectedSmoking);
 
 	try {
