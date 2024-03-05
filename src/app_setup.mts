@@ -7,7 +7,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
     const token = request.headers.authorization;
 
     if (!token) {
-        return response.status(401);
+        return response.status(401).send("Unauthorized");
     }
 
     jwt.verify(token, "secretKey", (error: unknown, user: any) => {
@@ -23,9 +23,3 @@ export const authenticateToken = (request: express.Request, response: express.Re
 }
 
 export const app: express.Express = express();
-
-app.use(session({
-    secret: "secretKey",
-    resave: false,
-    saveUninitialized: true
-}));
