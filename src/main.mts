@@ -87,7 +87,7 @@ const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 
-app.post("/sqlSelect/vehicleAttributes", async (request: express.Request, response: express.Response) => {
+app.post("/sqlSelect/vehicleAttributes", authenticateToken, async (request: express.Request, response: express.Response) => {
 	try {
 		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributesModel.findAll();
 		return response.json(vehicleAttributes);
@@ -97,7 +97,7 @@ app.post("/sqlSelect/vehicleAttributes", async (request: express.Request, respon
 	}
 });
 
-app.post("/sqlSelect/vehicleAttributesById", async (request: express.Request, response: express.Response) => {
+app.post("/sqlSelect/vehicleAttributesById", authenticateToken, async (request: express.Request, response: express.Response) => {
 	const vehicleId: string = request.body.vehicleId;
 
 	try {
@@ -304,7 +304,7 @@ app.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: express.R
 	}
 });
 
-app.post("/sqlSelect/reservationData/filterByDateRange", async (request: express.Request, response: express.Response) => {
+app.post("/sqlSelect/reservationData/filterByDateRange", authenticateToken, async (request: express.Request, response: express.Response) => {
 	const startDate: Date = request.body.startDate;
 	const endDate: Date = request.body.endDate;
 
@@ -339,7 +339,7 @@ app.post("/sqlSelect/reservationData/filterByDateRange", async (request: express
 	}
 });
 
-app.post("/sqlSelect/reservationData/selectById", async (request: express.Request, response: express.Response) => {
+app.post("/sqlSelect/reservationData/selectById", authenticateToken, async (request: express.Request, response: express.Response) => {
 	const reservationId: string = request.body.reservationId;
 
 	try {
