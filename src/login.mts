@@ -31,29 +31,10 @@ export const getSessionData = async () => {
                 const isPwCorrect = await bcrypt.compare(password, hashedPassword);
 
                 if (isPwCorrect) {
-                    // const userSecretKey: string = crypto.randomBytes(32).toString("hex");
+                    // const token = jwt.sign(payload, privateKey, { expiresIn: "1h" });
+                    // console.log(token);
 
-                    const { publicKey, privateKey } = crypto.generateKeyPairSync("x448", {
-                        publicKeyEncoding: {
-                            type: "spki",
-                            format: "pem"
-                        },
-                        privateKeyEncoding: {
-                            type: "pkcs8",
-                            format: "pem"
-                        }
-                    });
-
-                    const payload = {
-                        userId: userData.dataValues.id,
-                        username: userData.dataValues.username,
-                        role: "admin"
-                    }
-
-                    const token = jwt.sign(payload, privateKey, { expiresIn: "1h" });
-                    console.log(token);
-
-                    return response.json(publicKey);
+                    return response.json();
                 } else {
                     return response.json({
                         error: "Invalid username or password"
