@@ -10,7 +10,6 @@ app.use(express.json());
 
 export const getSessionData = async () => {
     app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
-        console.log(request);
         const username = request.body.username;
         const password = request.body.password;
 
@@ -27,13 +26,6 @@ export const getSessionData = async () => {
                 const isPwCorrect = await bcrypt.compare(password, hashedPassword);
 
                 if (isPwCorrect) {
-                    // @ts-ignore
-                    request.session.user = {
-                        userId: userData.dataValues.id,
-                        username: userData.dataValues.username,
-                        role: "admin"
-                    }
-
                     const userSecretKey: string = crypto.randomBytes(32).toString("hex");
 
                     const payload = {
