@@ -33,9 +33,6 @@ export const getSessionData = async () => {
                         role: "admin"
                     }
 
-                    // @ts-ignore
-                    console.log(request.session.user);
-
                     const userSecretKey: string = crypto.randomBytes(32).toString("hex");
 
                     const payload = {
