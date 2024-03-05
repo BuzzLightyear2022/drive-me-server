@@ -45,10 +45,7 @@ export const getSessionData = async () => {
                         role: "admin"
                     }
 
-                    // const token = jwt.sign(payload, privateKey, { expiresIn: "1h" });
-
-                    console.log("pub", publicKey);
-                    console.log("pri", privateKey);
+                    const token = jwt.sign(payload, privateKey, { expiresIn: "1h" });
 
                     return response.json(publicKey);
                 } else {
