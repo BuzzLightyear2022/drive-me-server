@@ -30,7 +30,7 @@ export const getSessionData = async () => {
 
                     const { publicKey, privateKey } = crypto.generateKeyPairSync("x448", {
                         publicKeyEncoding: {
-                            type: "sqki",
+                            type: "spki",
                             format: "pem"
                         },
                         privateKeyEncoding: {
