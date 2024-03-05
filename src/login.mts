@@ -5,11 +5,16 @@ import { UsersModel } from "./sql_handler.mjs";
 import * as bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv"
+dotenv.config();
 
 app.use(express.json());
 
 export const getSessionData = async () => {
     app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
+	const secretKey = process.env.SECRET_KEY;
+	console.log(secretKey);
+
         const username = request.body.username;
         const password = request.body.password;
 
