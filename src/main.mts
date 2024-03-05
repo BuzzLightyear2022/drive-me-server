@@ -1,4 +1,4 @@
-import { app } from "./app_setup.mjs";
+import { app, authenticateToken } from "./app_setup.mjs";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -118,7 +118,7 @@ app.post("/sqlSelect/vehicleAttributesById", async (request: express.Request, re
 	}
 });
 
-app.post("/sqlSelect/vehicleAttributesByClass", async (request: express.Request, response: express.Response) => {
+app.post("/sqlSelect/vehicleAttributesByClass", authenticateToken, async (request: express.Request, response: express.Response) => {
 	const rentalClass: string = request.body.rentalClass;
 
 	try {
