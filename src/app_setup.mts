@@ -1,6 +1,7 @@
 import express from "express";
 
 export const authenticateToken = (request: Express.Request, response: Express.Response, next: any) => {
+    // @ts-ignore
     const token = request.headers.authorization;
     console.log(token);
 }
