@@ -26,7 +26,18 @@ export const getSessionData = async () => {
                 const isPwCorrect = await bcrypt.compare(password, hashedPassword);
 
                 if (isPwCorrect) {
-                    const userSecretKey: string = crypto.randomBytes(32).toString("hex");
+                    // const userSecretKey: string = crypto.randomBytes(32).toString("hex");
+
+                    const { publicKey, privateKey } = crypto.generateKeyPairSync("x448", {
+                        publicKeyEncoding: {
+                            type: "sqki",
+                            format: "pem"
+                        },
+                        privateKeyEncoding: {
+                            type: "pkcs8",
+                            format: "pem"
+                        }
+                    });
 
                     const payload = {
                         userId: userData.dataValues.id,
@@ -34,8 +45,12 @@ export const getSessionData = async () => {
                         role: "admin"
                     }
 
-                    const token = jwt.sign(payload, userSecretKey, { expiresIn: "1h" });
-                    return response.json(token);
+                    const token = jwt.sign(payload, privateKey, { expiresIn: "1h" });
+
+                    console.log("pub", publicKey);
+                    console.log("pri", privateKey);
+
+                    return response.json(publicKey);
                 } else {
                     return response.json({
                         error: "Invalid username or password"
