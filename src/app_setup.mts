@@ -12,6 +12,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
 
     jwt.verify(token, "secretKey", (error: unknown, user: any) => {
         if (error) {
+            console.log(error);
             return response.status(403);
         }
 
