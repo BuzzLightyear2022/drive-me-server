@@ -46,6 +46,7 @@ export const getSessionData = async () => {
                     }
 
                     const token = jwt.sign(payload, privateKey, { expiresIn: "1h" });
+                    console.log(token);
 
                     return response.json(publicKey);
                 } else {
