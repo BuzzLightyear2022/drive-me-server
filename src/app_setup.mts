@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 export const authenticateToken = (request: express.Request, response: express.Response, next: any) => {
     // @ts-ignore
     const token = request.headers.authorization;
+    console.log(token);
 
     if (!token) {
         return response.status(401).send("Unauthorized");
