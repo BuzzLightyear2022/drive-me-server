@@ -99,6 +99,7 @@ app.post("/sqlSelect/vehicleAttributes", authenticateToken, async (request: expr
 
 app.post("/sqlSelect/vehicleAttributesById", authenticateToken, async (request: express.Request, response: express.Response) => {
 	const vehicleId: string = request.body.vehicleId;
+	console.log(vehicleId);
 
 	try {
 		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributesModel.findOne({
