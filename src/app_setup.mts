@@ -3,6 +3,8 @@ import cors from "cors";
 import https from "https";
 import path from "path";
 import fs from "fs";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const app: express.Express = express();
 
