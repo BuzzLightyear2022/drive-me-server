@@ -99,7 +99,6 @@ app.post("/sqlSelect/vehicleAttributes", authenticateToken, async (request: expr
 
 app.post("/sqlSelect/vehicleAttributesById", authenticateToken, async (request: express.Request, response: express.Response) => {
 	const vehicleId: string = request.body.vehicleId;
-	console.log(vehicleId);
 
 	try {
 		const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributesModel.findOne({
@@ -146,7 +145,7 @@ app.post("/sqlSelect/vehicleAttributesByClass", authenticateToken, async (reques
 	}
 });
 
-app.post("/sqlSelect/vehicleAttributes/rentalClasses", authenticateToken, async (request: express.Request, response: express.Response) => {
+app.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
 	const selectedSmoking: any = request.body["selectedSmoking"];
 
 	try {
