@@ -1,8 +1,10 @@
 import express from "express";
 import cors from "cors";
 import https from "https";
+import WebSocket from "ws";
 import path from "path";
 import fs from "fs";
+import { IncomingMessage, ServerResponse } from "http";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -31,4 +33,9 @@ const httpsPort: string = process.env.HTTPS_PORT as string;
 const httpsServer = https.createServer(credentials, app);
 httpsServer.listen(httpsPort, () => {
     console.log(`HTTPS Server running on port: ${httpsPort}`);
+});
+
+const wssServer = new WebSocket.Server({ server: httpsServer });
+wssServer.on("connection", () => {
+    console.log("Wss client connected");
 });
