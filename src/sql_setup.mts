@@ -28,6 +28,7 @@ export const VehicleAttributesModel: ModelStatic<Model<VehicleAttributes>> = sql
     imageFileName: DataTypes.STRING,
     carModel: DataTypes.STRING,
     modelCode: DataTypes.STRING,
+    modelTrim: DataTypes.STRING,
     nonSmoking: DataTypes.BOOLEAN,
     insurancePriority: DataTypes.BOOLEAN,
     licensePlateRegion: DataTypes.STRING,

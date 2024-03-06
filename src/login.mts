@@ -1,16 +1,35 @@
 import { app } from "./app_setup.mjs";
 import express from "express";
-import session from "express-session";
-import { UsersModel } from "./sql_handler.mjs";
+import { UsersModel } from "./sql_setup.mjs";
 import * as bcrypt from "bcrypt";
-import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
 dotenv.config();
 
 app.use(express.json());
 
-export const getSessionData = async () => {
+export const authenticateToken = (request: express.Request, response: express.Response, next: any) => {
+    // @ts-ignore
+    const token = request.headers.authorization;
+    const secretKey = process.env.SECRET_KEY as string;
+
+    if (!token) {
+        return response.status(401).send("Unauthorized");
+    }
+
+    jwt.verify(token, secretKey, (error: unknown, user: any) => {
+        if (error) {
+            console.log(error);
+            return response.status(403);
+        }
+
+        // @ts-ignore
+        request.user = user;
+        next();
+    });
+}
+
+(async () => {
     app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
         const secretKey = process.env.SECRET_KEY as string;
 
@@ -48,4 +67,4 @@ export const getSessionData = async () => {
             return "An error occurred";
         }
     });
-}
+})();
