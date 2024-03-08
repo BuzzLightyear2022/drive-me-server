@@ -29,7 +29,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
     });
 }
 
-(async () => {
+export const getSessionData = () => {
     app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
         const secretKey = process.env.SECRET_KEY as string;
 
@@ -67,4 +67,4 @@ export const authenticateToken = (request: express.Request, response: express.Re
             return "An error occurred";
         }
     });
-})();
+};
