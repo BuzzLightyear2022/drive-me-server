@@ -6,8 +6,6 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
 dotenv.config();
 
-app.use(express.json());
-
 export const authenticateToken = (request: express.Request, response: express.Response, next: any) => {
     // @ts-ignore
     const token = request.headers.authorization;

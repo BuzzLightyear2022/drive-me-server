@@ -15,6 +15,7 @@ import "./sql_insert_process.mjs";
 
 export const app: express.Express = express();
 
+app.use(express.json());
 app.use(cors());
 app.use("/C2cFbaAZ", express.static("./car_images"));
 
