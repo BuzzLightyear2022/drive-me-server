@@ -40,7 +40,7 @@ httpsServer.listen(httpsPort, () => {
     console.log(`HTTPS Server running on port: ${httpsPort}`);
 });
 
-const wssServer = new WebSocketServer({ server: httpsServer });
-wssServer.on("connection", () => {
-    console.log("Wss client connected");
-});
+// const wssServer = new WebSocketServer({ server: httpsServer });
+// wssServer.on("connection", () => {
+//     console.log("Wss client connected");
+// });
