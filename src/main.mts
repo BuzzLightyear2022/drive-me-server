@@ -7,12 +7,6 @@ import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 
-import "./login.mjs";
-import "./sql_select_process.mjs";
-import "./sql_update_process.mjs";
-import "./fetch_json_process.mjs";
-import "./sql_insert_process.mjs";
-
 export const app: express.Express = express();
 
 app.use(cors());
@@ -44,3 +38,9 @@ const wssServer = new WebSocketServer({ server: httpsServer });
 wssServer.on("connection", () => {
     console.log("Wss client connected");
 });
+
+import "./login.mjs";
+import "./sql_select_process.mjs";
+import "./sql_update_process.mjs";
+import "./fetch_json_process.mjs";
+import "./sql_insert_process.mjs";
