@@ -7,11 +7,7 @@ import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 
-import { getSessionData } from "./login.mjs";
-import "./sql_select_process.mjs";
-import "./sql_update_process.mjs";
-import "./fetch_json_process.mjs";
-import "./sql_insert_process.mjs";
+
 
 export const app: express.Express = express();
 
@@ -37,8 +33,16 @@ const credentials = {
 const httpsPort: string = process.env.HTTPS_PORT as string;
 
 const httpsServer = https.createServer(credentials, app);
-httpsServer.listen(httpsPort, () => {
+httpsServer.listen(httpsPort, async () => {
     console.log(`HTTPS Server running on port: ${httpsPort}`);
+
+    await import("./login.mjs");
+
+    // import "./login.mjs";
+    // import "./sql_select_process.mjs";
+    // import "./sql_update_process.mjs";
+    // import "./fetch_json_process.mjs";
+    // import "./sql_insert_process.mjs";
 });
 
 const wssServer = new WebSocketServer({ server: httpsServer });
@@ -46,4 +50,4 @@ wssServer.on("connection", () => {
     console.log("Wss client connected");
 });
 
-getSessionData();
+// getSessionData();
