@@ -1,6 +1,6 @@
 import express from "express";
 import { Model, Op } from "sequelize";
-import { app } from "./app_setup.mjs";
+import { app } from "./main.mjs";
 import { authenticateToken } from "./login.mjs";
 import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
 import { VehicleAttributes, ReservationData } from "./@types/types.js";

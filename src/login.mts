@@ -1,4 +1,4 @@
-import { app } from "./app_setup.mjs";
+import { app } from "./main.mjs";
 import express from "express";
 import { UsersModel } from "./sql_setup.mjs";
 import * as bcrypt from "bcrypt";
