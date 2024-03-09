@@ -45,5 +45,3 @@ const wssServer = new WebSocketServer({ server: httpsServer });
 wssServer.on("connection", () => {
     console.log("Wss client connected");
 });
-
-// getSessionData();
