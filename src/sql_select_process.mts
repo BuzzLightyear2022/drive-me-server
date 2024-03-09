@@ -70,7 +70,7 @@ import { VehicleAttributes, ReservationData } from "./@types/types.js";
 })();
 
 (async () => {
-    app.post("/sqlSelect/vehicleAttributes/rentalClasses", async (request: express.Request, response: express.Response) => {
+    app.post("/sqlSelect/vehicleAttributes/rentalClasses", authenticateToken, async (request: express.Request, response: express.Response) => {
         const selectedSmoking = request.body["selectedSmoking"];
 
         try {
@@ -117,7 +117,7 @@ import { VehicleAttributes, ReservationData } from "./@types/types.js";
 })();
 
 (async () => {
-    app.post("/sqlSelect/vehicleAttributes/carModels", async (request: express.Request, response: express.Response) => {
+    app.post("/sqlSelect/vehicleAttributes/carModels", authenticateToken, async (request: express.Request, response: express.Response) => {
         const selectedSmoking: string = request.body.selectedSmoking;
         const selectedRentalClass: string = request.body.selectedRentalClass;
 
@@ -170,7 +170,7 @@ import { VehicleAttributes, ReservationData } from "./@types/types.js";
 })();
 
 (async () => {
-    app.post("/sqlSelect/vehicleAttributes/licensePlates", async (request: express.Request, response: express.Response) => {
+    app.post("/sqlSelect/vehicleAttributes/licensePlates", authenticateToken, async (request: express.Request, response: express.Response) => {
         const selectedSmoking: string = request.body.selectedSmoking;
         const selectedCarModel: string = request.body.selectedCarModel;
 

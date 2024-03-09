@@ -2,11 +2,12 @@ import { app } from "./main.mjs";
 import express from "express";
 import path from "path";
 import fs from "fs";
+import { authenticateToken } from "./login.mjs";
 
 const fetchJson = (args: { endPoint: string, fileName: string }): void => {
     const { endPoint, fileName } = args;
 
-    app.post(endPoint, (request: express.Request, response: express.Response): void => {
+    app.post(endPoint, authenticateToken, (request: express.Request, response: express.Response): void => {
         const jsonFilePath: string = path.join("json_files", fileName);
 
         fs.readFile(jsonFilePath, "utf8", (error: unknown, data: string): express.Response => {
