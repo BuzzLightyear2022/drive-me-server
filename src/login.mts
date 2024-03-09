@@ -40,34 +40,33 @@ export const authenticateToken = (request: express.Request, response: express.Re
                 }
             });
 
-            if (userData) {
-                const hashedPassword: string = userData.dataValues.hashed_password;
-
-                const isPwCorrect = await bcrypt.compare(password, hashedPassword);
-
-                if (!isPwCorrect) {
-                    return response.status(401).json({
-                        error: "Invalid username or password"
-                    });
-                } else {
-                    const payload = {
-                        userID: userData.dataValues.id,
-                        username: userData.dataValues.username
-                    }
-
-                    const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
-
-                    console.log(token);
-
-                    return response.status(200).json(token);
-                }
-            } else {
+            if (!userData) {
                 return response.status(401).json({
                     error: "Invalid username or password"
                 });
             }
+
+            const hashedPassword: string = userData.dataValues.hashed_password;
+            const isPwCorrect = await bcrypt.compare(password, hashedPassword);
+
+            if (!isPwCorrect) {
+                return response.status(401).json({
+                    error: "Invalid username or password"
+                });
+            }
+
+            const payload = {
+                userID: userData.dataValues.id,
+                username: userData.dataValues.username
+            }
+
+            const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
+
+            return response.status(200).json(token);
         } catch (error) {
-            return "An error occurred";
+            return response.status(500).json({
+                error: "An error occurred"
+            });
         }
     });
 })();
