@@ -7,6 +7,8 @@ import { Model } from "sequelize";
 import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
 import { VehicleAttributes, ReservationData } from "./@types/types.js";
 
+console.log("sql insert");
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
