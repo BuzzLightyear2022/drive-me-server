@@ -55,7 +55,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
 
                     return response.json(token);
                 } else {
-                    return response.json({
+                    return response.status(401).json({
                         error: "Invalid username or password"
                     });
                 }
