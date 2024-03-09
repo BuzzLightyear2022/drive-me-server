@@ -4,6 +4,7 @@ import express from "express";
 import { Model } from "sequelize";
 import fs from "fs";
 import path from "path";
+import { authenticateToken } from "./login.mjs";
 import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
 import { VehicleAttributes, ReservationData } from "./@types/types.js";
 
@@ -11,7 +12,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 (async () => {
-    app.post("/sqlUpdate/vehicleAttributes", upload.fields([
+    app.post("/sqlUpdate/vehicleAttributes", authenticateToken, upload.fields([
         { name: "imageUrl" },
         { name: "data" }
     ]), async (request: express.Request, response: express.Response) => {
@@ -97,7 +98,7 @@ const upload = multer({ storage: storage });
 })();
 
 (async () => {
-    app.post("/sqlUpdate/reservationData", upload.fields([
+    app.post("/sqlUpdate/reservationData", authenticateToken, upload.fields([
         { name: "data" }
     ]), async (request: express.Request, response: express.Response) => {
         try {
