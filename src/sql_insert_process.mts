@@ -2,18 +2,15 @@ import { app } from "./main.mjs";
 import multer from "multer";
 import express from "express";
 import fs from "fs";
-import path from "path";
-import { Model } from "sequelize";
 import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
 import { VehicleAttributes, ReservationData } from "./@types/types.js";
-
-console.log("sql insert");
+import { authenticateToken } from "./login.mjs";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 (async () => {
-    app.post("/sqlInsert/vehicleAttributes", upload.fields([
+    app.post("/sqlInsert/vehicleAttributes", authenticateToken, upload.fields([
         { name: "imageUrl" },
         { name: "data" }
     ]), (request: express.Request, response: express.Response) => {
