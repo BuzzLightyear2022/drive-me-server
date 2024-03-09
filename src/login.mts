@@ -62,6 +62,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
                 }
             }
         } catch (error) {
+            console.error("catch: ", error);
             return "An error occurred";
         }
     });
