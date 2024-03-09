@@ -42,7 +42,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
 
             if (!userData) {
                 return response.status(401).json({
-                    error: "Invalid username or password"
+                    error: "udn"
                 });
             }
 
@@ -52,7 +52,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
 
             if (!isPwCorrect) {
                 return response.status(401).json({
-                    error: "Invalid username or password"
+                    error: "ipw"
                 });
             }
 
