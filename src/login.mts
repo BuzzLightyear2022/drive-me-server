@@ -44,15 +44,12 @@ export const authenticateToken = (request: express.Request, response: express.Re
                 const hashedPassword: string = userData.dataValues.hashed_password;
 
                 const isPwCorrect = await bcrypt.compare(password, hashedPassword);
-                console.log("isPwCorrect", isPwCorrect);
 
                 if (!isPwCorrect) {
-                    console.log(false);
                     return response.status(401).json({
                         error: "Invalid username or password"
                     });
                 } else {
-                    console.log(true);
                     const payload = {
                         userID: userData.dataValues.id,
                         username: userData.dataValues.username
@@ -60,11 +57,16 @@ export const authenticateToken = (request: express.Request, response: express.Re
 
                     const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
 
+                    console.log(token);
+
                     return response.status(200).json(token);
                 }
+            } else {
+                return response.status(401).json({
+                    error: "Invalid username or password"
+                });
             }
         } catch (error) {
-            console.error("catch: ", error);
             return "An error occurred";
         }
     });
