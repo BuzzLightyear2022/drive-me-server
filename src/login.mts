@@ -44,6 +44,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
                 const hashedPassword: string = userData.dataValues.hashed_password;
 
                 const isPwCorrect = await bcrypt.compare(password, hashedPassword);
+                console.log(isPwCorrect);
 
                 if (isPwCorrect) {
                     const payload = {
