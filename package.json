@@ -192,11 +192,11 @@
 	"keywords": [
 		"node.js",
 		"Typescript"
-  ],
-  "author": "Takehiro Mizuno",
-  "license": "MIT",
-  "bugs": {
-	  "url": "https://github.com/BuzzLightyear2022/drive-me-server/issues"
-  },
-  "homepage": "https://github.com/BuzzLightyear2022/drive-me-server#readme"
+	],
+	"author": "Takehiro Mizuno",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/BuzzLightyear2022/drive-me-server/issues"
+	},
+	"homepage": "https://github.com/BuzzLightyear2022/drive-me-server#readme"
 }
