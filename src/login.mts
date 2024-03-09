@@ -53,7 +53,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
 
                     const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
 
-                    return response.json(token);
+                    return response.status(200).json(token);
                 } else {
                     return response.status(401).json({
                         error: "Invalid username or password"
