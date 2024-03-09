@@ -47,10 +47,12 @@ export const authenticateToken = (request: express.Request, response: express.Re
                 console.log("isPwCorrect", isPwCorrect);
 
                 if (!isPwCorrect) {
+                    console.log(false);
                     return response.status(401).json({
                         error: "Invalid username or password"
                     });
                 } else {
+                    console.log(true);
                     const payload = {
                         userID: userData.dataValues.id,
                         username: userData.dataValues.username
