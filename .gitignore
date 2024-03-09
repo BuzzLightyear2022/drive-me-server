@@ -8,12 +8,9 @@ car_images/
 
 .eslintrc.js
 .eslintignore
-package.json
 package-lock.json
-tsconfig.json
 .env
 dist/
-memo.txt
 
 ### Node ###
 # Logs

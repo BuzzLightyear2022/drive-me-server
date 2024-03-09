@@ -8,7 +8,7 @@ dotenv.config();
 
 export const authenticateToken = (request: express.Request, response: express.Response, next: any) => {
     // @ts-ignore
-    const token = request.headers.authorization;
+    const token = request.header.("Authorization");
     const secretKey = process.env.SECRET_KEY as string;
 
     if (!token) {
