@@ -28,6 +28,7 @@ const upload = multer({ storage: storage });
         };
 
         const jsonData: VehicleAttributes = JSON.parse(request.body["data"]);
+        console.log(jsonData);
 
         if (!fs.existsSync(targetDirectoryPath)) {
             fs.mkdirSync(targetDirectoryPath);
