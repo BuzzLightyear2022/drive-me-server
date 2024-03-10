@@ -2,6 +2,8 @@ import { app } from "./main.mjs";
 import multer from "multer";
 import express from "express";
 import fs from "fs";
+import { WebSocket } from "ws";
+import { wssServer } from "./main.mjs";
 import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
 import { VehicleAttributes, ReservationData } from "./@types/types.js";
 import { authenticateToken } from "./login.mjs";
@@ -52,6 +54,9 @@ const upload = multer({ storage: storage });
         }
         try {
             VehicleAttributesModel.create(jsonData);
+            wssServer.clients.forEach(async (client: WebSocket) => {
+                client.send("wssInsert:vehicleAttributes");
+            });
             return response.status(200).send("Data saved successfully");
         } catch (error: unknown) {
             return response.status(500).send("failed to write data to the database: " + error);
@@ -66,6 +71,9 @@ const upload = multer({ storage: storage });
         const jsonData: ReservationData = JSON.parse(request.body.data);
         try {
             ReservationDataModel.create(jsonData);
+            wssServer.clients.forEach(async (client: WebSocket) => {
+                client.send("wssInsert:reservationData");
+            })
             return response.status(200).send("Reservation data saved successfully");
         } catch (error: unknown) {
             return response.status(500).send(`Failed to write reservation data to the database: ${error}`);

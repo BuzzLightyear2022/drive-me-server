@@ -41,7 +41,7 @@ httpsServer.listen(httpsPort, async () => {
     await import("./fetch_json_process.mjs");
 });
 
-const wssServer = new WebSocketServer({ server: httpsServer });
+export const wssServer = new WebSocketServer({ server: httpsServer });
 wssServer.on("connection", () => {
     console.log("Wss client connected");
 });
