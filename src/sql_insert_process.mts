@@ -55,7 +55,7 @@ const upload = multer({ storage: storage });
         try {
             VehicleAttributesModel.create(jsonData);
             wssServer.clients.forEach(async (client: WebSocket) => {
-                client.send("wssInsert:vehicleAttributes");
+                client.send("wssUpdate:vehicleAttributes");
             });
             return response.status(200).send("Data saved successfully");
         } catch (error: unknown) {
@@ -72,7 +72,7 @@ const upload = multer({ storage: storage });
         try {
             ReservationDataModel.create(jsonData);
             wssServer.clients.forEach(async (client: WebSocket) => {
-                client.send("wssInsert:reservationData");
+                client.send("wssUpdate:reservationData");
             })
             return response.status(200).send("Reservation data saved successfully");
         } catch (error: unknown) {
