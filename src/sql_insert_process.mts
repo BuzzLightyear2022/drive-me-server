@@ -1,9 +1,8 @@
-import { app } from "./main.mjs";
+import { app, wssServer } from "./main.mjs";
 import multer from "multer";
 import express from "express";
 import fs from "fs";
-import { WebSocket } from "ws";
-import { wssServer } from "./main.mjs";
+import WebSocket from "ws";
 import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
 import { VehicleAttributes, ReservationData } from "./@types/types.js";
 import { authenticateToken } from "./login.mjs";

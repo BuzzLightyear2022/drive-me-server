@@ -1,9 +1,10 @@
-import { app } from "./main.mjs";
+import { app, wssServer } from "./main.mjs";
 import multer from "multer";
 import express from "express";
 import { Model } from "sequelize";
 import fs from "fs";
 import path from "path";
+import WebSocket from "ws";
 import { authenticateToken } from "./login.mjs";
 import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
 import { VehicleAttributes, ReservationData } from "./@types/types.js";
@@ -87,9 +88,9 @@ const upload = multer({ storage: storage });
 
                 await existingVehicleAttributes.update(newVehicleAttributes);
 
-                // wsServer.clients.forEach(async (client: WebSocket) => {
-                // 	client.send("wsUpdate:vehicleAttributes");
-                // });
+                wssServer.clients.forEach(async (client: WebSocket) => {
+                    client.send("wssUpdate:vehicleAttributes");
+                });
             }
         } catch (error: unknown) {
             return response.status(500).send(`Failed to updata data on the database: ${error}`);
@@ -107,9 +108,9 @@ const upload = multer({ storage: storage });
                 where: { id: updateFields.id }
             });
 
-            // wsServer.clients.forEach((client: WebSocket) => {
-            // 	client.send("wsUpdate:reservationData");
-            // });
+            wssServer.clients.forEach((client: WebSocket) => {
+                client.send("wssUpdate:reservationData");
+            });
 
             return response.status(200).send("Reservation data saved successfully");
         } catch (error: unknown) {

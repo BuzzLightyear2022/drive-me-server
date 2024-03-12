@@ -44,7 +44,7 @@ export type ReservationData = {
     comment?: string
 }
 
-export type VehicleStatus = {
+export type VehicleStatuses = {
     id?: number,
     vehicleId: number,
     currentLocation: string,
