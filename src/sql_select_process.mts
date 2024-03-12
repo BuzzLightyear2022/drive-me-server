@@ -99,7 +99,7 @@ import { VehicleAttributes, ReservationData } from "./@types/types.js";
                         return rentalClass.rentalClass;
                     });
                     return response.json(smokingRentalClassesArray);
-                case "none-specification":
+                default:
                     const rentalClasses = await VehicleAttributesModel.findAll({
                         attributes: ["rentalClass"],
                         group: "rentalClass"
