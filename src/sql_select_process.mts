@@ -210,7 +210,7 @@ import { VehicleAttributes, ReservationData } from "./@types/types.js";
                         return licensePlateData;
                     });
                     return response.json(smokingLicensePlatesData);
-                case "none-specification":
+                default:
                     const licensePlates = await VehicleAttributesModel.findAll({
                         attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
                         where: {
