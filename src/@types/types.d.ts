@@ -5,7 +5,7 @@ export type Users = {
 }
 
 export type VehicleAttributes = {
-    id?: string
+    id?: number,
     imageFileName?: string,
     carModel: string,
     modelCode: string,
@@ -32,7 +32,7 @@ export type VehicleAttributes = {
 }
 
 export type ReservationData = {
-    id?: string
+    id?: number,
     vehicleId: string,
     reservationName: string,
     rentalCategory: string,
@@ -42,6 +42,15 @@ export type ReservationData = {
     returnDateObject: Date,
     nonSmoking: string,
     comment?: string
+}
+
+export type VehicleStatus = {
+    id?: number,
+    vehicleId: number,
+    currentLocation: string,
+    isWashed: boolean,
+    createdAt: Date,
+    updatedAt: Date
 }
 
 export type CarCatalog = {
@@ -58,7 +67,7 @@ export type CarCatalog = {
 }
 
 export type LicensePlatesData = {
-    id: string,
+    id: number,
     licensePlate: string
 }
 
