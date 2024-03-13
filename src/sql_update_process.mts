@@ -58,8 +58,6 @@ const upload = multer({ storage: storage });
                                 fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
                                     if (writeError) {
                                         console.error(`Failed to write new image file: ${writeError}`);
-                                    } else if (!fileName) {
-                                        console.log("fileNameNull");
                                     } else {
                                         newVehicleAttributes.imageFileName = fileName;
                                         await existingVehicleAttributes.update(newVehicleAttributes);
@@ -77,6 +75,7 @@ const upload = multer({ storage: storage });
                             }
                         });
                     } else {
+                        console.log("imageFileNull");
                         fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
                             if (writeError) {
                                 console.error(`Failed to write new image file: ${writeError}`);
