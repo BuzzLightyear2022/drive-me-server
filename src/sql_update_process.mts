@@ -51,6 +51,7 @@ const upload = multer({ storage: storage });
                             if (!imageNotFoundError) {
                                 fs.unlink(currentImagePath, async (unlinkError: unknown) => {
                                     if (unlinkError) {
+                                        return response.status(500);
                                         console.error(`Failed to delete existing image file: ${unlinkError}`);
                                     }
                                     await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
@@ -70,6 +71,7 @@ const upload = multer({ storage: storage });
                                 fs.unlink(currentImagePath, async (unlinkError: unknown) => {
                                     if (unlinkError) {
                                         console.error(`Failed to delete existing image file: ${unlinkError}`);
+                                        return response.status(500);
                                     }
                                     wssServer.clients.forEach(async (client: WebSocket) => {
                                         client.send("wssUpdate:vehicleAttributes");
