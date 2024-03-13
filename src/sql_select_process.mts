@@ -56,7 +56,10 @@ import { VehicleAttributes, ReservationData } from "./@types/types.js";
             const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] | null = await VehicleAttributesModel.findAll({
                 where: whereClause,
                 include: [{
-                    model: VehicleStatusesModel
+                    model: VehicleStatusesModel,
+                    on: {
+                        id: Sequelize.col("VehicleStatuses.vehicleId")
+                    }
                 }]
             });
 
