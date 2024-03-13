@@ -1,4 +1,4 @@
-import { VehicleAttributes, ReservationData, VehicleStatuses, Users } from "./@types/types.js";
+import { VehicleAttributes, ReservationData, VehicleStatus, Users } from "./@types/types.js";
 import { Sequelize, DataTypes, Model, ModelStatic } from "sequelize";
 import dotenv from "dotenv";
 
@@ -70,7 +70,7 @@ export const ReservationDataModel: ModelStatic<Model<ReservationData>> = sqlConn
     comment: DataTypes.TEXT
 });
 
-export const VehicleStatusesModel: ModelStatic<Model<VehicleStatuses>> = sqlConnection.define("VehicleStatus", {
+export const VehicleStatusesModel: ModelStatic<Model<VehicleStatus>> = sqlConnection.define("VehicleStatus", {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -79,7 +79,8 @@ export const VehicleStatusesModel: ModelStatic<Model<VehicleStatuses>> = sqlConn
     },
     vehicleId: DataTypes.INTEGER,
     currentLocation: DataTypes.STRING,
-    isWashed: DataTypes.BOOLEAN,
+    washState: DataTypes.STRING,
+    comment: DataTypes.STRING,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE
 });

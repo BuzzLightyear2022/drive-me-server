@@ -3,8 +3,8 @@ import multer from "multer";
 import express from "express";
 import fs from "fs";
 import WebSocket from "ws";
-import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
-import { VehicleAttributes, ReservationData } from "./@types/types.js";
+import { VehicleAttributesModel, ReservationDataModel, VehicleStatusesModel } from "./sql_setup.mjs";
+import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/types.js";
 import { authenticateToken } from "./login.mjs";
 
 const storage = multer.memoryStorage();
@@ -81,6 +81,16 @@ const upload = multer({ storage: storage });
 
 (async () => {
     app.post("/sqlInsert/vehicleStatus", authenticateToken, async (request: express.Request, response: express.Response) => {
-        console.log(request.body);
+        const vehicleStatus: VehicleStatus = request.body;
+
+        try {
+            VehicleStatusesModel.create(vehicleStatus);
+            wssServer.clients.forEach(async (client: WebSocket) => {
+                client.send("wssUpdate:vehicleStatus");
+            });
+            return response.status(200);
+        } catch (error: unknown) {
+            return response.status(500);
+        }
     });
 })();
