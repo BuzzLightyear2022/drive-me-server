@@ -4,6 +4,7 @@ import express from "express";
 import { Model } from "sequelize";
 import fs from "fs";
 import WebSocket from "ws";
+import path from "path";
 import { authenticateToken } from "./login.mjs";
 import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
 import { VehicleAttributes, ReservationData } from "./@types/types.js";
@@ -18,7 +19,7 @@ const upload = multer({ storage: storage });
         { name: "data" }
     ]), async (request: express.Request, response: express.Response) => {
         const newVehicleAttributes: VehicleAttributes = JSON.parse(request.body["data"]);
-        const targetDirectoryPath: string = "./car_images/";
+        const targetDirectoryPath: string = path.join(__dirname, "car_images");
 
         const imageFiles: {
             [fieldname: string]:
@@ -45,7 +46,7 @@ const upload = multer({ storage: storage });
                     const fileName: string = imageDataField.originalname;
 
                     if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
-                        const currentImagePath = `./car_images/${existingVehicleAttributesJson.imageFileName}`;
+                        const currentImagePath = path.join(targetDirectoryPath, existingVehicleAttributesJson.imageFileName);
                         fs.access(currentImagePath, fs.constants.F_OK, async (imageNotFoundError: unknown) => {
                             if (!imageNotFoundError) {
                                 fs.unlink(currentImagePath, async (unlinkError: unknown) => {
@@ -62,11 +63,8 @@ const upload = multer({ storage: storage });
                         await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                     }
                 } else {
-                    newVehicleAttributes.imageFileName = null;
-                    await existingVehicleAttributes.update(newVehicleAttributes);
-
                     if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
-                        const currentImagePath = `./car_images/${existingVehicleAttributesJson.imageFileName}`;
+                        const currentImagePath = path.join(targetDirectoryPath, existingVehicleAttributesJson.imageFileName);
                         fs.access(currentImagePath, fs.constants.F_OK, async (imageNotFoundError: unknown) => {
                             if (!imageNotFoundError) {
                                 fs.unlink(currentImagePath, async (unlinkError: unknown) => {
@@ -84,6 +82,9 @@ const upload = multer({ storage: storage });
                             }
                         });
                     }
+
+                    newVehicleAttributes.imageFileName = null;
+                    await existingVehicleAttributes.update(newVehicleAttributes);
                 }
             }
         } catch (error: unknown) {
