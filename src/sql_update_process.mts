@@ -8,6 +8,7 @@ import WebSocket from "ws";
 import { authenticateToken } from "./login.mjs";
 import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
 import { VehicleAttributes, ReservationData } from "./@types/types.js";
+import { updateAttributesAndNotify } from "./common_modules.mjs";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -39,7 +40,7 @@ const upload = multer({ storage: storage });
             const existingVehicleAttributesJson: VehicleAttributes | undefined = existingVehicleAttributes?.get({ plain: true });
 
             if (existingVehicleAttributes) {
-                if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
+                if (imageFiles && Array.isArray(imageFiles["imageUrl"]) && imageFiles["imageUrl"].length > 0) {
                     const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
                     const bufferImageUrl: Buffer = imageDataField.buffer;
                     const fileName: string = imageDataField.originalname;
@@ -47,31 +48,32 @@ const upload = multer({ storage: storage });
                     if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
                         const currentImagePath = `./car_images/${existingVehicleAttributesJson.imageFileName}`;
 
-                        fs.access(currentImagePath, fs.constants.F_OK, (imageNotFoundError: unknown) => {
+                        fs.access(currentImagePath, fs.constants.F_OK, async (imageNotFoundError: unknown) => {
                             if (!imageNotFoundError) {
-                                fs.unlink(currentImagePath, (unlinkError: unknown) => {
+                                fs.unlink(currentImagePath, async (unlinkError: unknown) => {
                                     if (unlinkError) {
                                         console.error(`Failed to delete existing image file: ${unlinkError}`);
                                     }
+                                    await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                                 });
-
-                                fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
-                                    if (writeError) {
-                                        console.error(`Failed to write new image file: ${writeError}`);
-                                    } else {
-                                        newVehicleAttributes.imageFileName = fileName;
-                                        await existingVehicleAttributes.update(newVehicleAttributes);
-                                    }
-                                });
+                                // fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
+                                //     if (writeError) {
+                                //         console.error(`Failed to write new image file: ${writeError}`);
+                                //     } else {
+                                //         newVehicleAttributes.imageFileName = fileName;
+                                //         await existingVehicleAttributes.update(newVehicleAttributes);
+                                //     }
+                                // });
                             } else {
-                                fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
-                                    if (writeError) {
-                                        console.error(`Failed to write new image file: ${writeError}`);
-                                    } else {
-                                        newVehicleAttributes.imageFileName = fileName;
-                                        await existingVehicleAttributes.update(newVehicleAttributes);
-                                    }
-                                });
+                                await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
+                                // fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
+                                //     if (writeError) {
+                                //         console.error(`Failed to write new image file: ${writeError}`);
+                                //     } else {
+                                //         newVehicleAttributes.imageFileName = fileName;
+                                //         await existingVehicleAttributes.update(newVehicleAttributes);
+                                //     }
+                                // });
                             }
                         });
                     } else {
@@ -83,14 +85,15 @@ const upload = multer({ storage: storage });
                         //         await existingVehicleAttributes.update(newVehicleAttributes);
                         //     }
                         // });
-
-                        newVehicleAttributes.imageFileName = null;
-                        await existingVehicleAttributes.update(newVehicleAttributes);
-
-                        wssServer.clients.forEach(async (client: WebSocket) => {
-                            client.send("wssUpdate:vehicleAttributes");
-                        });
+                        await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                     }
+                } else {
+                    newVehicleAttributes.imageFileName = null;
+                    await existingVehicleAttributes.update(newVehicleAttributes);
+
+                    wssServer.clients.forEach(async (client: WebSocket) => {
+                        client.send("wssUpdate:vehicleAttributes");
+                    });
                 }
 
                 // await existingVehicleAttributes.update(newVehicleAttributes);
