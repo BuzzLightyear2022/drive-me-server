@@ -10,9 +10,6 @@ import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
 import { VehicleAttributes, ReservationData } from "./@types/types.js";
 import { updateAttributesAndNotify } from "./common_modules.mjs";
 
-const __filename = new URL(import.meta.url).pathname;
-const __dirname = path.dirname(__filename);
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -22,7 +19,7 @@ const upload = multer({ storage: storage });
         { name: "data" }
     ]), async (request: express.Request, response: express.Response) => {
         const newVehicleAttributes: VehicleAttributes = JSON.parse(request.body["data"]);
-        const targetDirectoryPath: string = path.join(__dirname, "car_images");
+        const targetDirectoryPath: string = path.join(".", "car_images");
 
         const imageFiles: {
             [fieldname: string]:
