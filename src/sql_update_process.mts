@@ -39,6 +39,8 @@ const upload = multer({ storage: storage });
             const existingVehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributesModel.findByPk(newVehicleAttributes.id);
             const existingVehicleAttributesJson: VehicleAttributes | undefined = existingVehicleAttributes?.get({ plain: true });
 
+	    console.log(existingVehicleAttributesJson);
+
             if (existingVehicleAttributes) {
                 if (imageFiles && Array.isArray(imageFiles["imageUrl"]) && imageFiles["imageUrl"].length > 0) {
                     const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
