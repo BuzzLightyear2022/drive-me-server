@@ -30,8 +30,6 @@ const upload = multer({ storage: storage });
             | null
         };
 
-        console.log(imageFiles);
-
         if (!fs.existsSync(targetDirectoryPath)) {
             fs.mkdirSync(targetDirectoryPath);
         }
@@ -70,6 +68,7 @@ const upload = multer({ storage: storage });
                                     if (writeError) {
                                         console.error(`Failed to write new image file: ${writeError}`);
                                     } else {
+                                        console.log("l71");
                                         newVehicleAttributes.imageFileName = fileName;
                                         await existingVehicleAttributes.update(newVehicleAttributes);
                                     }
