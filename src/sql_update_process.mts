@@ -50,18 +50,12 @@ const upload = multer({ storage: storage });
                         fs.access(currentImagePath, fs.constants.F_OK, async (imageNotFoundError: unknown) => {
                             if (!imageNotFoundError) {
                                 fs.unlink(currentImagePath, async (unlinkError: unknown) => {
-                                    if (unlinkError) {
-                                        return response.status(500);
-                                        console.error(`Failed to delete existing image file: ${unlinkError}`);
-                                    }
                                     await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                                 });
                             } else {
                                 await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                             }
                         });
-                    } else {
-                        await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                     }
                 } else {
                     if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
@@ -69,10 +63,6 @@ const upload = multer({ storage: storage });
                         fs.access(currentImagePath, fs.constants.F_OK, async (imageNotFoundError: unknown) => {
                             if (!imageNotFoundError) {
                                 fs.unlink(currentImagePath, async (unlinkError: unknown) => {
-                                    if (unlinkError) {
-                                        console.error(`Failed to delete existing image file: ${unlinkError}`);
-                                        return response.status(500);
-                                    }
                                     wssServer.clients.forEach(async (client: WebSocket) => {
                                         client.send("wssUpdate:vehicleAttributes");
                                     });
