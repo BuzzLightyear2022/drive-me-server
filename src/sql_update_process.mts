@@ -10,6 +10,9 @@ import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
 import { VehicleAttributes, ReservationData } from "./@types/types.js";
 import { updateAttributesAndNotify } from "./common_modules.mjs";
 
+const __filename = new URL(import.meta.url).pathname;
+const __dirname = path.dirname(__filename);
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
