@@ -48,12 +48,12 @@ const upload = multer({ storage: storage });
                     if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
                         const currentImagePath = path.join(targetDirectoryPath, existingVehicleAttributesJson.imageFileName);
                         fs.access(currentImagePath, fs.constants.F_OK, async (imageNotFoundError: unknown) => {
-                            if (!imageNotFoundError) {
+                            if (imageNotFoundError) {
+                                await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
+                            } else {
                                 fs.unlink(currentImagePath, async (unlinkError: unknown) => {
                                     await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                                 });
-                            } else {
-                                await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                             }
                         });
                     }
@@ -61,22 +61,22 @@ const upload = multer({ storage: storage });
                     if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
                         const currentImagePath = path.join(targetDirectoryPath, existingVehicleAttributesJson.imageFileName);
                         fs.access(currentImagePath, fs.constants.F_OK, async (imageNotFoundError: unknown) => {
-                            if (!imageNotFoundError) {
+                            if (imageNotFoundError) {
+                                newVehicleAttributes.imageFileName = null;
+                                await existingVehicleAttributes.update(newVehicleAttributes);
+
+                                wssServer.clients.forEach(async (client: WebSocket) => {
+                                    client.send("wssUpdate:vehicleAttributes");
+                                });
+                            } else {
                                 fs.unlink(currentImagePath, async (unlinkError: unknown) => {
                                     wssServer.clients.forEach(async (client: WebSocket) => {
                                         client.send("wssUpdate:vehicleAttributes");
                                     });
                                 });
-                            } else {
-                                wssServer.clients.forEach(async (client: WebSocket) => {
-                                    client.send("wssUpdate:vehicleAttributes");
-                                });
                             }
                         });
                     }
-
-                    newVehicleAttributes.imageFileName = null;
-                    await existingVehicleAttributes.update(newVehicleAttributes);
                 }
             }
         } catch (error: unknown) {
