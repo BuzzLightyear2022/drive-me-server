@@ -3,7 +3,6 @@ import multer from "multer";
 import express from "express";
 import { Model } from "sequelize";
 import fs from "fs";
-import path from "path";
 import WebSocket from "ws";
 import { authenticateToken } from "./login.mjs";
 import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
@@ -44,10 +43,8 @@ const upload = multer({ storage: storage });
                     const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
                     const bufferImageUrl: Buffer = imageDataField.buffer;
                     const fileName: string = imageDataField.originalname;
-
                     if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
                         const currentImagePath = `./car_images/${existingVehicleAttributesJson.imageFileName}`;
-
                         fs.access(currentImagePath, fs.constants.F_OK, async (imageNotFoundError: unknown) => {
                             if (!imageNotFoundError) {
                                 fs.unlink(currentImagePath, async (unlinkError: unknown) => {
@@ -56,35 +53,11 @@ const upload = multer({ storage: storage });
                                     }
                                     await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                                 });
-                                // fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
-                                //     if (writeError) {
-                                //         console.error(`Failed to write new image file: ${writeError}`);
-                                //     } else {
-                                //         newVehicleAttributes.imageFileName = fileName;
-                                //         await existingVehicleAttributes.update(newVehicleAttributes);
-                                //     }
-                                // });
                             } else {
                                 await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
-                                // fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
-                                //     if (writeError) {
-                                //         console.error(`Failed to write new image file: ${writeError}`);
-                                //     } else {
-                                //         newVehicleAttributes.imageFileName = fileName;
-                                //         await existingVehicleAttributes.update(newVehicleAttributes);
-                                //     }
-                                // });
                             }
                         });
                     } else {
-                        // fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
-                        //     if (writeError) {
-                        //         console.error(`Failed to write new image file: ${writeError}`);
-                        //     } else {
-                        //         newVehicleAttributes.imageFileName = fileName;
-                        //         await existingVehicleAttributes.update(newVehicleAttributes);
-                        //     }
-                        // });
                         await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                     }
                 } else {
@@ -95,12 +68,6 @@ const upload = multer({ storage: storage });
                         client.send("wssUpdate:vehicleAttributes");
                     });
                 }
-
-                // await existingVehicleAttributes.update(newVehicleAttributes);
-
-                // wssServer.clients.forEach(async (client: WebSocket) => {
-                //     client.send("wssUpdate:vehicleAttributes");
-                // });
             }
         } catch (error: unknown) {
             return response.status(500).send(`Failed to updata data on the database: ${error}`);
