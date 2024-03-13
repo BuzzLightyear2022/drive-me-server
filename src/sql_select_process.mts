@@ -1,5 +1,5 @@
 import express from "express";
-import { Sequelize, Model, Op } from "sequelize";
+import sequelize, { Model, Op } from "sequelize";
 import { app } from "./main.mjs";
 import { authenticateToken } from "./login.mjs";
 import { VehicleAttributesModel, ReservationDataModel, VehicleStatusesModel } from "./sql_setup.mjs";
@@ -54,9 +54,18 @@ import { VehicleAttributes, ReservationData } from "./@types/types.js";
             }
 
             const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] | null = await VehicleAttributesModel.findAll({
-                where: whereClause
+                where: whereClause,
+                include: [{
+                    model: VehicleStatusesModel,
+                    where: {
+                        createdAt: {
+                            [Op.eq]: sequelize.literal(`(SELECT MAX(createdAt) FROM VehicleStatuses WHERE VehicleStatuses.vehicleId = VehicleAttributes.id)`)
+                        },
+                        limit: 1,
+                        order: [["createdAt", "DESC"]]
+                    }
+                }]
             });
-            console.log(vehicleAttributes);
 
             if (vehicleAttributes) {
                 return response.json(vehicleAttributes);
