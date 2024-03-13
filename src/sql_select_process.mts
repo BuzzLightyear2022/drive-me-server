@@ -58,7 +58,7 @@ import { VehicleAttributes, ReservationData } from "./@types/types.js";
                 include: [{
                     model: VehicleStatusesModel,
                     on: {
-                        id: Sequelize.col("VehicleStatuses.vehicleId")
+                        id: Sequelize.col("drive_me_test_since20230703.VehicleStatuses.vehicleId")
                     }
                 }]
             });
