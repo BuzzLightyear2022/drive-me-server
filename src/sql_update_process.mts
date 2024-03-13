@@ -75,6 +75,7 @@ const upload = multer({ storage: storage });
                             }
                         });
                     } else {
+                        console.log("sql_update_process.mts: 78");
                         fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
                             if (writeError) {
                                 console.error(`Failed to write new image file: ${writeError}`);
