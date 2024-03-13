@@ -48,7 +48,8 @@ export type VehicleStatuses = {
     id?: number,
     vehicleId: number,
     currentLocation: string,
-    isWashed: boolean,
+    washState: string,
+    comment: string,
     createdAt: Date,
     updatedAt: Date
 }

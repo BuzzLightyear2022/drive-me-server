@@ -84,6 +84,7 @@ const upload = multer({ storage: storage });
                     }
                 }
             }
+            return response.status(200);
         } catch (error: unknown) {
             return response.status(500).send(`Failed to updata data on the database: ${error}`);
         }
