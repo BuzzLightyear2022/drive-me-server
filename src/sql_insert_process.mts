@@ -80,7 +80,7 @@ const upload = multer({ storage: storage });
 })();
 
 (async () => {
-    app.post("sqlInsert/vehicleStatus", authenticateToken, async (request: express.Request, response: express.Response) => {
+    app.post("/sqlInsert/vehicleStatus", authenticateToken, async (request: express.Request, response: express.Response) => {
         console.log(request.body);
     });
 })();
