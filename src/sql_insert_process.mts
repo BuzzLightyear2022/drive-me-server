@@ -81,8 +81,7 @@ const upload = multer({ storage: storage });
 
 (async () => {
     app.post("/sqlInsert/vehicleStatus", authenticateToken, async (request: express.Request, response: express.Response) => {
-        const vehicleStatus: VehicleStatus = request.body;
-        console.log(vehicleStatus);
+        const vehicleStatus: VehicleStatus = request.body.vehicleStatus;
 
         try {
             VehicleStatusesModel.create(vehicleStatus);
