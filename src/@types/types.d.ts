@@ -6,7 +6,7 @@ export type Users = {
 
 export type VehicleAttributes = {
     id?: number,
-    imageFileName?: string,
+    imageFileName?: string | null,
     carModel: string,
     modelCode: string,
     nonSmoking: boolean,

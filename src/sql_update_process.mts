@@ -40,7 +40,6 @@ const upload = multer({ storage: storage });
 
             if (existingVehicleAttributes) {
                 if (imageFiles && Array.isArray(imageFiles["imageUrl"])) {
-                    console.log(Array.isArray(imageFiles["imageUrl"]));
                     const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
                     const bufferImageUrl: Buffer = imageDataField.buffer;
                     const fileName: string = imageDataField.originalname;
@@ -76,22 +75,29 @@ const upload = multer({ storage: storage });
                             }
                         });
                     } else {
-                        fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
-                            if (writeError) {
-                                console.error(`Failed to write new image file: ${writeError}`);
-                            } else {
-                                newVehicleAttributes.imageFileName = fileName;
-                                await existingVehicleAttributes.update(newVehicleAttributes);
-                            }
+                        // fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
+                        //     if (writeError) {
+                        //         console.error(`Failed to write new image file: ${writeError}`);
+                        //     } else {
+                        //         newVehicleAttributes.imageFileName = fileName;
+                        //         await existingVehicleAttributes.update(newVehicleAttributes);
+                        //     }
+                        // });
+
+                        newVehicleAttributes.imageFileName = null;
+                        await existingVehicleAttributes.update(newVehicleAttributes);
+
+                        wssServer.clients.forEach(async (client: WebSocket) => {
+                            client.send("wssUpdate:vehicleAttributes");
                         });
                     }
                 }
 
-                await existingVehicleAttributes.update(newVehicleAttributes);
+                // await existingVehicleAttributes.update(newVehicleAttributes);
 
-                wssServer.clients.forEach(async (client: WebSocket) => {
-                    client.send("wssUpdate:vehicleAttributes");
-                });
+                // wssServer.clients.forEach(async (client: WebSocket) => {
+                //     client.send("wssUpdate:vehicleAttributes");
+                // });
             }
         } catch (error: unknown) {
             return response.status(500).send(`Failed to updata data on the database: ${error}`);
