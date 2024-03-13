@@ -39,8 +39,6 @@ const upload = multer({ storage: storage });
             const existingVehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributesModel.findByPk(newVehicleAttributes.id);
             const existingVehicleAttributesJson: VehicleAttributes | undefined = existingVehicleAttributes?.get({ plain: true });
 
-	    console.log(existingVehicleAttributesJson);
-
             if (existingVehicleAttributes) {
                 if (imageFiles && Array.isArray(imageFiles["imageUrl"]) && imageFiles["imageUrl"].length > 0) {
                     const imageDataField: Express.Multer.File = imageFiles["imageUrl"][0];
@@ -58,6 +56,8 @@ const upload = multer({ storage: storage });
                                 });
                             }
                         });
+                    } else {
+                        await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                     }
                 } else {
                     if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
@@ -72,6 +72,9 @@ const upload = multer({ storage: storage });
                                 });
                             } else {
                                 fs.unlink(currentImagePath, async (unlinkError: unknown) => {
+                                    newVehicleAttributes.imageFileName = null;
+                                    await existingVehicleAttributes.update(newVehicleAttributes);
+
                                     wssServer.clients.forEach(async (client: WebSocket) => {
                                         client.send("wssUpdate:vehicleAttributes");
                                     });

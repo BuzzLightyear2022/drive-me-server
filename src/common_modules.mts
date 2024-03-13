@@ -6,7 +6,7 @@ import { wssServer } from "./main.mjs";
 import { VehicleAttributes } from "./@types/types.js";
 
 export const updateAttributesAndNotify = async (fileName: string, bufferImageUrl: Buffer, existingVehicleAttributes: Model<VehicleAttributes, VehicleAttributes>, newVehicleAttributes: VehicleAttributes) => {
-    const targetDirectoryPath: string = "./car_images/";
+    const targetDirectoryPath: string = path.join(".", "car_images");
 
     fs.writeFile(path.join(targetDirectoryPath, fileName), bufferImageUrl, "base64", async (writeError: unknown) => {
         if (writeError) {
