@@ -57,12 +57,8 @@ import { VehicleAttributes, ReservationData } from "./@types/types.js";
                 where: whereClause,
                 include: [{
                     model: VehicleStatusesModel,
-                    where: {
-                        createdAt: {
-                            [Op.eq]: sequelize.literal(`(SELECT MAX(createdAt) FROM VehicleStatuses WHERE VehicleStatuses.vehicleId = VehicleAttributes.id)`)
-                        },
-                        limit: 1,
-                        order: [["createdAt", "DESC"]]
+                    on: {
+                        "$VehicleAttributes.id$": sequelize.literal("(SELECT MAX(createdAt) FROM VehicleStatuses WHERE VehicleStatuses.vehicleId = VehicleAttributes.id)")
                     }
                 }]
             });
