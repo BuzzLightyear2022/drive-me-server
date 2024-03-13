@@ -62,6 +62,7 @@ import { VehicleAttributes, ReservationData } from "./@types/types.js";
                     }
                 }]
             });
+            console.log(vehicleAttributes);
 
             if (vehicleAttributes) {
                 return response.json(vehicleAttributes);
