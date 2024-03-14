@@ -54,13 +54,7 @@ import { VehicleAttributes, ReservationData } from "./@types/types.js";
             }
 
             const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] | null = await VehicleAttributesModel.findAll({
-                where: whereClause,
-                include: [{
-                    model: VehicleStatusesModel,
-                    on: {
-                        "$VehicleAttributes.id$": sequelize.literal("(SELECT MAX(createdAt) FROM VehicleStatuses WHERE VehicleStatuses.vehicleId = VehicleAttributes.id)")
-                    }
-                }]
+                where: whereClause
             });
 
             if (vehicleAttributes) {
