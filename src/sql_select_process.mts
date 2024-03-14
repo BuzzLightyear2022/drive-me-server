@@ -1,9 +1,9 @@
 import express from "express";
-import sequelize, { Model, Op } from "sequelize";
+import Sequelize, { Model, Op } from "sequelize";
 import { app } from "./main.mjs";
 import { authenticateToken } from "./login.mjs";
 import { VehicleAttributesModel, ReservationDataModel, VehicleStatusesModel } from "./sql_setup.mjs";
-import { VehicleAttributes, ReservationData } from "./@types/types.js";
+import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/types.js";
 
 (async () => {
     app.post("/sqlSelect/vehicleAttributes", authenticateToken, async (request: express.Request, response: express.Response) => {
@@ -290,6 +290,33 @@ import { VehicleAttributes, ReservationData } from "./@types/types.js";
         } catch (error: unknown) {
             console.error(`Failed to select reservation data by id: ${error}`);
             return response.status(500).json(`Internal server error: ${error}`);
+        }
+    });
+})();
+
+(async () => {
+    app.post("/sqlSelect/vehicleStatuses/latest", authenticateToken, async (request: express.Request, response: express.Response) => {
+        try {
+            const latestStatuses: any = await VehicleStatusesModel.findAll({
+                attributes: [
+                    "vehicleId", [Sequelize.fn("MAX", Sequelize.col("updatedAt")), "latestUpdate"]
+                ],
+                group: ["vehicleId"],
+                raw: true
+            });
+
+            const latestRecords = await Promise.all(latestStatuses.map(async (item: any) => {
+                return VehicleStatusesModel.findOne({
+                    where: {
+                        vehicleId: item.vehicleId,
+                        updatedAt: item.latestUpdate
+                    }
+                });
+            }));
+
+            response.status(200).json(latestRecords);
+        } catch (error: unknown) {
+            return response.status(500);
         }
     });
 })();
