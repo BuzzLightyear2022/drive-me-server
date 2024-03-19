@@ -18,6 +18,7 @@ const upload = multer({ storage: storage });
         { name: "imageUrl" },
         { name: "data" }
     ]), async (request: express.Request, response: express.Response) => {
+        console.log(request);
         const newVehicleAttributes: VehicleAttributes = JSON.parse(request.body["data"]);
         const targetDirectoryPath: string = path.join(".", "car_images");
 
