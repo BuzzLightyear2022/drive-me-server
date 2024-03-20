@@ -33,6 +33,13 @@ export const authenticateToken = (request: express.Request, response: express.Re
         const username = request.body.username;
         const password = request.body.password;
 
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(password, salt, (err, hashedPassword) => {
+                // ハッシュ化されたパスワードを表示
+                console.log(hashedPassword);
+            });
+        });
+
         try {
             const userData = await UsersModel.findOne({
                 where: {
@@ -48,7 +55,6 @@ export const authenticateToken = (request: express.Request, response: express.Re
 
             const hashedPassword: string = userData.dataValues.hashed_password;
             const isPwCorrect = await bcrypt.compare(password, hashedPassword);
-            console.log(isPwCorrect);
 
             if (!isPwCorrect) {
                 return response.status(401).json({
