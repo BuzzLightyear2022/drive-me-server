@@ -24,3 +24,4 @@ const fetchJson = (args: { endPoint: string, fileName: string }): void => {
 fetchJson({ endPoint: "/fetchJson/carCatalog", fileName: "car_catalog.json" });
 fetchJson({ endPoint: "/fetchJson/navigations", fileName: "navigations.json" });
 fetchJson({ endPoint: "/fetchJson/carLocation", fileName: "car_location.json" });
+fetchJson({ endPoint: "/fetchJson/selectOptions", fileName: "select_options.json" });
