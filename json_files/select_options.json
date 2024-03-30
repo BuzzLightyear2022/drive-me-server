@@ -1,21 +1,15 @@
 {
-    "branches": [
-        {
-            "駅前店": {
-                "phoneNumber": "29-3388"
-            }
+    "branches": {
+        "駅前店": {
+            "phoneNumber": "29-3388"
         },
-        {
-            "空港店": {
-                "phoneNumber": "83-0088"
-            }
+        "空港店": {
+            "phoneNumber": "83-0088"
         },
-        {
-            "本店": {
-                "phoneNumber": "69-5588"
-            }
+        "本店": {
+            "phoneNumber": "69-5588"
         }
-    ],
+    },
     "staffMembers": [
         "髙田",
         "森",
