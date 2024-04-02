@@ -23,16 +23,42 @@ export type VehicleAttributes = {
 }
 
 export type ReservationData = {
-    id?: string,
-    vehicleId: number,
-    reservationName: string,
-    rentalCategory: string,
-    departureStore: string,
-    returnStore: string,
-    departureDatetime: Date,
-    returnDatetime: Date,
+    id?: number
+    isReplied: boolean,
+    receptionDate: Date,
+    repliedDateTime: Date,
+    salesBranch: string,
+    orderHandler: string,
+    orderSource: string,
+    userNameFurigana: string,
     nonSmoking: string,
-    comment: text
+    userName: string,
+    preferredRentalClass: string,
+    isElevatable: boolean,
+    isClassSpecified: boolean,
+    applicantName: string,
+    preferredCarModel: string,
+    applicantZipCode: number,
+    applicantAddress: string,
+    applicantPhoneNumber: number,
+    pickupLocation: string,
+    returnLocation: string,
+    pickupDatetime: Datetime,
+    arrivalFlightCarrier: string,
+    arrivalFlightNumber: number,
+    arrivalFlightTime: time,
+    returnDatetime: Datetime,
+    departureFlightCarrier: string,
+    departureFlightNumber: number,
+    departureFlightTime: time,
+    newReturnDatetime: Datetime,
+    selectedRentalClass: string,
+    selectedCarModel: string,
+    selectedVehicleId: number,
+    comment: string,
+    isCanceled: boolean
+    createdAt: datetime,
+    updatedAt: datetime
 }
 
 export type CarCatalog = {
