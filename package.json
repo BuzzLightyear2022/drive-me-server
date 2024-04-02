@@ -179,6 +179,12 @@
 		"yallist": "^4.0.0"
 	},
 	"devDependencies": {
+		"@types/bcrypt": "^5.0.2",
+		"@types/cors": "^2.8.17",
+		"@types/express": "^4.17.21",
+		"@types/jsonwebtoken": "^9.0.6",
+		"@types/multer": "^1.4.11",
+		"@types/ws": "^8.5.10",
 		"typescript": "^5.4.2"
 	},
 	"scripts": {
