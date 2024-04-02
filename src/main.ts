@@ -447,15 +447,38 @@ app.post("/sqlUpdate/reservationData", upload.fields([
 		}
 
 		const updateFields = {
-			vehicleId: jsonData.vehicleId,
-			reservationName: jsonData.reservationName,
-			rentalCategory: jsonData.rentalCategory,
-			departureStore: jsonData.departureStore,
-			returnStore: jsonData.returnStore,
-			departureDatetime: jsonData.departureDatetime,
-			returnDatetime: jsonData.returnDatetime,
+			isReplied: jsonData.isReplied,
+			receptionDate: jsonData.receptionDate,
+			repliedDatetime: jsonData.repliedDatetime,
+			salesBranch: jsonData.salesBranch,
+			orderHandler: jsonData.orderHandler,
+			orderSource: jsonData.orderSource,
+			userNameFurigana: jsonData.userNameFurigana,
 			nonSmoking: jsonData.nonSmoking,
-			comment: jsonData.comment
+			userName: jsonData.userName,
+			preferredRentalClass: jsonData.preferredRentalClass,
+			isElevatable: jsonData.isElevatable,
+			isClassSpecified: jsonData.isClassSpecified,
+			applicantName: jsonData.applicantName,
+			preferredCarModel: jsonData.preferredCarModel,
+			applicantZipCode: jsonData.applicantZipCode,
+			applicantAddress: jsonData.applicantAddress,
+			applicantPhoneNumber: jsonData.applicantPhoneNumber,
+			pickupLocation: jsonData.pickupLocation,
+			returnLocation: jsonData.returnLocation,
+			pickupDatetime: jsonData.pickupDatetime,
+			arrivalFlightCarrier: jsonData.arrivalFlightCarrier,
+			arrivalFlightNumber: jsonData.arrivalFlightNumber,
+			arrivalFlightTime: jsonData.arrivalFlightTime,
+			returnDatetime: jsonData.returnDatetime,
+			departureFlightCarrier: jsonData.departureFlightCarrier,
+			departureFlightNumber: jsonData.departureFlightNumber,
+			departureFlightTime: jsonData.departureFlightTime,
+			selectedRentalClass: jsonData.selectedRentalClass,
+			selectedCarModel: jsonData.selectedCarModel,
+			selectedVehicleId: jsonData.selectedVehicleId,
+			comment: jsonData.comment,
+			isCanceled: jsonData.isCanceled
 		}
 
 		await existingReservation.update(updateFields);

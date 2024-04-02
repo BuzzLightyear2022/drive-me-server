@@ -26,7 +26,7 @@ export type ReservationData = {
     id?: number
     isReplied: boolean,
     receptionDate: Date,
-    repliedDateTime: Date,
+    repliedDatetime: Date,
     salesBranch: string,
     orderHandler: string,
     orderSource: string,
@@ -51,7 +51,6 @@ export type ReservationData = {
     departureFlightCarrier: string,
     departureFlightNumber: number,
     departureFlightTime: time,
-    newReturnDatetime: Datetime,
     selectedRentalClass: string,
     selectedCarModel: string,
     selectedVehicleId: number,
