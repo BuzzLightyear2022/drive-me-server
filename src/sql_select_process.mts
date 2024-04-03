@@ -244,19 +244,19 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
                 where: {
                     [Op.or]: [
                         {
-                            pickupDateObject: {
+                            pickupDatetime: {
                                 [Op.between]: [startDate, endDate]
                             }
                         },
                         {
-                            returnDateObject: {
+                            returnDatetime: {
                                 [Op.between]: [startDate, endDate]
                             }
                         },
                         {
                             [Op.and]: [
-                                { pickupDateObject: { [Op.lte]: startDate } },
-                                { returnDateObject: { [Op.gte]: endDate } }
+                                { pickupDatetime: { [Op.lte]: startDate } },
+                                { returnDatetime: { [Op.gte]: endDate } }
                             ]
                         }
                     ]
