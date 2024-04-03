@@ -29,19 +29,46 @@ export type VehicleAttributes = {
     JAFCardNumber?: number,
     JAFCardExp?: Date,
     otherFeatures?: string
+    createdAt: datetime,
+    updatedAt: datetime
 }
 
 export type ReservationData = {
-    id?: number,
-    vehicleId: string,
-    reservationName: string,
-    rentalCategory: string,
+    id?: number
+    isReplied: boolean,
+    receptionDate: Date,
+    repliedDatetime: Date,
+    salesBranch: string,
+    orderHandler: string,
+    orderSource: string,
+    userNameFurigana: string,
+    nonSmoking: string,
+    userName: string,
+    preferredRentalClass: string,
+    isElevatable: boolean,
+    isClassSpecified: boolean,
+    applicantName: string,
+    preferredCarModel: string,
+    applicantZipCode: number,
+    applicantAddress: string,
+    applicantPhoneNumber: number,
     pickupLocation: string,
     returnLocation: string,
-    pickupDateObject: Date,
-    returnDateObject: Date,
-    nonSmoking: string,
-    comment?: string
+    pickupDatetime: Datetime,
+    arrivalFlightCarrier: string,
+    arrivalFlightNumber: number,
+    arrivalFlightTime: time,
+    returnDatetime: Datetime,
+    departureFlightCarrier: string,
+    departureFlightNumber: number,
+    departureFlightTime: time,
+    selectedRentalClass: string,
+    selectedCarModel: string,
+    selectedVehicleId: number,
+    comment: string,
+    isCanceled: boolean
+    createdAt: datetime,
+    updatedAt: datetime
 }
 
 export type VehicleStatus = {
