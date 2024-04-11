@@ -212,7 +212,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
                     return response.json(smokingLicensePlatesData);
                 default:
                     const licensePlates = await VehicleAttributesModel.findAll({
-                        attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
+                        attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber", "nonSmoking"],
                         where: {
                             carModel: selectedCarModel
                         }
@@ -221,7 +221,8 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
                         const licensePlateString: string = `${licensePlate.licensePlateRegion} ${licensePlate.licensePlateCode} ${licensePlate.licensePlateHiragana} ${licensePlate.licensePlateNumber}`;
                         const licensePlateData = {
                             id: licensePlate.id,
-                            licensePlate: licensePlateString
+                            licensePlate: licensePlateString,
+                            nonSmoking: licensePlate.nonSmoking
                         }
                         return licensePlateData;
                     });
