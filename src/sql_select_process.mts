@@ -149,7 +149,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
                         return carModel.carModel;
                     });
                     return response.json(smokingCarModelsArray);
-                case "none-specification" || null:
+                case "none-specification":
                     const carModels = await VehicleAttributesModel.findAll({
                         attributes: ["carModel"],
                         where: {
