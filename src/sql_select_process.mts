@@ -47,7 +47,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
         try {
             let whereClause = {};
 
-            if (rentalClass !== null) {
+            if (rentalClass) {
                 whereClause = {
                     rentalClass: rentalClass
                 }
