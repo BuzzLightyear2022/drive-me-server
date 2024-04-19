@@ -1,4 +1,4 @@
-export type Users = {
+export type User = {
     id?: number,
     username: string,
     hashed_password: string
