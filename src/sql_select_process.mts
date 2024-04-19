@@ -2,7 +2,7 @@ import express from "express";
 import Sequelize, { Model, Op } from "sequelize";
 import { app } from "./main.mjs";
 import { authenticateToken } from "./login.mjs";
-import { RentalCarModel, ReservationModel, VehicleStatusesModel } from "./sql_setup.mjs";
+import { RentalCarModel, ReservationModel, VehicleStatusModel } from "./sql_setup.mjs";
 import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 
 (async () => {
@@ -286,7 +286,7 @@ import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 (async () => {
     app.post("/sqlSelect/vehicleStatuses/latest", authenticateToken, async (request: express.Request, response: express.Response) => {
         try {
-            const latestStatuses: any = await VehicleStatusesModel.findAll({
+            const latestStatuses: any = await VehicleStatusModel.findAll({
                 attributes: [
                     "vehicleId", [Sequelize.fn("MAX", Sequelize.col("updatedAt")), "latestUpdate"]
                 ],
@@ -295,7 +295,7 @@ import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
             });
 
             const latestRecords = await Promise.all(latestStatuses.map(async (item: any) => {
-                return VehicleStatusesModel.findOne({
+                return VehicleStatusModel.findOne({
                     where: {
                         vehicleId: item.vehicleId,
                         updatedAt: item.latestUpdate

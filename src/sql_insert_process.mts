@@ -3,8 +3,8 @@ import multer from "multer";
 import express from "express";
 import fs from "fs";
 import WebSocket from "ws";
-import { VehicleAttributesModel, ReservationDataModel, VehicleStatusesModel } from "./sql_setup.mjs";
-import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/types.js";
+import { RentalCarModel, ReservationModel, VehicleStatusModel } from "./sql_setup.mjs";
+import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 import { authenticateToken } from "./login.mjs";
 
 const storage = multer.memoryStorage();
@@ -27,7 +27,7 @@ const upload = multer({ storage: storage });
             | null
         };
 
-        const jsonData: VehicleAttributes = JSON.parse(request.body["data"]);
+        const jsonData: RentalCar = JSON.parse(request.body["data"]);
 
         if (!fs.existsSync(targetDirectoryPath)) {
             fs.mkdirSync(targetDirectoryPath);
@@ -51,7 +51,7 @@ const upload = multer({ storage: storage });
             });
         }
         try {
-            VehicleAttributesModel.create(jsonData);
+            RentalCarModel.create(jsonData);
             wssServer.clients.forEach(async (client: WebSocket) => {
                 client.send("wssUpdate:vehicleAttributes");
             });
@@ -66,9 +66,9 @@ const upload = multer({ storage: storage });
     app.post("/sqlInsert/reservationData", upload.fields([
         { name: "data" }
     ]), async (request: express.Request, response: express.Response) => {
-        const jsonData: ReservationData = JSON.parse(request.body.data);
+        const jsonData: Reservation = JSON.parse(request.body.data);
         try {
-            ReservationDataModel.create(jsonData);
+            ReservationModel.create(jsonData);
             wssServer.clients.forEach(async (client: WebSocket) => {
                 client.send("wssUpdate:reservationData");
             })
@@ -84,7 +84,7 @@ const upload = multer({ storage: storage });
         const vehicleStatus: VehicleStatus = request.body.vehicleStatus;
 
         try {
-            VehicleStatusesModel.create(vehicleStatus);
+            VehicleStatusModel.create(vehicleStatus);
             wssServer.clients.forEach(async (client: WebSocket) => {
                 client.send("wssUpdate:vehicleStatus");
             });

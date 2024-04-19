@@ -95,7 +95,7 @@ export const ReservationModel: ModelStatic<Model<Reservation>> = sqlConnection.d
     updatedAt: DataTypes.DATE
 });
 
-export const VehicleStatusesModel: ModelStatic<Model<VehicleStatus>> = sqlConnection.define("VehicleStatus", {
+export const VehicleStatusModel: ModelStatic<Model<VehicleStatus>> = sqlConnection.define("VehicleStatus", {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
