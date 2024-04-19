@@ -2,27 +2,15 @@ import express from "express";
 import Sequelize, { Model, Op } from "sequelize";
 import { app } from "./main.mjs";
 import { authenticateToken } from "./login.mjs";
-import { VehicleAttributesModel, ReservationDataModel, VehicleStatusesModel } from "./sql_setup.mjs";
-import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/types.js";
-
-(async () => {
-    app.post("/sqlSelect/vehicleAttributes", authenticateToken, async (request: express.Request, response: express.Response) => {
-        try {
-            const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] = await VehicleAttributesModel.findAll();
-            return response.json(vehicleAttributes);
-        } catch (error: unknown) {
-            console.error(`Failed to select vehicleAttributes: ${error}`);
-            return response.status(500).json({ error: "Internal Server Error." });
-        }
-    });
-})();
+import { RentalCarModel, ReservationModel, VehicleStatusesModel } from "./sql_setup.mjs";
+import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 
 (async () => {
     app.post("/sqlSelect/vehicleAttributesById", authenticateToken, async (request: express.Request, response: express.Response) => {
         const vehicleId: string = request.body.vehicleId;
 
         try {
-            const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributesModel.findOne({
+            const vehicleAttributes: Model<RentalCar, RentalCar> | null = await RentalCarModel.findOne({
                 where: {
                     id: vehicleId
                 }
@@ -41,7 +29,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
 })();
 
 (async () => {
-    app.post("/sqlSelect/vehicleAttributesByClass", authenticateToken, async (request: express.Request, response: express.Response) => {
+    app.post("/sqlSelect/rentalCars", authenticateToken, async (request: express.Request, response: express.Response) => {
         const rentalClass: string = request.body.rentalClass;
 
         try {
@@ -53,17 +41,17 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
                 }
             }
 
-            const vehicleAttributes: Model<VehicleAttributes, VehicleAttributes>[] | null = await VehicleAttributesModel.findAll({
+            const rentalCars: Model<RentalCar, RentalCar>[] | null = await RentalCarModel.findAll({
                 where: whereClause
             });
 
-            if (vehicleAttributes) {
-                return response.json(vehicleAttributes);
+            if (rentalCars) {
+                return response.json(rentalCars);
             } else {
-                return response.status(404).json({ error: "vehicleAttributes not found" });
+                return response.status(404).json({ error: "rentalCar not found" });
             }
         } catch (error: unknown) {
-            console.error(`Failed to select VehicleAttributes by class ${error}`);
+            console.error(`Failed to select RentalCar: ${error}`);
             return response.status(500).json({ error: error });
         }
     });
@@ -76,7 +64,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
         try {
             switch (selectedSmoking) {
                 case "non-smoking":
-                    const nonSmokingRentalClasses = await VehicleAttributesModel.findAll({
+                    const nonSmokingRentalClasses = await RentalCarModel.findAll({
                         attributes: ["rentalClass"],
                         where: {
                             nonSmoking: true
@@ -88,7 +76,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
                     });
                     return response.json(nonSmokingRentalClassesArray);
                 case "ok-smoking":
-                    const smokingRentalClasses = await VehicleAttributesModel.findAll({
+                    const smokingRentalClasses = await RentalCarModel.findAll({
                         attributes: ["rentalClass"],
                         where: {
                             nonSmoking: false
@@ -100,7 +88,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
                     });
                     return response.json(smokingRentalClassesArray);
                 default:
-                    const rentalClasses = await VehicleAttributesModel.findAll({
+                    const rentalClasses = await RentalCarModel.findAll({
                         attributes: ["rentalClass"],
                         group: "rentalClass"
                     });
@@ -124,7 +112,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
         try {
             switch (selectedSmoking) {
                 case "non-smoking":
-                    const nonSmokingCarModels = await VehicleAttributesModel.findAll({
+                    const nonSmokingCarModels = await RentalCarModel.findAll({
                         attributes: ["carModel"],
                         where: {
                             nonSmoking: true,
@@ -137,7 +125,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
                     });
                     return response.json(nonSmokingRentalClassesArray);
                 case "ok-smoking":
-                    const smokingCarModels = await VehicleAttributesModel.findAll({
+                    const smokingCarModels = await RentalCarModel.findAll({
                         attributes: ["carModel"],
                         where: {
                             nonSmoking: false,
@@ -150,7 +138,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
                     });
                     return response.json(smokingCarModelsArray);
                 case "none-specification":
-                    const carModels = await VehicleAttributesModel.findAll({
+                    const carModels = await RentalCarModel.findAll({
                         attributes: ["carModel"],
                         where: {
                             rentalClass: selectedRentalClass
@@ -177,7 +165,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
         try {
             switch (selectedSmoking) {
                 case "non-smoking":
-                    const nonSmokingLicensePlates = await VehicleAttributesModel.findAll({
+                    const nonSmokingLicensePlates = await RentalCarModel.findAll({
                         attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
                         where: {
                             nonSmoking: true,
@@ -194,7 +182,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
                     });
                     return response.json(nonSmokingLicensePlatesData);
                 case "ok-smoking":
-                    const smokingLicensePlates = await VehicleAttributesModel.findAll({
+                    const smokingLicensePlates = await RentalCarModel.findAll({
                         attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber"],
                         where: {
                             nonSmoking: false,
@@ -211,7 +199,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
                     });
                     return response.json(smokingLicensePlatesData);
                 default:
-                    const licensePlates = await VehicleAttributesModel.findAll({
+                    const licensePlates = await RentalCarModel.findAll({
                         attributes: ["id", "licensePlateRegion", "licensePlateCode", "licensePlateHiragana", "licensePlateNumber", "nonSmoking"],
                         where: {
                             carModel: selectedCarModel
@@ -241,7 +229,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
         const endDate: Date = request.body.endDate;
 
         try {
-            const reservationData: Model<ReservationData, ReservationData>[] = await ReservationDataModel.findAll({
+            const reservationData: Model<Reservation, Reservation>[] = await ReservationModel.findAll({
                 where: {
                     [Op.or]: [
                         {
@@ -277,7 +265,7 @@ import { VehicleAttributes, ReservationData, VehicleStatus } from "./@types/type
         const reservationId: string = request.body.reservationId;
 
         try {
-            const reservationDataById: Model<ReservationData, ReservationData> | null = await ReservationDataModel.findOne({
+            const reservationDataById: Model<Reservation, Reservation> | null = await ReservationModel.findOne({
                 where: {
                     id: reservationId
                 }

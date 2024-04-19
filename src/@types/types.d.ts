@@ -4,7 +4,7 @@ export type Users = {
     hashed_password: string
 }
 
-export type VehicleAttributes = {
+export type RentalCar = {
     id?: number,
     imageFileName?: string | null,
     carModel: string,
@@ -33,7 +33,7 @@ export type VehicleAttributes = {
     updatedAt: datetime
 }
 
-export type ReservationData = {
+export type Reservation = {
     id?: number
     isReplied: boolean,
     receptionDate: Date,
