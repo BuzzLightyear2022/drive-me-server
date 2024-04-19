@@ -6,9 +6,9 @@ import fs from "fs";
 import WebSocket from "ws";
 import path from "path";
 import { authenticateToken } from "./login.mjs";
-import { VehicleAttributesModel, ReservationDataModel } from "./sql_setup.mjs";
-import { VehicleAttributes, ReservationData } from "./@types/types.js";
-import { updateAttributesAndNotify } from "./common_modules.mjs";
+import { RentalCarModel, ReservationModel } from "./sql_setup.mjs";
+import { RentalCar, Reservation } from "./@types/types.js";
+import { updateRentalCarAndNotify } from "./common_modules.mjs";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -18,7 +18,7 @@ const upload = multer({ storage: storage });
         { name: "imageUrl" },
         { name: "data" }
     ]), async (request: express.Request, response: express.Response) => {
-        const newVehicleAttributes: VehicleAttributes = JSON.parse(request.body["data"]);
+        const newVehicleAttributes: RentalCar = JSON.parse(request.body["data"]);
         const targetDirectoryPath: string = path.join(".", "car_images");
 
         const imageFiles: {
@@ -36,8 +36,8 @@ const upload = multer({ storage: storage });
         }
 
         try {
-            const existingVehicleAttributes: Model<VehicleAttributes, VehicleAttributes> | null = await VehicleAttributesModel.findByPk(newVehicleAttributes.id);
-            const existingVehicleAttributesJson: VehicleAttributes | undefined = existingVehicleAttributes?.get({ plain: true });
+            const existingVehicleAttributes: Model<RentalCar, RentalCar> | null = await RentalCarModel.findByPk(newVehicleAttributes.id);
+            const existingVehicleAttributesJson: RentalCar | undefined = existingVehicleAttributes?.get({ plain: true });
 
             if (existingVehicleAttributes) {
                 if (imageFiles && Array.isArray(imageFiles["imageUrl"]) && imageFiles["imageUrl"].length > 0) {
@@ -49,15 +49,15 @@ const upload = multer({ storage: storage });
                         const currentImagePath = path.join(targetDirectoryPath, existingVehicleAttributesJson.imageFileName);
                         fs.access(currentImagePath, fs.constants.F_OK, async (imageNotFoundError: unknown) => {
                             if (imageNotFoundError) {
-                                await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
+                                await updateRentalCarAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                             } else {
                                 fs.unlink(currentImagePath, async (unlinkError: unknown) => {
-                                    await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
+                                    await updateRentalCarAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                                 });
                             }
                         });
                     } else {
-                        await updateAttributesAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
+                        await updateRentalCarAndNotify(fileName, bufferImageUrl, existingVehicleAttributes, newVehicleAttributes);
                     }
                 } else {
                     if (existingVehicleAttributesJson && existingVehicleAttributesJson.imageFileName) {
@@ -102,8 +102,8 @@ const upload = multer({ storage: storage });
         { name: "data" }
     ]), async (request: express.Request, response: express.Response) => {
         try {
-            const updateFields: ReservationData = JSON.parse(request.body.data);
-            await ReservationDataModel.update(updateFields, {
+            const updateFields: Reservation = JSON.parse(request.body.data);
+            await ReservationModel.update(updateFields, {
                 where: { id: updateFields.id }
             });
 

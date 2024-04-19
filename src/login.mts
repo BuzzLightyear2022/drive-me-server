@@ -1,6 +1,6 @@
 import { app } from "./main.mjs";
 import express from "express";
-import { UsersModel } from "./sql_setup.mjs";
+import { UserModel } from "./sql_setup.mjs";
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
@@ -28,7 +28,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
 
 (async () => {
     app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
-	    console.log(true);
+        console.log(true);
         const secretKey = process.env.SECRET_KEY as string;
 
         const username = request.body.username;
@@ -42,7 +42,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
         });
 
         try {
-            const userData = await UsersModel.findOne({
+            const userData = await UserModel.findOne({
                 where: {
                     username: username
                 }
