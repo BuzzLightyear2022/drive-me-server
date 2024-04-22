@@ -59,8 +59,8 @@ import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 })();
 
 (async () => {
-    app.post("/sqlSelect/vehicleAttributes/rentalClasses", authenticateToken, async (request: express.Request, response: express.Response) => {
-        const selectedSmoking = request.body["selectedSmoking"];
+    app.post("/sqlSelect/existingRentalClasses", authenticateToken, async (request: express.Request, response: express.Response) => {
+        const selectedSmoking = request.body["nonSmoking"];
 
         try {
             switch (selectedSmoking) {
