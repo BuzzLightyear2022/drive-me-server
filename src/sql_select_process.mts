@@ -31,7 +31,6 @@ import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 (async () => {
     app.post("/sqlSelect/rentalCars", authenticateToken, async (request: express.Request, response: express.Response) => {
         const rentalClass: string = request.body.rentalClass;
-        console.log(rentalClass);
 
         try {
             let whereClause = {};
@@ -225,37 +224,47 @@ import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 })();
 
 (async () => {
-    app.post("/sqlSelect/reservationData/filterByDateRange", authenticateToken, async (request: express.Request, response: express.Response) => {
-        const startDate: Date = request.body.startDate;
-        const endDate: Date = request.body.endDate;
+    app.post("/sqlSelect/reservations", authenticateToken, async (request: express.Request, response: express.Response) => {
+        const startDate: Date | undefined = request.body.startDate;
+        const endDate: Date | undefined = request.body.endDate;
+
+        let whereClause = {}
+
+        if (startDate && endDate) {
+            whereClause = {
+                [Op.or]: [
+                    {
+                        pickupDatetime: {
+                            [Op.between]: [startDate, endDate]
+                        }
+                    },
+                    {
+                        returnDatetime: {
+                            [Op.between]: [startDate, endDate]
+                        }
+                    },
+                    {
+                        [Op.and]: [
+                            { pickupDatetime: { [Op.lte]: startDate } },
+                            { returnDatetime: { [Op.gte]: endDate } }
+                        ]
+                    }
+                ]
+            }
+        }
 
         try {
-            const reservationData: Model<Reservation, Reservation>[] = await ReservationModel.findAll({
-                where: {
-                    [Op.or]: [
-                        {
-                            pickupDatetime: {
-                                [Op.between]: [startDate, endDate]
-                            }
-                        },
-                        {
-                            returnDatetime: {
-                                [Op.between]: [startDate, endDate]
-                            }
-                        },
-                        {
-                            [Op.and]: [
-                                { pickupDatetime: { [Op.lte]: startDate } },
-                                { returnDatetime: { [Op.gte]: endDate } }
-                            ]
-                        }
-                    ]
-                }
+            const reservations: Model<Reservation, Reservation>[] = await ReservationModel.findAll({
+                where: whereClause
             });
 
-            return response.json(reservationData);
+            if (reservations) {
+                return response.json(reservations);
+            } else {
+                return response.status(404).json({ error: "reservations not found" });
+            }
         } catch (error: unknown) {
-            console.error(`Failed to select reservation data: ${error}`);
+            console.error(`Failed to select reservations: ${error}`);
             return response.status(500).json("Internal Server Error.");
         }
     });
