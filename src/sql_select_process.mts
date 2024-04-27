@@ -30,13 +30,12 @@ import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 
 (async () => {
     app.post("/sqlSelect/rentalCars", authenticateToken, async (request: express.Request, response: express.Response) => {
-        const rentalClass: string = request.body.rentalClass;
+        const rentalClass: string | null = request.body.rentalClass;
 
         try {
             let whereClause = {};
 
             if (rentalClass) {
-                console.log("selected rental class: ", rentalClass);
                 whereClause = {
                     rentalClass: rentalClass
                 }
