@@ -98,11 +98,12 @@ const upload = multer({ storage: storage });
 })();
 
 (async () => {
-    app.post("/sqlUpdate/reservationData", authenticateToken, upload.fields([
+    app.post("/sqlUpdate/reservation", authenticateToken, upload.fields([
         { name: "data" }
     ]), async (request: express.Request, response: express.Response) => {
         try {
             const updateFields: Reservation = JSON.parse(request.body.data);
+            console.log(updateFields);
             await ReservationModel.update(updateFields, {
                 where: { id: updateFields.id }
             });
