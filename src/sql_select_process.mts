@@ -137,7 +137,7 @@ import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
                         return carModel.carModel;
                     });
                     return response.json(smokingCarModelsArray);
-                case "none-specification":
+                default:
                     const carModels = await RentalCarModel.findAll({
                         attributes: ["carModel"],
                         where: {
