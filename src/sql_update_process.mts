@@ -103,7 +103,6 @@ const upload = multer({ storage: storage });
     ]), async (request: express.Request, response: express.Response) => {
         try {
             const updateFields: Reservation = JSON.parse(request.body.data);
-            console.log(updateFields);
             await ReservationModel.update(updateFields, {
                 where: { id: updateFields.id }
             });

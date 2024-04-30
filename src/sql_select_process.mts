@@ -106,8 +106,8 @@ import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 
 (async () => {
     app.post("/sqlSelect/vehicleAttributes/carModels", authenticateToken, async (request: express.Request, response: express.Response) => {
-        const selectedSmoking: string = request.body.selectedSmoking;
-        const selectedRentalClass: string = request.body.selectedRentalClass;
+        const selectedSmoking: string | undefined = request.body.smoking;
+        const selectedRentalClass: string = request.body.rentalClass;
 
         try {
             switch (selectedSmoking) {
