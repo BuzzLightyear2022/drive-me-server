@@ -7,7 +7,8 @@ import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 
 (async () => {
     app.post("/sqlSelect/rentalCarById", authenticateToken, async (request: express.Request, response: express.Response) => {
-        const rentalCarId: string = request.body.args.rentalCarId;
+        const rentalCarId: string = request.body.rentalCarId;
+	console.log(rentalCarId);
 
         try {
             const vehicleAttributes: Model<RentalCar, RentalCar> | null = await RentalCarModel.findOne({
