@@ -6,13 +6,13 @@ import { RentalCarModel, ReservationModel, VehicleStatusModel } from "./sql_setu
 import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 
 (async () => {
-    app.post("/sqlSelect/vehicleAttributesById", authenticateToken, async (request: express.Request, response: express.Response) => {
-        const vehicleId: string = request.body.vehicleId;
+    app.post("/sqlSelect/rentalCarById", authenticateToken, async (request: express.Request, response: express.Response) => {
+        const rentalCarId: string = request.body.args.rentalCarId;
 
         try {
             const vehicleAttributes: Model<RentalCar, RentalCar> | null = await RentalCarModel.findOne({
                 where: {
-                    id: vehicleId
+                    id: rentalCarId
                 }
             });
 
