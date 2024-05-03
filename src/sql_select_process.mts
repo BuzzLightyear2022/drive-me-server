@@ -294,7 +294,7 @@ import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 })();
 
 (async () => {
-    app.post("/sqlSelect/vehicleStatuses/latest", authenticateToken, async (request: express.Request, response: express.Response) => {
+    app.post("/sqlSelect/latestStatusOfRentalCars", authenticateToken, async (request: express.Request, response: express.Response) => {
         try {
             const latestStatuses: any = await VehicleStatusModel.findAll({
                 attributes: [
