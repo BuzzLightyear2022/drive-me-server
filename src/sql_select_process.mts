@@ -297,19 +297,19 @@ import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
 (async () => {
     app.post("/sqlSelect/latestStatusOfRentalCars", authenticateToken, async (request: express.Request, response: express.Response) => {
         try {
-            const latestStatuses: any = await StatusOfRentalCarModel.findAll({
+            const latestStatusOfRentalCars: Model<StatusOfRentalCar, StatusOfRentalCar>[] = await StatusOfRentalCarModel.findAll({
                 attributes: [
-                    "vehicleId", [Sequelize.fn("MAX", Sequelize.col("updatedAt")), "latestUpdate"]
+                    "rentalCarId", [Sequelize.fn("MAX", Sequelize.col("createdAt")), "latestCreate"]
                 ],
-                group: ["vehicleId"],
+                group: ["rentalCarId"],
                 raw: true
             });
 
-            const latestRecords = await Promise.all(latestStatuses.map(async (item: any) => {
+            const latestRecords = await Promise.all(latestStatusOfRentalCars.map(async (item: any) => {
                 return StatusOfRentalCarModel.findOne({
                     where: {
-                        rentalCarId: item.vehicleId,
-                        updatedAt: item.latestUpdate
+                        rentalCarId: item.rentalCarId,
+                        createdAt: item.latestCreate
                     }
                 });
             }));
