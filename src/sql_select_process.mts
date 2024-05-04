@@ -297,7 +297,6 @@ import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
 (async () => {
     app.post("/sqlSelect/latestStatusOfRentalCars", authenticateToken, async (request: express.Request, response: express.Response) => {
         const rentalClass: string | null = request.body.rentalClass;
-        console.log(rentalClass);
 
         try {
             let queryOptions: any = {
@@ -305,12 +304,13 @@ import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
                     "rentalCarId", [Sequelize.fn("MAX", Sequelize.col("createdAt")), "latestCreate"]
                 ],
                 group: ["rentalCarId"],
-                raw: true
+                raw: true,
+                where: rentalClass
             }
 
-            if (rentalClass) {
-                queryOptions.where = { rentalClass: rentalClass }
-            }
+            // if (rentalClass) {
+            //     queryOptions.where = { rentalClass: rentalClass }
+            // }
 
             const latestStatusOfRentalCars: Model<StatusOfRentalCar, StatusOfRentalCar>[] = await StatusOfRentalCarModel.findAll(queryOptions);
 
