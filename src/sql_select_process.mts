@@ -300,13 +300,19 @@ import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
         console.log(rentalClass);
 
         try {
-            const latestStatusOfRentalCars: Model<StatusOfRentalCar, StatusOfRentalCar>[] = await StatusOfRentalCarModel.findAll({
+            let queryOptions: any = {
                 attributes: [
                     "rentalCarId", [Sequelize.fn("MAX", Sequelize.col("createdAt")), "latestCreate"]
                 ],
                 group: ["rentalCarId"],
                 raw: true
-            });
+            }
+
+            if (rentalClass) {
+                queryOptions.where = { rentalClass: rentalClass }
+            }
+
+            const latestStatusOfRentalCars: Model<StatusOfRentalCar, StatusOfRentalCar>[] = await StatusOfRentalCarModel.findAll(queryOptions);
 
             const latestRecords = await Promise.all(latestStatusOfRentalCars.map(async (item: any) => {
                 return StatusOfRentalCarModel.findOne({
