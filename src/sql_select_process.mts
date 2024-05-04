@@ -2,8 +2,8 @@ import express from "express";
 import Sequelize, { Model, Op } from "sequelize";
 import { app } from "./main.mjs";
 import { authenticateToken } from "./login.mjs";
-import { RentalCarModel, ReservationModel, VehicleStatusModel } from "./sql_setup.mjs";
-import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
+import { RentalCarModel, ReservationModel, StatusOfRentalCarModel } from "./sql_setup.mjs";
+import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
 
 (async () => {
     app.post("/sqlSelect/rentalCarById", authenticateToken, async (request: express.Request, response: express.Response) => {
@@ -297,7 +297,7 @@ import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 (async () => {
     app.post("/sqlSelect/latestStatusOfRentalCars", authenticateToken, async (request: express.Request, response: express.Response) => {
         try {
-            const latestStatuses: any = await VehicleStatusModel.findAll({
+            const latestStatuses: any = await StatusOfRentalCarModel.findAll({
                 attributes: [
                     "vehicleId", [Sequelize.fn("MAX", Sequelize.col("updatedAt")), "latestUpdate"]
                 ],
@@ -306,9 +306,9 @@ import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
             });
 
             const latestRecords = await Promise.all(latestStatuses.map(async (item: any) => {
-                return VehicleStatusModel.findOne({
+                return StatusOfRentalCarModel.findOne({
                     where: {
-                        vehicleId: item.vehicleId,
+                        rentalCarId: item.vehicleId,
                         updatedAt: item.latestUpdate
                     }
                 });
