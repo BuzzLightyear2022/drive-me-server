@@ -296,7 +296,8 @@ import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
 
 (async () => {
     app.post("/sqlSelect/latestStatusOfRentalCars", authenticateToken, async (request: express.Request, response: express.Response) => {
-        console.log(request.body);
+        const rentalClass: string | null = request.body.rentalClass;
+        console.log(rentalClass);
 
         try {
             const latestStatusOfRentalCars: Model<StatusOfRentalCar, StatusOfRentalCar>[] = await StatusOfRentalCarModel.findAll({
