@@ -139,4 +139,7 @@ export const UserModel: ModelStatic<Model<User>> = sqlConnection.define("Users",
     } catch (error: unknown) {
         console.error("Create Tables is failed: ", error);
     }
+
+    RentalCarModel.hasMany(StatusOfRentalCarModel, { foreignKey: "rentalCarId" });
+    StatusOfRentalCarModel.belongsTo(RentalCarModel, { foreignKey: "rentalCarId" });
 })();
