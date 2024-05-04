@@ -44,15 +44,15 @@ import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
 
             const rentalCars: Model<RentalCar, RentalCar>[] | null = await RentalCarModel.findAll({
                 where: whereClause,
-                // include: [
-                //     {
-                //         model: StatusOfRentalCarModel,
-                //         required: true,
-                //         attributes: [],
-                //         order: [["createdAt", "DESC"]],
-                //         limit: 1
-                //     }
-                // ]
+                include: [
+                    {
+                        model: StatusOfRentalCarModel,
+                        required: false,
+                        attributes: [],
+                        order: [["createdAt", "DESC"]],
+                        limit: 1
+                    }
+                ]
             });
 
             if (rentalCars) {
