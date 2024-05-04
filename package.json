@@ -57,6 +57,7 @@
 		"finalhandler": "^1.2.0",
 		"forwarded": "^0.2.0",
 		"fresh": "^0.5.2",
+		"fs": "^0.0.1-security",
 		"fs-minipass": "^2.1.0",
 		"fs.realpath": "^1.0.0",
 		"function-bind": "^1.1.2",

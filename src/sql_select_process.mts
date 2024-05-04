@@ -7,7 +7,7 @@ import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
 
 (async () => {
     app.post("/sqlSelect/rentalCarById", authenticateToken, async (request: express.Request, response: express.Response) => {
-        const rentalCarId: string = request.body.rentalCarId;
+        const rentalCarId: string = request.body.rentalCarId.rentalCarId;
         console.log(rentalCarId);
 
         try {
