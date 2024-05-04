@@ -1,4 +1,4 @@
-import { RentalCar, Reservation, VehicleStatus, User } from "./@types/types.js";
+import { RentalCar, Reservation, StatusOfRentalCar, User } from "./@types/types.js";
 import { Sequelize, DataTypes, Model, ModelStatic } from "sequelize";
 import dotenv from "dotenv";
 
@@ -95,14 +95,14 @@ export const ReservationModel: ModelStatic<Model<Reservation>> = sqlConnection.d
     updatedAt: DataTypes.DATE
 });
 
-export const VehicleStatusModel: ModelStatic<Model<VehicleStatus>> = sqlConnection.define("VehicleStatus", {
+export const StatusOfRentalCarModel: ModelStatic<Model<StatusOfRentalCar>> = sqlConnection.define("StatusOfRentalCars", {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false
     },
-    vehicleId: DataTypes.INTEGER,
+    rentalCarId: DataTypes.INTEGER,
     currentLocation: DataTypes.STRING,
     washState: DataTypes.STRING,
     comment: DataTypes.STRING,

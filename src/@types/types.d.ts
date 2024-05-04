@@ -71,9 +71,9 @@ export type Reservation = {
     updatedAt: datetime
 }
 
-export type VehicleStatus = {
+export type StatusOfRentalCar = {
     id?: number,
-    vehicleId: number,
+    rentalCarId: number,
     currentLocation: string,
     washState: string,
     comment: string,
