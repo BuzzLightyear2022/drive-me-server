@@ -48,7 +48,6 @@ import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
                     {
                         model: StatusOfRentalCarModel,
                         required: false,
-                        attributes: [],
                         order: [["createdAt", "DESC"]],
                         limit: 1
                     }
