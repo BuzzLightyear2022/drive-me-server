@@ -3,8 +3,8 @@ import multer from "multer";
 import express from "express";
 import fs from "fs";
 import WebSocket from "ws";
-import { RentalCarModel, ReservationModel, VehicleStatusModel } from "./sql_setup.mjs";
-import { RentalCar, Reservation, VehicleStatus } from "./@types/types.js";
+import { RentalCarModel, ReservationModel, StatusOfRentalCarModel } from "./sql_setup.mjs";
+import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
 import { authenticateToken } from "./login.mjs";
 
 const storage = multer.memoryStorage();
@@ -81,10 +81,10 @@ const upload = multer({ storage: storage });
 
 (async () => {
     app.post("/sqlInsert/vehicleStatus", authenticateToken, async (request: express.Request, response: express.Response) => {
-        const vehicleStatus: VehicleStatus = request.body.vehicleStatus;
+        const statusOfRentalCar: StatusOfRentalCar = request.body.statusOfRentalCar;
 
         try {
-            VehicleStatusModel.create(vehicleStatus);
+            StatusOfRentalCarModel.create(statusOfRentalCar);
             wssServer.clients.forEach(async (client: WebSocket) => {
                 client.send("wssUpdate:vehicleStatus");
             });
