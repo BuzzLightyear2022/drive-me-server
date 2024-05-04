@@ -56,6 +56,7 @@ import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
             });
 
             if (rentalCars) {
+                console.log(rentalCars);
                 return response.json(rentalCars);
             } else {
                 return response.status(404).json({ error: "rentalCar not found" });
