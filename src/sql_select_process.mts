@@ -305,12 +305,11 @@ import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
                 ],
                 group: ["rentalCarId"],
                 raw: true,
-                where: rentalClass
             }
 
-            // if (rentalClass) {
-            //     queryOptions.where = { rentalClass: rentalClass }
-            // }
+            if (rentalClass) {
+                queryOptions.where = { rentalClass: rentalClass }
+            }
 
             const latestStatusOfRentalCars: Model<StatusOfRentalCar, StatusOfRentalCar>[] = await StatusOfRentalCarModel.findAll(queryOptions);
 
