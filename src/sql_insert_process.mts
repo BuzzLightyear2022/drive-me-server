@@ -80,13 +80,14 @@ const upload = multer({ storage: storage });
 })();
 
 (async () => {
-    app.post("/sqlInsert/vehicleStatus", authenticateToken, async (request: express.Request, response: express.Response) => {
+    app.post("/sqlInsert/statusOfRentalCar", authenticateToken, async (request: express.Request, response: express.Response) => {
         const statusOfRentalCar: StatusOfRentalCar = request.body.statusOfRentalCar;
+        console.log(statusOfRentalCar);
 
         try {
             StatusOfRentalCarModel.create(statusOfRentalCar);
             wssServer.clients.forEach(async (client: WebSocket) => {
-                client.send("wssUpdate:vehicleStatus");
+                client.send("wssUpdate:statusOfRentalCar");
             });
             return response.status(200);
         } catch (error: unknown) {
