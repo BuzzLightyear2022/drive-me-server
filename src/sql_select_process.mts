@@ -2,8 +2,8 @@ import express from "express";
 import Sequelize, { Model, Op } from "sequelize";
 import { app } from "./main.mjs";
 import { authenticateToken } from "./login.mjs";
-import { RentalCarModel, ReservationModel, StatusOfRentalCarModel } from "./sql_setup.mjs";
-import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
+import { RentalCarModel, ReservationModel, RentalCarStatusModel } from "./sql_setup.mjs";
+import { RentalCar, Reservation, RentalCarStatus } from "./@types/types.js";
 
 (async () => {
     app.post("/sqlSelect/rentalCarById", authenticateToken, async (request: express.Request, response: express.Response) => {
@@ -46,7 +46,7 @@ import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
                 where: whereClause,
                 include: [
                     {
-                        model: StatusOfRentalCarModel,
+                        model: RentalCarStatusModel,
                         required: false,
                         order: [["createdAt", "DESC"]],
                         limit: 1
@@ -303,37 +303,37 @@ import { RentalCar, Reservation, StatusOfRentalCar } from "./@types/types.js";
     });
 })();
 
-(async () => {
-    app.post("/sqlSelect/latestStatusOfRentalCars", authenticateToken, async (request: express.Request, response: express.Response) => {
-        const rentalClass: string | null = request.body.rentalClass;
+// (async () => {
+//     app.post("/sqlSelect/latestStatusOfRentalCars", authenticateToken, async (request: express.Request, response: express.Response) => {
+//         const rentalClass: string | null = request.body.rentalClass;
 
-        try {
-            let queryOptions: any = {
-                attributes: [
-                    "rentalCarId", [Sequelize.fn("MAX", Sequelize.col("createdAt")), "latestCreate"]
-                ],
-                group: ["rentalCarId"],
-                raw: true,
-            }
+//         try {
+//             let queryOptions: any = {
+//                 attributes: [
+//                     "rentalCarId", [Sequelize.fn("MAX", Sequelize.col("createdAt")), "latestCreate"]
+//                 ],
+//                 group: ["rentalCarId"],
+//                 raw: true,
+//             }
 
-            // if (rentalClass) {
-            //     queryOptions.where = { rentalClass: rentalClass }
-            // }
+// if (rentalClass) {
+//     queryOptions.where = { rentalClass: rentalClass }
+// }
 
-            const latestStatusOfRentalCars: Model<StatusOfRentalCar, StatusOfRentalCar>[] = await StatusOfRentalCarModel.findAll(queryOptions);
+//             const latestStatusOfRentalCars: Model<StatusOfRentalCar, StatusOfRentalCar>[] = await StatusOfRentalCarModel.findAll(queryOptions);
 
-            const latestRecords = await Promise.all(latestStatusOfRentalCars.map(async (item: any) => {
-                return StatusOfRentalCarModel.findOne({
-                    where: {
-                        rentalCarId: item.rentalCarId,
-                        createdAt: item.latestCreate
-                    }
-                });
-            }));
+//             const latestRecords = await Promise.all(latestStatusOfRentalCars.map(async (item: any) => {
+//                 return StatusOfRentalCarModel.findOne({
+//                     where: {
+//                         rentalCarId: item.rentalCarId,
+//                         createdAt: item.latestCreate
+//                     }
+//                 });
+//             }));
 
-            response.status(200).json(latestRecords);
-        } catch (error: unknown) {
-            return response.status(500);
-        }
-    });
-})();
+//             response.status(200).json(latestRecords);
+//         } catch (error: unknown) {
+//             return response.status(500);
+//         }
+//     });
+// })();

@@ -1,4 +1,4 @@
-import { RentalCar, Reservation, StatusOfRentalCar, User } from "./@types/types.js";
+import { RentalCar, Reservation, RentalCarStatus, User } from "./@types/types.js";
 import { Sequelize, DataTypes, Model, ModelStatic } from "sequelize";
 import dotenv from "dotenv";
 
@@ -95,7 +95,7 @@ export const ReservationModel: ModelStatic<Model<Reservation>> = sqlConnection.d
     updatedAt: DataTypes.DATE
 });
 
-export const StatusOfRentalCarModel: ModelStatic<Model<StatusOfRentalCar>> = sqlConnection.define("StatusOfRentalCars", {
+export const RentalCarStatusModel: ModelStatic<Model<RentalCarStatus>> = sqlConnection.define("RentalCarStatuses", {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -140,6 +140,6 @@ export const UserModel: ModelStatic<Model<User>> = sqlConnection.define("Users",
         console.error("Create Tables is failed: ", error);
     }
 
-    RentalCarModel.hasMany(StatusOfRentalCarModel, { foreignKey: "rentalCarId" });
-    StatusOfRentalCarModel.belongsTo(RentalCarModel, { foreignKey: "rentalCarId" });
+    RentalCarModel.hasMany(RentalCarStatusModel, { foreignKey: "rentalCarId" });
+    RentalCarStatusModel.belongsTo(RentalCarModel, { foreignKey: "rentalCarId" });
 })();
