@@ -81,7 +81,7 @@ const upload = multer({ storage: storage });
 
 (async () => {
     app.post("/sqlInsert/rentalCarStatus", authenticateToken, async (request: express.Request, response: express.Response) => {
-        const rentalCarStatus: RentalCarStatus = request.body.rentalCarStatus;
+        const rentalCarStatus: RentalCarStatus = request.body;
         console.log(rentalCarStatus);
 
         try {
