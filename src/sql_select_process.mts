@@ -280,7 +280,7 @@ import { RentalCar, Reservation, RentalCarStatus } from "./@types/types.js";
 })();
 
 (async () => {
-    app.post("/sqlSelect/reservationData/selectById", authenticateToken, async (request: express.Request, response: express.Response) => {
+    app.post("/sqlSelect/reservationById", authenticateToken, async (request: express.Request, response: express.Response) => {
         const reservationId: string = request.body.reservationId;
 
         try {
