@@ -91,6 +91,7 @@ export const ReservationModel: ModelStatic<Model<Reservation>> = sqlConnection.d
     selectedVehicleId: DataTypes.STRING,
     comment: DataTypes.TEXT,
     isCanceled: DataTypes.BOOLEAN,
+    cancelComment: DataTypes.TEXT,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE
 });

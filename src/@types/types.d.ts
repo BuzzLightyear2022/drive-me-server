@@ -66,7 +66,8 @@ export type Reservation = {
     selectedCarModel: string,
     selectedVehicleId: number,
     comment: string,
-    isCanceled: boolean
+    isCanceled: boolean,
+    cancelComment: string,
     createdAt: datetime,
     updatedAt: datetime
 }
