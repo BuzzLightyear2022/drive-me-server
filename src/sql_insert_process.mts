@@ -63,7 +63,7 @@ const upload = multer({ storage: storage });
 })();
 
 (async () => {
-    app.post("/sqlInsert/reservationData", upload.fields([
+    app.post("/sqlInsert/reservation", upload.fields([
         { name: "data" }
     ]), async (request: express.Request, response: express.Response) => {
         const jsonData: Reservation = JSON.parse(request.body.data);
