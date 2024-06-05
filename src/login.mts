@@ -30,6 +30,8 @@ export const authenticateToken = (request: express.Request, response: express.Re
     app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
         const secretKey = process.env.SECRET_KEY as string;
 
+        console.log("login.mts: 33", request.body);
+
         const username = request.body.username;
         const password = request.body.password;
 
