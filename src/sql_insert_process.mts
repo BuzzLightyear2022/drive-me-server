@@ -90,7 +90,7 @@ const upload = multer({ storage: storage });
             });
             return response.status(200).send("rentalcar status inserted.");
         } catch (error: unknown) {
-            return response.status(500);
+            return response.status(500).send(error);
         }
     });
 })();
