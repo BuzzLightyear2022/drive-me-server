@@ -111,6 +111,7 @@ const upload = multer({ storage: storage });
                 client.send("wssUpdate:reservationData");
             });
 
+            console.log("sql_update_process.mts L114");
             return response.status(200).send("reservation updated");
         } catch (error: unknown) {
             return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
