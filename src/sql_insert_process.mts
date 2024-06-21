@@ -72,7 +72,7 @@ const upload = multer({ storage: storage });
             wssServer.clients.forEach(async (client: WebSocket) => {
                 client.send("wssUpdate:reservationData");
             })
-            return response.status(200).send("Reservation data saved successfully");
+            return response.status(200).send();
         } catch (error: unknown) {
             return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
         }

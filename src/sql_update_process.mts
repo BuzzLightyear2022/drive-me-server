@@ -90,7 +90,7 @@ const upload = multer({ storage: storage });
                     }
                 }
             }
-            return response.status(200);
+            return response.status(200).send();
         } catch (error: unknown) {
             return response.status(500).send(`Failed to updata data on the database: ${error}`);
         }
@@ -111,7 +111,9 @@ const upload = multer({ storage: storage });
                 client.send("wssUpdate:reservationData");
             });
 
-            return response.status(200).send("Reservation data saved successfully");
+            console.log("sql_update_process L114: ", updateFields);
+
+            return response.status(200).send();
         } catch (error: unknown) {
             return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
         }
