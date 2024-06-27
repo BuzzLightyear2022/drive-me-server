@@ -14,7 +14,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 (async () => {
-    app.post("/sqlUpdate/vehicleAttributes", authenticateToken, upload.fields([
+    app.post("/sqlUpdate/rentalcar", authenticateToken, upload.fields([
         { name: "imageUrl" },
         { name: "data" }
     ]), async (request: express.Request, response: express.Response) => {
