@@ -1,5 +1,5 @@
-import { RentalCar, Reservation, RentalCarStatus, User } from "./@types/types.js";
-import { Sequelize, DataTypes, Model, ModelStatic } from "sequelize";
+import { RentalCar, Reservation, RentalCarStatus, User, LoanerRentalReservation } from "./@types/types.js";
+import { Sequelize, DataTypes, Model, ModelStatic, DATE } from "sequelize";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -94,6 +94,51 @@ export const ReservationModel: ModelStatic<Model<Reservation>> = sqlConnection.d
     cancelComment: DataTypes.TEXT,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE
+});
+
+export const LoanerRentalReservationModel: ModelStatic<Model<LoanerRentalReservation>> = sqlConnection.define('LoanerRentalReservations', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+    },
+    receptionDate: DataTypes.DATE,
+    receptionBranch: DataTypes.STRING,
+    receptionHandler: DataTypes.STRING,
+    clientName: DataTypes.STRING,
+    contactPersonName: DataTypes.STRING,
+    nonSmoking: DataTypes.BOOLEAN,
+    userName1: DataTypes.STRING,
+    usingCarModel: DataTypes.STRING,
+    contactType: DataTypes.STRING,
+    phoneNumberFirst: DataTypes.STRING,
+    phoneNumberSecond: DataTypes.STRING,
+    phoneNumberThird: DataTypes.STRING,
+    dispatchDateime: DataTypes.DATE,
+    dispatchLocation: DataTypes.STRING,
+    remarks: DataTypes.STRING,
+    insuranceProvider: DataTypes.STRING,
+    insuranceProviderPhone: DataTypes.STRING,
+    repairFacility: DataTypes.STRING,
+    repairFacilityRepresentative: DataTypes.STRING,
+    repairFacilityPhone: DataTypes.STRING,
+    caseNumber: DataTypes.STRING,
+    accidentDate: DataTypes.DATE,
+    policyNumber: DataTypes.STRING,
+    coverageCategory: DataTypes.STRING,
+    dailyAmount: DataTypes.INTEGER,
+    recompense: DataTypes.BOOLEAN,
+    policyholderName: DataTypes.STRING,
+    userName2: DataTypes.STRING,
+    pickupLocation: DataTypes.STRING,
+    ownedCar: DataTypes.STRING,
+    transportLocation: DataTypes.STRING,
+    limitDate: DataTypes.DATE,
+    selectedRentalClass: DataTypes.STRING,
+    selectedCarModel: DataTypes.STRING,
+    selectedRentalcarId: DataTypes.STRING,
+    isCanceled: DataTypes.BOOLEAN
 });
 
 export const RentalCarStatusModel: ModelStatic<Model<RentalCarStatus>> = sqlConnection.define("RentalCarStatuses", {

@@ -72,6 +72,46 @@ export type Reservation = {
     updatedAt: datetime
 }
 
+export type LoanerRentalReservation = {
+    id?: string,
+    receptionDate: Date,
+    receptionBranch: string,
+    receptionHandler: string,
+    clientName: string,
+    contactPersonName: string,
+    nonSmoking: boolean,
+    userName1: string,
+    usingCarModel: string,
+    contactType: string,
+    phoneNumberFirst: string,
+    phoneNumberSecond: string,
+    phoneNumberThird: string,
+    dispatchDateime: Datetime,
+    dispatchLocation: string,
+    remarks: string,
+    insuranceProvider: string,
+    insuranceProviderPhone: string,
+    repairFacility: string,
+    repairFacilityRepresentative: string,
+    repairFacilityPhone: string,
+    caseNumber: string,
+    accidentDate: Date,
+    policyNumber: string,
+    coverageCategory: string,
+    dailyAmount: number,
+    recompense: boolean,
+    policyholderName: string,
+    userName2: string,
+    pickupLocation: string,
+    ownedCar: string,
+    transportLocation: string,
+    limitDate: Date,
+    selectedRentalClass: string,
+    selectedCarModel: string,
+    selectedRentalcarId: string,
+    isCanceled: boolean
+}
+
 export type RentalCarStatus = {
     id?: number,
     rentalCarId: number,
