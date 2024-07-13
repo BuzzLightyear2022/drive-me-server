@@ -4,7 +4,7 @@ import express from "express";
 import fs from "fs";
 import WebSocket from "ws";
 import { RentalCarModel, ReservationModel, RentalCarStatusModel } from "./sql_setup.mjs";
-import { RentalCar, Reservation, RentalCarStatus } from "./@types/types.js";
+import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from "./@types/types.js";
 import { authenticateToken } from "./login.mjs";
 
 const storage = multer.memoryStorage();
@@ -92,5 +92,13 @@ const upload = multer({ storage: storage });
         } catch (error: unknown) {
             return response.status(500).send(error);
         }
+    });
+})();
+
+(async () => {
+    app.post("/sqlInsert/loanerRentalReservation", authenticateToken, async (request: express.Request, response: express.Response) => {
+        const loanerRentalReservation: LoanerRentalReservation = request.body.loanerRentalReservation;
+
+        console.log(loanerRentalReservation);
     });
 })();
