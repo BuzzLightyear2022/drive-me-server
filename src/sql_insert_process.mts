@@ -3,7 +3,7 @@ import multer from "multer";
 import express from "express";
 import fs from "fs";
 import WebSocket from "ws";
-import { RentalCarModel, ReservationModel, RentalCarStatusModel } from "./sql_setup.mjs";
+import { RentalCarModel, ReservationModel, RentalCarStatusModel, LoanerRentalReservationModel } from "./sql_setup.mjs";
 import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from "./@types/types.js";
 import { authenticateToken } from "./login.mjs";
 
@@ -98,6 +98,15 @@ const upload = multer({ storage: storage });
 (async () => {
     app.post("/sqlInsert/loanerRentalReservation", authenticateToken, async (request: express.Request, response: express.Response) => {
         const loanerRentalReservation: LoanerRentalReservation = request.body.loanerRentalReservation;
+
+        try {
+            LoanerRentalReservationModel.create(loanerRentalReservation);
+            wssServer.clients.forEach(async (client: WebSocket) => {
+                client.send("wssUpdate:loanerRentalReservation");
+            });
+        } catch (error: unknown) {
+            return response.status(500).send();
+        }
 
         console.log(loanerRentalReservation);
     });
