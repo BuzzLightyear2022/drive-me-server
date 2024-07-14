@@ -86,7 +86,7 @@ export type LoanerRentalReservation = {
     phoneNumberFirst: string,
     phoneNumberSecond: string,
     phoneNumberThird: string,
-    dispatchDateime: Datetime,
+    dispatchDateime: Date,
     dispatchLocation: string,
     remarks: string,
     insuranceProvider: string,
