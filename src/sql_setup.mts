@@ -115,7 +115,7 @@ export const LoanerRentalReservationModel: ModelStatic<Model<LoanerRentalReserva
     phoneNumberFirst: DataTypes.STRING,
     phoneNumberSecond: DataTypes.STRING,
     phoneNumberThird: DataTypes.STRING,
-    dispatchDateime: DataTypes.DATE,
+    dispatchDatetime: DataTypes.DATE,
     dispatchLocation: DataTypes.STRING,
     remarks: DataTypes.STRING,
     insuranceProvider: DataTypes.STRING,
