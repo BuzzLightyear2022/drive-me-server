@@ -92,6 +92,7 @@ export const ReservationModel: ModelStatic<Model<Reservation>> = sqlConnection.d
     comment: DataTypes.TEXT,
     isCanceled: DataTypes.BOOLEAN,
     cancelComment: DataTypes.TEXT,
+    scheduleBarColor: DataTypes.STRING,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE
 });
@@ -138,6 +139,7 @@ export const LoanerRentalReservationModel: ModelStatic<Model<LoanerRentalReserva
     selectedRentalClass: DataTypes.STRING,
     selectedCarModel: DataTypes.STRING,
     selectedRentalcarId: DataTypes.STRING,
+    scheduleBarColor: DataTypes.STRING,
     isCanceled: DataTypes.BOOLEAN
 });
 
