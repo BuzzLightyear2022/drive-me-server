@@ -335,3 +335,12 @@ import { RentalCar, Reservation, RentalCarStatus } from "./@types/types.js";
 //         }
 //     });
 // })();
+
+(async () => {
+    app.post("/sqlSelect/loanerRentalReservations", authenticateToken, async (request: express.Request, response: express.Response) => {
+        const startDate: Date | undefined = request.body.startDate;
+        const endDate: Date | undefined = request.body.endDate;
+
+        console.log(startDate, endDate);
+    });
+})();
