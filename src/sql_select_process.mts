@@ -2,8 +2,8 @@ import express from "express";
 import Sequelize, { Model, Op } from "sequelize";
 import { app } from "./main.mjs";
 import { authenticateToken } from "./login.mjs";
-import { RentalCarModel, ReservationModel, RentalCarStatusModel } from "./sql_setup.mjs";
-import { RentalCar, Reservation, RentalCarStatus } from "./@types/types.js";
+import { RentalCarModel, ReservationModel, RentalCarStatusModel, LoanerRentalReservationModel } from "./sql_setup.mjs";
+import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from "./@types/types.js";
 
 (async () => {
     app.post("/sqlSelect/rentalCarById", authenticateToken, async (request: express.Request, response: express.Response) => {
@@ -341,6 +341,43 @@ import { RentalCar, Reservation, RentalCarStatus } from "./@types/types.js";
         const startDate: Date | undefined = request.body.startDate;
         const endDate: Date | undefined = request.body.endDate;
 
-        console.log(startDate, endDate);
+        let whereClause = {}
+
+        if (startDate && endDate) {
+            whereClause = {
+                [Op.or]: [
+                    {
+                        dispatchDatetime: {
+                            [Op.between]: [startDate, endDate]
+                        }
+                    },
+                    {
+                        limitDate: {
+                            [Op.between]: [startDate, endDate]
+                        }
+                    },
+                    {
+                        [Op.and]: [
+                            { dispatchDatetime: { [Op.lte]: startDate } },
+                            { limitDate: { [Op.gte]: endDate } }
+                        ]
+                    }
+                ]
+            }
+        }
+
+        try {
+            const loanerRentalReservations: Model<LoanerRentalReservation, LoanerRentalReservation>[] = await LoanerRentalReservationModel.findAll({
+                where: whereClause
+            });
+
+            if (loanerRentalReservations) {
+                return response.json(loanerRentalReservations);
+            } else {
+                return response.status(404).send();
+            }
+        } catch (error: unknown) {
+            return response.status(500).send();
+        }
     });
 })();
