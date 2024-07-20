@@ -68,6 +68,7 @@ export type Reservation = {
     comment: string,
     isCanceled: boolean,
     cancelComment: string,
+    scheduleBarColor: string,
     createdAt: datetime,
     updatedAt: datetime
 }
@@ -109,6 +110,7 @@ export type LoanerRentalReservation = {
     selectedRentalClass: string,
     selectedCarModel: string,
     selectedRentalcarId: string,
+    scheduleBarColor: string,
     isCanceled: boolean
 }
 
