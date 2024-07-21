@@ -341,13 +341,18 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
         const reservationId: string = request.body.reservationId;
 
         try {
-            const loanerRentalReservationByid: Model<LoanerRentalReservation, LoanerRentalReservation> | null = await LoanerRentalReservationModel.findOne({
+            const loanerRentalReservationById: Model<LoanerRentalReservation, LoanerRentalReservation> | null = await LoanerRentalReservationModel.findOne({
                 where: {
                     id: reservationId
                 }
             });
 
-            
+            if (loanerRentalReservationById) {
+                return response.json(loanerRentalReservationById);
+            } else {
+                return response.status(404).send();
+            }
+
         } catch (error: unknown) {
             console.error(error);
         }
