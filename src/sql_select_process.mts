@@ -339,7 +339,18 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
 (async () => {
     app.post("/sqlSelect/loanerRentalReservationById", authenticateToken, async (request: express.Request, response: express.Response) => {
         const reservationId: string = request.body.reservationId;
-        console.log(reservationId);
+
+        try {
+            const loanerRentalReservationByid: Model<LoanerRentalReservation, LoanerRentalReservation> | null = await LoanerRentalReservationModel.findOne({
+                where: {
+                    id: reservationId
+                }
+            });
+
+            
+        } catch (error: unknown) {
+            console.error(error);
+        }
     });
 })();
 
