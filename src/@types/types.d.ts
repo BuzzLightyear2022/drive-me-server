@@ -80,7 +80,7 @@ export type LoanerRentalReservation = {
     receptionHandler: string,
     clientName: string,
     contactPersonName: string,
-    nonSmoking: boolean,
+    nonSmoking: string,
     userName1: string,
     usingCarModel: string,
     contactType: string,

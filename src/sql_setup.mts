@@ -109,7 +109,7 @@ export const LoanerRentalReservationModel: ModelStatic<Model<LoanerRentalReserva
     receptionHandler: DataTypes.STRING,
     clientName: DataTypes.STRING,
     contactPersonName: DataTypes.STRING,
-    nonSmoking: DataTypes.BOOLEAN,
+    nonSmoking: DataTypes.STRING,
     userName1: DataTypes.STRING,
     usingCarModel: DataTypes.STRING,
     contactType: DataTypes.STRING,
