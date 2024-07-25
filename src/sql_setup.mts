@@ -120,6 +120,7 @@ export const LoanerRentalReservationModel: ModelStatic<Model<LoanerRentalReserva
     dispatchLocation: DataTypes.STRING,
     remarks: DataTypes.STRING,
     insuranceProvider: DataTypes.STRING,
+    insuranceProviderCoordinator: DataTypes.STRING,
     insuranceProviderPhone: DataTypes.STRING,
     repairFacility: DataTypes.STRING,
     repairFacilityRepresentative: DataTypes.STRING,

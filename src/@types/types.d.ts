@@ -91,6 +91,7 @@ export type LoanerRentalReservation = {
     dispatchLocation: string,
     remarks: string,
     insuranceProvider: string,
+    insuranceProviderCoordinator: string,
     insuranceProviderPhone: string,
     repairFacility: string,
     repairFacilityRepresentative: string,
