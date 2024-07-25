@@ -140,6 +140,8 @@ const upload = multer({ storage: storage });
             wssServer.clients.forEach((client: WebSocket) => {
                 client.send("wssUpdate:reservationData");
             });
+
+            return response.status(200).send();
         } catch (error) {
             return response.status(500).send();
         }
