@@ -6,8 +6,8 @@ import fs from "fs";
 import WebSocket from "ws";
 import path from "path";
 import { authenticateToken } from "./login.mjs";
-import { RentalCarModel, ReservationModel } from "./sql_setup.mjs";
-import { RentalCar, Reservation } from "./@types/types.js";
+import { LoanerRentalReservationModel, RentalCarModel, ReservationModel } from "./sql_setup.mjs";
+import { LoanerRentalReservation, RentalCar, Reservation } from "./@types/types.js";
 import { updateRentalCarAndNotify } from "./common_modules/updateRentalcarAndNotify.mjs";
 
 const storage = multer.memoryStorage();
@@ -119,10 +119,28 @@ const upload = multer({ storage: storage });
                 client.send("wssUpdate:reservationData");
             });
 
-            console.log("sql_update_process.mts L114");
             return response.status(200).send("reservation updated");
         } catch (error: unknown) {
             return response.status(500).send(`Failed to write reservation data to the database: ${error}`);
+        }
+    });
+})();
+
+(async () => {
+    app.post("/sqlUpdate/loanerRentalReservation", authenticateToken, upload.fields([
+        { name: "data" }
+    ]), async (request: express.Request, response: express.Response) => {
+        try {
+            const updatefields: LoanerRentalReservation = JSON.parse(request.body.data);
+            await LoanerRentalReservationModel.update(updatefields, {
+                where: { id: updatefields.id }
+            });
+
+            wssServer.clients.forEach((client: WebSocket) => {
+                client.send("wssUpdate:reservationData");
+            });
+        } catch (error) {
+            return response.status(500).send();
         }
     });
 })();
