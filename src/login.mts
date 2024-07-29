@@ -61,17 +61,16 @@ export const authenticateToken = (request: express.Request, response: express.Re
             const isPwCorrect = await bcrypt.compare(password, hashedPassword);
 
             if (!isPwCorrect) {
-                userData.dataValues.failed_attempts += 1;
+                const failedAttempts = userData.getDataValue("failed_attempts") + 1;
+                userData.setDataValue("failed_attempts", failedAttempts);
 
                 if (userData.dataValues.failed_attempts >= 3) {
-                    userData.dataValues.is_locked = true;
+                    userData.setDataValue("is_locked", true);
                 }
 
                 try {
                     await userData.save();
-                    console.log("User data saved after failed attempt");
                 } catch (saveError) {
-                    console.log("Error saving user data:", saveError);
                     return response.status(500).json({
                         error: "An error occurred while saving user data"
                     });
@@ -82,8 +81,8 @@ export const authenticateToken = (request: express.Request, response: express.Re
                 });
             }
 
-            userData.dataValues.failed_attempts = 0;
-            userData.dataValues.is_locked = false;
+            userData.setDataValue("failed_attempts", 0);
+            userData.setDataValue("is_locked", false);
             await userData.save();
 
             const payload = {
