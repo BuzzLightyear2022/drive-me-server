@@ -67,7 +67,15 @@ export const authenticateToken = (request: express.Request, response: express.Re
                     userData.dataValues.is_locked = true;
                 }
 
-                await userData.save();
+                try {
+                    await userData.save();
+                    console.log("User data saved after failed attempt");
+                } catch (saveError) {
+                    console.log("Error saving user data:", saveError);
+                    return response.status(500).json({
+                        error: "An error occurred while saving user data"
+                    });
+                }
 
                 return response.status(401).json({
                     error: "ipw"
