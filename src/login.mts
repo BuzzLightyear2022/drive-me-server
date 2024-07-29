@@ -4,8 +4,6 @@ import { UserModel } from "./sql_setup.mjs";
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
-import { User } from "./@types/types.js";
-import { Model } from "sequelize";
 dotenv.config();
 
 export const authenticateToken = (request: express.Request, response: express.Response, next: any) => {
@@ -43,7 +41,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
         });
 
         try {
-            const userData: Model<User, User> | null = await UserModel.findOne({
+            const userData = await UserModel.findOne({
                 where: {
                     username: username
                 }
@@ -55,18 +53,30 @@ export const authenticateToken = (request: express.Request, response: express.Re
                 });
             }
 
-            if (userData && userData.is_locked) {
-                console.log(userData.is_locked);
+            if (userData && userData.dataValues.is_locked) {
+                return response.status(403).json({ error: "locked" });
             }
 
             const hashedPassword: string = userData.dataValues.hashed_password;
             const isPwCorrect = await bcrypt.compare(password, hashedPassword);
 
             if (!isPwCorrect) {
+                userData.dataValues.failed_attempts += 1;
+
+                if (userData.dataValues.failed_attempts >= 3) {
+                    userData.dataValues.is_locked = true;
+                }
+
+                await userData.save();
+
                 return response.status(401).json({
                     error: "ipw"
                 });
             }
+
+            userData.dataValues.failed_attempts = 0;
+            userData.dataValues.is_locked = false;
+            await userData.save();
 
             const payload = {
                 userID: userData.dataValues.id,
