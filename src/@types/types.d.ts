@@ -1,7 +1,9 @@
 export type User = {
     id?: number,
     username: string,
-    hashed_password: string
+    hashed_password: string,
+    failed_attempts: number,
+    is_locked: boolean
 }
 
 export type RentalCar = {

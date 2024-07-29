@@ -4,6 +4,8 @@ import { UserModel } from "./sql_setup.mjs";
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
+import { User } from "./@types/types.js";
+import { Model } from "sequelize";
 dotenv.config();
 
 export const authenticateToken = (request: express.Request, response: express.Response, next: any) => {
@@ -41,7 +43,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
         });
 
         try {
-            const userData = await UserModel.findOne({
+            const userData: Model<User, User> | null = await UserModel.findOne({
                 where: {
                     username: username
                 }
@@ -51,6 +53,10 @@ export const authenticateToken = (request: express.Request, response: express.Re
                 return response.status(401).json({
                     error: "udn"
                 });
+            }
+
+            if (userData && userData.is_locked) {
+                console.log(userData.is_locked);
             }
 
             const hashedPassword: string = userData.dataValues.hashed_password;

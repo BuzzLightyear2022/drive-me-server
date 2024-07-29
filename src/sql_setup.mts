@@ -173,6 +173,14 @@ export const UserModel: ModelStatic<Model<User>> = sqlConnection.define("Users",
     hashed_password: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    failed_attempts: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    is_locked: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 });
 
