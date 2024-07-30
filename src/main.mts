@@ -46,26 +46,36 @@ export const wssServer = new WebSocketServer({ server: httpsServer });
 const clients = new Map();
 
 wssServer.on("connection", (ws, req) => {
-    wssServer.on("message", (message) => {
-        console.log(message);
-        const { type, clientId } = JSON.parse(message);
-
-        if (type === "register") {
-            console.log(clientId);
-            clients.set(clientId, ws);
-        } else {
-            console.log("not registered");
-        }
-    });
     console.log("Wss client connected");
 
-    wssServer.on("close", () => {
+    ws.on("message", (message) => {
+        console.log("Received message:", message);
+
+        try {
+            const { type, clientId } = JSON.parse(message.toString());
+
+            if (type === "register") {
+                console.log("Registering client:", clientId);
+                clients.set(clientId, ws);
+            } else {
+                console.log("not registered");
+            }
+        } catch (error: unknown) {
+            console.error("Error processing message:", error);
+        }
+    });
+
+    ws.on("close", () => {
         for (let [clientId, clientWs] of clients.entries()) {
             if (clientWs === ws) {
                 clients.delete(clientId);
                 break;
             }
         }
+        console.log("Updated clients:", clients);
     });
-    console.log(clients);
+
+    ws.on("error", (error) => {
+        console.error("WebSocket error:", error);
+    });
 });
