@@ -63,4 +63,5 @@ wssServer.on("connection", (ws, req) => {
             }
         }
     });
+    console.log(clients);
 });
