@@ -56,6 +56,13 @@ wssServer.on("connection", (ws, req) => {
 
             if (type === "register") {
                 console.log("Registering client:", clientId);
+
+                if (clients.has(clientId)) {
+                    console.log("Client already registered, closing old connection");
+                    const oldWs = clients.get(clientId);
+                    if (oldWs) oldWs.close();
+                }
+
                 clients.set(clientId, ws);
             } else {
                 console.log("not registered");
