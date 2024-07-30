@@ -50,6 +50,7 @@ wssServer.on("connection", (ws, req) => {
         const { type, clientId } = JSON.parse(message);
 
         if (type === "register") {
+            console.log(clientId);
             clients.set(clientId, ws);
         }
     });
