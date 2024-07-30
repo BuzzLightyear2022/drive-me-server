@@ -65,7 +65,7 @@ wssServer.on("connection", (ws, req) => {
 
                 clients.set(clientId, ws);
             } else {
-                console.log("not registered");
+                console.log("not a registration message");
             }
         } catch (error: unknown) {
             console.error("Error processing message:", error);
