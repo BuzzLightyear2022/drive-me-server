@@ -10,17 +10,17 @@ export const authenticateToken = (request: express.Request, response: express.Re
     const token = request.header("Authorization");
     const secretKey = process.env.SECRET_KEY as string;
 
-    if (!token) {
-        return response.status(401).send("Unauthorized");
-    }
+    if (!token) return response.sendStatus(401);
+    if (!secretKey) return response.sendStatus(500).json({ message: "Server configuration error" })
 
-    jwt.verify(token, secretKey, (error: unknown, user: any) => {
+    jwt.verify(token, secretKey, (error: jwt.VerifyErrors | null, user: any) => {
         if (error) {
-            console.log(error);
-            return response.status(403);
+            if (error.name === "TokenExpiredError") {
+                return response.status(401).json({ message: "Token expired" })
+            }
+            return response.sendStatus(403);
         }
 
-        // @ts-ignore
         request.user = user;
         next();
     });
@@ -28,7 +28,8 @@ export const authenticateToken = (request: express.Request, response: express.Re
 
 (async () => {
     app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
-        const secretKey = process.env.SECRET_KEY as string;
+        const secretKey: string | undefined = process.env.SECRET_KEY;
+        if (!secretKey) return response.sendStatus(500).json({ message: "Server Configuration error" });
 
         const username = request.body.username;
         const password = request.body.password;
@@ -41,62 +42,36 @@ export const authenticateToken = (request: express.Request, response: express.Re
         });
 
         try {
-            const userData = await UserModel.findOne({
-                where: {
-                    username: username
-                }
-            });
+            const userData = await UserModel.findOne({ where: { username: username } });
 
-            if (!userData) {
-                return response.status(401).json({
-                    error: "udn"
-                });
-            }
+            if (!userData) return response.status(401).json({ error: "udn" });
 
-            if (userData && userData.dataValues.is_locked) {
-                return response.status(403).json({ error: "locked" });
-            }
+            if (userData && userData.dataValues.is_locked) return response.status(403).json({ error: "locked" });
 
             const hashedPassword: string = userData.dataValues.hashed_password;
             const isPwCorrect = await bcrypt.compare(password, hashedPassword);
 
             if (!isPwCorrect) {
-                const failedAttempts = userData.getDataValue("failed_attempts") + 1;
-                userData.setDataValue("failed_attempts", failedAttempts);
+                userData.setDataValue("failed_attempts", userData.dataValues.failed_attempts + 1);
 
                 if (userData.dataValues.failed_attempts >= 3) {
                     userData.setDataValue("is_locked", true);
                 }
 
-                try {
-                    await userData.save();
-                } catch (saveError) {
-                    return response.status(500).json({
-                        error: "An error occurred while saving user data"
-                    });
-                }
-
-                return response.status(401).json({
-                    error: "ipw"
-                });
+                await userData.save();
+                return response.status(401).json({ error: "ipw" });
             }
 
             userData.setDataValue("failed_attempts", 0);
             userData.setDataValue("is_locked", false);
             await userData.save();
 
-            const payload = {
-                userID: userData.dataValues.id,
-                username: userData.dataValues.username
-            }
-
-            const token = jwt.sign(payload, secretKey, { expiresIn: "8h" });
+            const payload = { userID: userData.dataValues.id, username: userData.dataValues.username };
+            const token = jwt.sign(payload, secretKey, { expiresIn: "1m" });
 
             return response.status(200).json(token);
         } catch (error) {
-            return response.status(500).json({
-                error: "An error occurred"
-            });
+            return response.status(500).json({ error: "An error occurred" });
         }
     });
 })();
