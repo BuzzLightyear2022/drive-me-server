@@ -52,6 +52,8 @@ wssServer.on("connection", (ws, req) => {
         if (type === "register") {
             console.log(clientId);
             clients.set(clientId, ws);
+        } else {
+            console.log("not registered");
         }
     });
     console.log("Wss client connected");
