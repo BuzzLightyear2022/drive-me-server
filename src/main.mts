@@ -47,6 +47,7 @@ const clients = new Map();
 
 wssServer.on("connection", (ws, req) => {
     wssServer.on("message", (message) => {
+        console.log(message);
         const { type, clientId } = JSON.parse(message);
 
         if (type === "register") {
