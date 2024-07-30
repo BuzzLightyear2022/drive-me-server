@@ -42,6 +42,25 @@ httpsServer.listen(httpsPort, async () => {
 });
 
 export const wssServer = new WebSocketServer({ server: httpsServer });
-wssServer.on("connection", () => {
+
+const clients = new Map();
+
+wssServer.on("connection", (ws, req) => {
+    wssServer.on("message", (message) => {
+        const { type, clientId } = JSON.parse(message);
+
+        if (type === "register") {
+            clients.set(clientId, ws);
+        }
+    });
     console.log("Wss client connected");
+
+    wssServer.on("close", () => {
+        for (let [clientId, clientWs] of clients.entries()) {
+            if (clientWs === ws) {
+                clients.delete(clientId);
+                break;
+            }
+        }
+    });
 });
