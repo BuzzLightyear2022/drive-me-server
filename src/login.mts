@@ -67,7 +67,7 @@ export const authenticateToken = (request: express.Request, response: express.Re
             await userData.save();
 
             const payload = { userID: userData.dataValues.id, username: userData.dataValues.username };
-            const token = jwt.sign(payload, secretKey, { expiresIn: "1m" });
+            const token = jwt.sign(payload, secretKey, { expiresIn: "8h" });
 
             return response.status(200).json(token);
         } catch (error) {
