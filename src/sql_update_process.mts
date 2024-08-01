@@ -62,40 +62,12 @@ const upload = multer({ storage: storage });
                 } else {
                     if (existingRentalcarJson && existingRentalcarJson.imageFileName) {
                         newRentalcar.imageFileName = existingRentalcarJson.imageFileName;
-
-                        // const currentImagePath = path.join(targetDirectoryPath, existingVehicleAttributesJson.imageFileName);
-                        // fs.access(currentImagePath, fs.constants.F_OK, async (imageNotFoundError: unknown) => {
-                        //     if (imageNotFoundError) {
-                        //         newVehicleAttributes.imageFileName = null;
-                        //         await existingVehicleAttributes.update(newVehicleAttributes);
-
-                        //         wssServer.clients.forEach(async (client: WebSocket) => {
-                        //             client.send("wssUpdate:vehicleAttributes");
-                        //         });
-                        //     } else {
-                        //         fs.unlink(currentImagePath, async (unlinkError: unknown) => {
-                        //             newVehicleAttributes.imageFileName = null;
-                        //             await existingVehicleAttributes.update(newVehicleAttributes);
-
-                        //             wssServer.clients.forEach(async (client: WebSocket) => {
-                        //                 client.send("wssUpdate:vehicleAttributes");
-                        //             });
-                        //         });
-                        //     }
-                        // });
                     }
                     await existingRentalcar.update(newRentalcar);
 
                     wssServer.clients.forEach(async (client) => {
-                        client.send("wssUpdate:rentalcar")
+                        client.send("wss:update")
                     });
-                    // else {
-                    //     await existingVehicleAttributes.update(newVehicleAttributes);
-
-                    //     wssServer.clients.forEach(async (client: WebSocket) => {
-                    //         client.send("wssUpdate:vehicleAttributes");
-                    //     });
-                    // }
                 }
             }
             return response.status(200).send();
@@ -116,7 +88,7 @@ const upload = multer({ storage: storage });
             });
 
             wssServer.clients.forEach((client: WebSocket) => {
-                client.send("wssUpdate:reservationData");
+                client.send("wss:update");
             });
 
             return response.status(200).send("reservation updated");
@@ -138,7 +110,7 @@ const upload = multer({ storage: storage });
             });
 
             wssServer.clients.forEach((client: WebSocket) => {
-                client.send("wssUpdate:reservationData");
+                client.send("wss:update");
             });
 
             return response.status(200).send();
