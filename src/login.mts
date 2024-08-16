@@ -69,7 +69,7 @@ const verifyMfaToken = async (userId: string, mfaToken: string) => {
     }
 }
 
-app.post("login", async (request, response) => {
+app.post("/login/userAuthentication", async (request, response) => {
     const username = request.body.username;
     const password = request.body.password;
 
@@ -130,44 +130,44 @@ app.post("/verify-mfa", async (request, response) => {
     }
 });
 
-(async () => {
-    app.post("/login/userAuthentication", async (request: express.Request, response: express.Response) => {
-        const username = request.body.username;
-        const password = request.body.password;
+// (async () => {
+//     app.post("/login/userAuthentication", async (request: express.Request, response: express.Response) => {
+//         const username = request.body.username;
+//         const password = request.body.password;
 
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(password, salt, (err, hashedPassword) => {
-                // ハッシュ化されたパスワードを表示
-                // console.log(hashedPassword);
-            });
-        });
+//         bcrypt.genSalt(10, (err, salt) => {
+//             bcrypt.hash(password, salt, (err, hashedPassword) => {
+//                 // ハッシュ化されたパスワードを表示
+//                 // console.log(hashedPassword);
+//             });
+//         });
 
-        try {
-            const userData = await UserModel.findOne({ where: { username: username } });
+//         try {
+//             const userData = await UserModel.findOne({ where: { username: username } });
 
-            if (!userData) return response.status(401).json({ error: "udn" });
+//             if (!userData) return response.status(401).json({ error: "udn" });
 
-            if (userData && userData.dataValues.is_locked) return response.status(403).json({ error: "locked" });
+//             if (userData && userData.dataValues.is_locked) return response.status(403).json({ error: "locked" });
 
-            const hashedPassword: string = userData.dataValues.hashed_password;
-            const isPwCorrect = await bcrypt.compare(password, hashedPassword);
+//             const hashedPassword: string = userData.dataValues.hashed_password;
+//             const isPwCorrect = await bcrypt.compare(password, hashedPassword);
 
-            if (!isPwCorrect) {
-                userData.setDataValue("failed_attempts", userData.dataValues.failed_attempts + 1);
+//             if (!isPwCorrect) {
+//                 userData.setDataValue("failed_attempts", userData.dataValues.failed_attempts + 1);
 
-                if (userData.dataValues.failed_attempts >= 3) {
-                    userData.setDataValue("is_locked", true);
-                }
+//                 if (userData.dataValues.failed_attempts >= 3) {
+//                     userData.setDataValue("is_locked", true);
+//                 }
 
-                await userData.save();
-                return response.status(401).json({ error: "ipw" });
-            }
+//                 await userData.save();
+//                 return response.status(401).json({ error: "ipw" });
+//             }
 
-            userData.setDataValue("failed_attempts", 0);
-            userData.setDataValue("is_locked", false);
-            await userData.save();
-        } catch (error) {
-            return response.status(500).json({ error: "An error occurred" });
-        }
-    });
-})();
+//             userData.setDataValue("failed_attempts", 0);
+//             userData.setDataValue("is_locked", false);
+//             await userData.save();
+//         } catch (error) {
+//             return response.status(500).json({ error: "An error occurred" });
+//         }
+//     });
+// })();
