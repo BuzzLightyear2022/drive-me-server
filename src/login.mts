@@ -131,7 +131,7 @@ app.post("/verify-mfa", async (request, response) => {
 });
 
 (async () => {
-    app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
+    app.post("/login/userAuthentication", async (request: express.Request, response: express.Response) => {
         const username = request.body.username;
         const password = request.body.password;
 
