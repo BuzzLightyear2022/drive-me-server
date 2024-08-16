@@ -3,7 +3,8 @@ export type User = {
     username: string,
     hashed_password: string,
     failed_attempts: number,
-    is_locked: boolean
+    is_locked: boolean,
+    mfa_secret: string
 }
 
 export type RentalCar = {

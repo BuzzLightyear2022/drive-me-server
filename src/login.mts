@@ -3,8 +3,31 @@ import express from "express";
 import { UserModel } from "./sql_setup.mjs";
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import otplib from "otplib";
+import qrcode from "qrcode";
+import { encrypt } from "./common_modules/encrypt.mjs";
+import { decrypt } from "./common_modules/decrypt.mjs";
 import dotenv from "dotenv"
 dotenv.config();
+
+const generateMFASecret = async (userId: string) => {
+    const userData = await UserModel.findOne({ where: { id: userId } });
+
+    if (userData) {
+        const secret = otplib.authenticator.generateSecret();
+        const atpauth = otplib.authenticator.keyuri(userData.dataValues.username, "drive-me", secret);
+
+        const encryptedSecret = encrypt(secret);
+
+        if (encryptedSecret) {
+            userData.setDataValue("mfa_secret", encryptedSecret);
+            await userData.save();
+        }
+
+        const qrCodeUrl = await qrcode.toDataURL(atpauth);
+        return qrCodeUrl;
+    }
+}
 
 export const authenticateToken = (request: express.Request, response: express.Response, next: any) => {
     const token = request.header("Authorization");
@@ -26,11 +49,89 @@ export const authenticateToken = (request: express.Request, response: express.Re
     });
 }
 
-(async () => {
-    app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
+const verifyMfaToken = async (userId: string, mfaToken: string) => {
+    const userData = await UserModel.findOne({ where: { id: userId } });
+
+    if (userData) {
+        const encryptedSecret = userData.dataValues.mfa_secret;
+
+        const decryptedSecret = decrypt(encryptedSecret);
+
+        if (decryptedSecret) {
+            const isMfaValid = otplib.authenticator.check(mfaToken, decryptedSecret);
+
+            if (isMfaValid) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+}
+
+app.post("login", async (request, response) => {
+    const username = request.body.username;
+    const password = request.body.password;
+
+    try {
+        const userData = await UserModel.findOne({ where: { username: username } });
+
+        if (!userData) return response.status(401).json({ error: "Invalid username or password" });
+
+        if (userData && userData.dataValues.is_locked) return response.status(403).json({ error: "Account is locked" });
+
+        const hashedPassword = userData.dataValues.hashed_password;
+        const isPwCorrect = await bcrypt.compare(password, hashedPassword);
+
+        if (!isPwCorrect) {
+            userData.setDataValue("failed_attempts", userData.dataValues.failed_attempts + 1);
+
+            if (userData.dataValues.failed_attempts >= 3) {
+                userData.setDataValue("is_locked", true);
+            }
+
+            await userData.save();
+
+            return response.status(401).json({ error: "Invalid username or password" });
+        }
+
+        return response.status(200).json({ message: "Password vilidated, proceed to MFA" });
+    } catch (error: unknown) {
+        return response.status(500).json({ error: "An error occurred" });
+    }
+});
+
+app.post("/verify-mfa", async (request, response) => {
+    const userId = request.body.userId;
+    const mfaToken = request.body.mfaToken;
+
+    try {
+        const userData = await UserModel.findOne({ where: { id: userId } });
+
+        if (!userData) return response.status(401).json({ error: "User not found" });
+
+        const mfaSecret = userData.dataValues.mfa_secret;
+        const isMfaValid = otplib.authenticator.check(mfaToken, mfaSecret);
+
+        if (!isMfaValid) {
+            return response.status(401).json({ error: "Invalid MFA token" });
+        }
+
         const secretKey: string | undefined = process.env.SECRET_KEY;
+        const payload = { userId: userData.dataValues.id, username: userData.dataValues.username }
+
         if (!secretKey) return response.sendStatus(500).json({ message: "Server Configuration error" });
 
+        const token = jwt.sign(payload, secretKey, { expiresIn: "10h" });
+
+        return response.status(200).json({ token });
+    } catch (error) {
+        return response.status(500).json({ error: "An error occurred" });
+    }
+});
+
+(async () => {
+    app.post("/login/getSessionData", async (request: express.Request, response: express.Response) => {
         const username = request.body.username;
         const password = request.body.password;
 
@@ -65,11 +166,6 @@ export const authenticateToken = (request: express.Request, response: express.Re
             userData.setDataValue("failed_attempts", 0);
             userData.setDataValue("is_locked", false);
             await userData.save();
-
-            const payload = { userID: userData.dataValues.id, username: userData.dataValues.username };
-            const token = jwt.sign(payload, secretKey, { expiresIn: "8h" });
-
-            return response.status(200).json(token);
         } catch (error) {
             return response.status(500).json({ error: "An error occurred" });
         }
