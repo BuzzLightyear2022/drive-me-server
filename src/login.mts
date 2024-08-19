@@ -1,5 +1,6 @@
 import { app } from "./main.mjs";
 import express from "express";
+import session from "express-session";
 import { UserModel } from "./sql_setup.mjs";
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -7,8 +8,15 @@ import otplib from "otplib";
 import qrcode from "qrcode";
 import { encrypt } from "./common_modules/encrypt.mjs";
 import { decrypt } from "./common_modules/decrypt.mjs";
+import { checkMFASecretInDatabase } from "./common_modules/check_MFA_secret_in_database.mjs";
 import dotenv from "dotenv"
 dotenv.config();
+
+declare module "express-session" {
+    interface SessionData {
+        userId: string;
+    }
+}
 
 const generateMFASecret = async (userId: string) => {
     const userData = await UserModel.findOne({ where: { id: userId } });
@@ -127,6 +135,15 @@ app.post("/verify-mfa", async (request, response) => {
         return response.status(200).json({ token });
     } catch (error) {
         return response.status(500).json({ error: "An error occurred" });
+    }
+});
+
+app.post("/api/check-mfa-secret", (request, response) => {
+    const userId = request.session.userId;
+
+    if (userId) {
+        const isRegistered = checkMFASecretInDatabase(userId);
+        response.json({ isRegistered: isRegistered });
     }
 });
 
