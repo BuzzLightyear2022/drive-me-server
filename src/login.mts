@@ -114,6 +114,11 @@ app.post("/login/userAuthentication", async (request, response) => {
     }
 });
 
+app.post("/generateMFASecret", async (request, response) => {
+    const userId: string = request.body.userId;
+    generateMFASecret(userId);
+});
+
 app.post("/verify-mfa", async (request, response) => {
     const userId = request.body.userId;
     const mfaToken = request.body.mfaToken;
