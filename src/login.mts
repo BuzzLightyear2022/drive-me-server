@@ -103,7 +103,12 @@ app.post("/login/userAuthentication", async (request, response) => {
             return response.status(401).json({ error: "Invalid username or password" });
         }
 
-        return response.status(200).json({ message: "Password vilidated, proceed to MFA" });
+        const mfaExists = !!userData.dataValues.mfa_secret;
+
+        return response.status(200).json({
+            message: "Password vilidated, proceed to MFA",
+            mfaExists: mfaExists
+        });
     } catch (error: unknown) {
         return response.status(500).json({ error: "An error occurred" });
     }
