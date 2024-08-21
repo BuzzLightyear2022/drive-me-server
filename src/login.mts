@@ -103,7 +103,7 @@ app.post("/login/userAuthentication", async (request, response) => {
             return response.status(401).json({ error: "Invalid username or password" });
         }
 
-        const mfaExists = !!userData.dataValues.mfa_secret;
+        const mfaExists: boolean = !!userData.dataValues.mfa_secret;
 
         return response.status(200).json({
             message: "Password vilidated, proceed to MFA",
