@@ -107,6 +107,7 @@ app.post("/login/userAuthentication", async (request, response) => {
 
         return response.status(200).json({
             message: "Password vilidated, proceed to MFA",
+            userId: userData.dataValues.id,
             mfaExists: mfaExists
         });
     } catch (error: unknown) {
