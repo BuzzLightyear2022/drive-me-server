@@ -105,6 +105,8 @@ app.post("/login/userAuthentication", async (request, response) => {
 
         const mfaExists = !!userData.dataValues.mfa_secret;
 
+        console.log(userData.dataValues);
+
         return response.status(200).json({
             message: "Password vilidated, proceed to MFA",
             userId: userData.dataValues.id,
