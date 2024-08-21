@@ -117,9 +117,9 @@ app.post("/login/userAuthentication", async (request, response) => {
 
 app.post("/login/generateMFASecret", async (request, response) => {
     const userId: string = request.body.userId;
-    const MFASecret = generateMFASecret(userId);
+    const MFASecret = await generateMFASecret(userId);
     console.log(MFASecret);
-    return generateMFASecret(userId);
+    return MFASecret;
 });
 
 app.post("/verify-mfa", async (request, response) => {
