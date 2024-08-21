@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 const encryptionKey = process.env.ENCRYPTION_KEY;
-const iv = crypto.randomBytes(16);
+const iv = crypto.randomBytes(32);
 
 export const encrypt = (text: string) => {
     if (encryptionKey) {
