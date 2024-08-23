@@ -23,6 +23,7 @@ const generateMFASecret = async (userId: string) => {
 
     if (userData) {
         const secret = otplib.authenticator.generateSecret();
+        console.log(secret);
         const atpauth = otplib.authenticator.keyuri(userData.dataValues.username, "drive-me", secret);
 
         const encryptedSecret = encrypt(secret);
