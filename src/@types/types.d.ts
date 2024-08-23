@@ -5,6 +5,7 @@ export type User = {
     failed_attempts: number,
     is_locked: boolean,
     mfa_secret: string,
+    mfa_enabled: boolean,
     createdAt: Date,
     updatedAt: Date
 }

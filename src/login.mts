@@ -27,10 +27,10 @@ const generateMFASecret = async (userId: string) => {
 
         const encryptedSecret = encrypt(secret);
 
-        // if (encryptedSecret) {
-        //     userData.setDataValue("mfa_secret", encryptedSecret);
-        //     await userData.save();
-        // }
+        if (encryptedSecret) {
+            userData.setDataValue("mfa_secret", encryptedSecret);
+            await userData.save();
+        }
 
         const qrCodeUrl = await qrcode.toDataURL(atpauth);
         return qrCodeUrl;

@@ -185,6 +185,10 @@ export const UserModel: ModelStatic<Model<User>> = sqlConnection.define("Users",
     mfa_secret: {
         type: DataTypes.STRING,
         defaultValue: null
+    },
+    mfa_enabled: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 });
 
