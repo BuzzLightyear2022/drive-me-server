@@ -38,7 +38,7 @@ const generateMFASecret = async (userId: string) => {
 }
 
 const saveMFASecret = async () => {
-    
+
 }
 
 export const authenticateToken = (request: express.Request, response: express.Response, next: any) => {
@@ -125,7 +125,7 @@ app.post("/login/generateMFASecret", async (request, response) => {
     return response.status(200).json({ MFASecretImage: MFASecret });
 });
 
-app.post("/verify-mfa", async (request, response) => {
+app.post("login/verifyMFAToken", async (request, response) => {
     const userId = request.body.userId;
     const mfaToken = request.body.mfaToken;
 
