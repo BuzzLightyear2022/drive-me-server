@@ -33,6 +33,7 @@ const generateMFASecret = async (userId: string) => {
         // }
 
         const qrCodeUrl = await qrcode.toDataURL(atpauth);
+        console.log(qrCodeUrl);
         return qrCodeUrl;
     }
 }
