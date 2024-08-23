@@ -107,12 +107,12 @@ app.post("/login/userAuthentication", async (request, response) => {
             return response.status(401).json({ error: "Invalid username or password" });
         }
 
-        const mfaExists: boolean = !!userData.dataValues.mfa_secret;
+        const mfaEnabled: boolean = !!userData.dataValues.mfa_enabled;
 
         return response.status(200).json({
             message: "Password vilidated, proceed to MFA",
             userId: userData.dataValues.id,
-            mfaExists: mfaExists
+            mfaEnabled: mfaEnabled
         });
     } catch (error: unknown) {
         return response.status(500).json({ error: "An error occurred" });
