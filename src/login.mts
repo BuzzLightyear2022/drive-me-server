@@ -27,7 +27,7 @@ const generateMFASecret = async (userId: string) => {
 
         const encryptedSecret = encrypt(secret);
 
-        if (encryptedSecret) {
+        if (encryptedSecret && !userData.dataValues.mfa_enabled) {
             userData.setDataValue("mfa_secret", encryptedSecret);
             await userData.save();
         }
