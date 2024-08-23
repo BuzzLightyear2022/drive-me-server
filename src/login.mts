@@ -23,7 +23,7 @@ const generateMFASecret = async (userId: string) => {
 
     if (userData) {
         const secret = otplib.authenticator.generateSecret();
-        console.log(secret);
+        console.log("generated secret: ", secret);
         const atpauth = otplib.authenticator.keyuri(userData.dataValues.username, "drive-me", secret);
 
         const encryptedSecret = encrypt(secret);
@@ -136,6 +136,7 @@ app.post("/login/verifyMFAToken", async (request, response) => {
         if (!userData) return response.status(401).json({ error: "User not found" });
 
         const mfaSecret = decrypt(userData.dataValues.mfa_secret);
+        console.log("decrypted secret: ", mfaSecret);
 
         if (mfaSecret) {
             const isMfaValid = otplib.authenticator.check(mfaToken, mfaSecret);
