@@ -1,7 +1,6 @@
 import crypto from "crypto";
 
 const encryptionKey = process.env.ENCRYPTION_KEY;
-const iv = crypto.randomBytes(16);
 
 export const decrypt = (text: string) => {
     const textParts = text.split(":");
@@ -14,4 +13,5 @@ export const decrypt = (text: string) => {
         decrypted = Buffer.concat([decrypted, decipher.final()]);
         return decrypted.toString();
     }
+    return null;
 }
