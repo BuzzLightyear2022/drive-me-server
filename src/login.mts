@@ -126,6 +126,7 @@ app.post("/login/generateMFASecret", async (request, response) => {
 });
 
 app.post("/login/verifyMFAToken", async (request, response) => {
+    console.log(request.body);
     const userId = request.body.userId;
     const mfaToken = request.body.mfaToken;
 
