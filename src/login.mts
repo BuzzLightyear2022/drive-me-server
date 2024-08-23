@@ -125,7 +125,7 @@ app.post("/login/generateMFASecret", async (request, response) => {
     return response.status(200).json({ MFASecretImage: MFASecret });
 });
 
-app.post("login/verifyMFAToken", async (request, response) => {
+app.post("/login/verifyMFAToken", async (request, response) => {
     const userId = request.body.userId;
     const mfaToken = request.body.mfaToken;
 
