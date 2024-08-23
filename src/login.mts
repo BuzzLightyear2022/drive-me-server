@@ -127,7 +127,6 @@ app.post("/login/generateMFASecret", async (request, response) => {
 
 app.post("/login/verifyMFAToken", async (request, response) => {
     const userId = request.body.userId;
-    console.log(userId);
     const mfaToken = request.body.mfaToken;
 
     try {
@@ -135,11 +134,14 @@ app.post("/login/verifyMFAToken", async (request, response) => {
 
         if (!userData) return response.status(401).json({ error: "User not found" });
 
-        const mfaSecret = userData.dataValues.mfa_secret;
-        const isMfaValid = otplib.authenticator.check(mfaToken, mfaSecret);
+        const mfaSecret = decrypt(userData.dataValues.mfa_secret);
 
-        if (!isMfaValid) {
-            return response.status(401).json({ error: "Invalid MFA token" });
+        if (mfaSecret) {
+            const isMfaValid = otplib.authenticator.check(mfaToken, mfaSecret);
+
+            if (!isMfaValid) {
+                return response.status(401).json({ error: "Invalid MFA token" });
+            }
         }
 
         const secretKey: string | undefined = process.env.SECRET_KEY;
