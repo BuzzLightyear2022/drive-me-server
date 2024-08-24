@@ -129,6 +129,8 @@ app.post("/login/generateMFASecret", async (request, response) => {
 app.post("/login/verifyMFAToken", async (request, response) => {
     const userId = request.body.userId;
     const mfaToken = request.body.MFAToken;
+    const isMFASetup = request.body.isMFASetup;
+    const isFinalStep = request.body.isFinalStep;
     console.log("request:", request.body);
     console.log("mfaToken: ", mfaToken);
 
@@ -146,6 +148,10 @@ app.post("/login/verifyMFAToken", async (request, response) => {
 
             if (!isMfaValid) {
                 return response.status(401).json({ error: "Invalid MFA token" });
+            }
+
+            if (isMFASetup && isFinalStep) {
+                await UserModel.update({ mfa_enabled: true }, { where: { id: userId } });
             }
         }
 
