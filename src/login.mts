@@ -152,17 +152,32 @@ app.post("/login/verifyMFAToken", async (request, response) => {
 
             if (isMFASetup && isFinalStep) {
                 await UserModel.update({ mfa_enabled: true }, { where: { id: userId } });
+                return response.status(200).json({
+                    message: "MFA has been successfully enabled",
+                    success: true,
+                    userId: userId
+                });
+            } else if (isMFASetup) {
+                return response.status(200).json({
+                    message: "First MFA token is valid, proceed to the second MFA verification",
+                    success: true,
+                    userId: userId
+                });
+            } else {
+                return response.status(400).json({ error: "MFA setup not in progress" });
             }
         }
 
-        const secretKey: string | undefined = process.env.SECRET_KEY;
-        const payload = { userId: userData.dataValues.id, username: userData.dataValues.username }
+        if (!isMFASetup) {
+            const secretKey: string | undefined = process.env.SECRET_KEY;
+            const payload = { userId: userData.dataValues.id, username: userData.dataValues.username }
 
-        if (!secretKey) return response.sendStatus(500).json({ message: "Server Configuration error" });
+            if (!secretKey) return response.sendStatus(500).json({ message: "Server Configuration error" });
 
-        const token = jwt.sign(payload, secretKey, { expiresIn: "10h" });
+            const token = jwt.sign(payload, secretKey, { expiresIn: "10h" });
 
-        return response.status(200).json({ token });
+            return response.status(200).json({ token });
+        }
     } catch (error) {
         return response.status(500).json({ error: "An error occurred" });
     }
