@@ -151,7 +151,7 @@ app.post("/login/verifyMFAToken", async (request, response) => {
             }
 
             if (isMFASetup && isFinalStep) {
-                await UserModel.update({ mfa_enabled: true }, { where: { id: userId } });
+                // await UserModel.update({ mfa_enabled: true }, { where: { id: userId } });
                 return response.status(200).json({
                     message: "MFA has been successfully enabled",
                     success: true,
