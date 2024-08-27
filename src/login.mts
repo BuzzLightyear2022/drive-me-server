@@ -154,6 +154,7 @@ app.post("/login/verifyMFAToken", async (request, response) => {
                     message: "MFA has been successfully enabled",
                     success: true,
                     userId: userId,
+                    isMFASetup: true,
                     isFinalStep: true
                 });
             } else if (isMFASetup) {
@@ -161,6 +162,7 @@ app.post("/login/verifyMFAToken", async (request, response) => {
                     message: "First MFA token is valid, proceed to the second MFA verification",
                     success: true,
                     userId: userId,
+                    isMFASetup: true,
                     isFinalStep: false
                 });
             } else {
