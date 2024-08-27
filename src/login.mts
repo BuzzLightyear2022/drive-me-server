@@ -131,8 +131,6 @@ app.post("/login/verifyMFAToken", async (request, response) => {
     const mfaToken = request.body.MFAToken;
     const isMFASetup = request.body.isMFASetup;
     const isFinalStep = request.body.isFinalStep;
-    console.log("request:", request.body);
-    console.log("mfaToken: ", mfaToken);
 
     try {
         const userData = await UserModel.findOne({ where: { id: userId } });
@@ -155,13 +153,15 @@ app.post("/login/verifyMFAToken", async (request, response) => {
                 return response.status(200).json({
                     message: "MFA has been successfully enabled",
                     success: true,
-                    userId: userId
+                    userId: userId,
+                    isFinalStep: true
                 });
             } else if (isMFASetup) {
                 return response.status(200).json({
                     message: "First MFA token is valid, proceed to the second MFA verification",
                     success: true,
-                    userId: userId
+                    userId: userId,
+                    isFinalStep: false
                 });
             } else {
                 return response.status(400).json({ error: "MFA setup not in progress" });
