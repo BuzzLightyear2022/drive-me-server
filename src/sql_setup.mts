@@ -186,6 +186,10 @@ export const UserModel: ModelStatic<Model<User>> = sqlConnection.define("Users",
         type: DataTypes.STRING,
         defaultValue: null
     },
+    mfa_timestamp: {
+        type: DataTypes.INTEGER,
+        defaultValue: null
+    },
     mfa_enabled: {
         type: DataTypes.BOOLEAN,
         defaultValue: false

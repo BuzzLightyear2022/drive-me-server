@@ -6,6 +6,7 @@ export type User = {
     is_locked: boolean,
     mfa_secret: string,
     mfa_enabled: boolean,
+    mfa_timestamp: number,
     createdAt: Date,
     updatedAt: Date
 }

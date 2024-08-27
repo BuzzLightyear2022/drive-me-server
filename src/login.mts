@@ -138,33 +138,42 @@ app.post("/login/verifyMFAToken", async (request, response) => {
         if (!userData) return response.status(401).json({ error: "User not found" });
 
         const mfaSecret = decrypt(userData.dataValues.mfa_secret);
-        console.log("decrypted secret: ", mfaSecret);
 
         if (mfaSecret) {
             const isMfaValid = otplib.authenticator.check(mfaToken, mfaSecret);
-            console.log("isMfaValid:", isMfaValid);
 
             if (!isMfaValid) {
                 return response.status(401).json({ error: "Invalid MFA token" });
             }
 
-            if (isMFASetup && isFinalStep) {
-                // await UserModel.update({ mfa_enabled: true }, { where: { id: userId } });
-                return response.status(200).json({
-                    message: "MFA has been successfully enabled",
-                    success: true,
-                    userId: userId,
-                    isMFASetup: true,
-                    isFinalStep: true
-                });
-            } else if (isMFASetup) {
-                return response.status(200).json({
-                    message: "First MFA token is valid, proceed to the second MFA verification",
-                    success: true,
-                    userId: userId,
-                    isMFASetup: true,
-                    isFinalStep: false
-                });
+            if (isMFASetup) {
+                const previousTimestamp = userData.dataValues.mfa_timestamp;
+
+                if (isFinalStep) {
+                    const timeDifference = Date.now() - previousTimestamp;
+
+                    if (timeDifference < 30000) {
+                        return response.status(401).json({ error: "The second token must be from a diffenrent time window" });
+                    }
+
+                    // await UserModel.update({ mfa_enabled: true }, { where: { id: userId } });
+                    return response.status(200).json({
+                        message: "MFA has been successfully enabled",
+                        success: true,
+                        userId: userId,
+                        isMFASetup: true,
+                        isFinalStep: true
+                    });
+                } else {
+                    await UserModel.update({ mfa_timestamp: Date.now() }, { where: { id: userId } });
+                    return response.status(200).json({
+                        message: "First MFA token is valid, proceed to the second MFA verification",
+                        success: true,
+                        userId: userId,
+                        isMFASetup: true,
+                        isFinalStep: false
+                    });
+                }
             } else {
                 return response.status(400).json({ error: "MFA setup not in progress" });
             }
