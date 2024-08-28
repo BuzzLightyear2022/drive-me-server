@@ -158,7 +158,7 @@ app.post("/login/verifyMFAToken", async (request, response) => {
                         return response.status(500).json({ error: "Timestamp not found, please retry the MFA setup." });
                     }
 
-                    if (timeDifference < 30000) {
+                    if (timeDifference < 25000) {
                         return response.status(401).json({ error: "The second token must be from a diffenrent time window" });
                     }
 
