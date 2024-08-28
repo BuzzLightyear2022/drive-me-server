@@ -148,10 +148,11 @@ app.post("/login/verifyMFAToken", async (request, response) => {
 
             if (isMFASetup) {
                 const previousTimestamp = userData.dataValues.mfa_timestamp;
+                console.log("previousTimestamp:", previousTimestamp);
 
                 if (isFinalStep) {
                     const timeDifference = Date.now() - previousTimestamp;
-                    console.log(timeDifference);
+                    console.log("timeDifference: ", timeDifference);
 
                     if (!previousTimestamp) {
                         return response.status(500).json({ error: "Timestamp not found, please retry the MFA setup." });
