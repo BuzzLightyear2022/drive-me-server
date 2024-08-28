@@ -132,6 +132,8 @@ app.post("/login/verifyMFAToken", async (request, response) => {
     const isMFASetup = request.body.isMFASetup;
     const isFinalStep = request.body.isFinalStep;
 
+    console.log(request.body);
+
     try {
         const userData = await UserModel.findOne({ where: { id: userId } });
 
