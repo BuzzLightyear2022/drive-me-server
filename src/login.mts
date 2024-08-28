@@ -156,7 +156,7 @@ app.post("/login/verifyMFAToken", async (request, response) => {
                         return response.status(401).json({ error: "The second token must be from a diffenrent time window" });
                     }
 
-                    // await UserModel.update({ mfa_enabled: true }, { where: { id: userId } });
+                    await UserModel.update({ mfa_enabled: true }, { where: { id: userId } });
                     return response.status(200).json({
                         message: "MFA has been successfully enabled",
                         success: true,
