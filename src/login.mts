@@ -183,9 +183,7 @@ app.post("/login/verifyMFAToken", async (request, response) => {
             } else {
                 return response.status(400).json({ error: "MFA setup not in progress" });
             }
-        }
-
-        if (!isMFASetup) {
+        } else {
             const secretKey: string | undefined = process.env.SECRET_KEY;
             const payload = { userId: userData.dataValues.id, username: userData.dataValues.username }
 
