@@ -152,6 +152,10 @@ app.post("/login/verifyMFAToken", async (request, response) => {
                 if (isFinalStep) {
                     const timeDifference = Date.now() - previousTimestamp;
 
+                    if (!previousTimestamp) {
+                        return response.status(500).json({ error: "Timestamp not found, please retry the MFA setup." });
+                    }
+
                     if (timeDifference < 30000) {
                         return response.status(401).json({ error: "The second token must be from a diffenrent time window" });
                     }
