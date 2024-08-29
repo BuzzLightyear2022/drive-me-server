@@ -152,11 +152,13 @@ app.post("/login/verifyMFAToken", async (request, response) => {
             return response.status(200).json({ token });
         }
 
-        if (mfaSecret) {
-            const isMfaValid = otplib.authenticator.check(mfaToken, mfaSecret);
+        if (isMFASetup) {
+            if (mfaSecret) {
+                const isMfaValid = otplib.authenticator.check(mfaToken, mfaSecret);
 
-            if (!isMfaValid) {
-                return response.status(401).json({ error: "Invalid MFA token" });
+                if (!isMfaValid) {
+                    return response.status(401).json({ error: "Invalid MFA token" });
+                }
             }
 
             if (isMFASetup) {
