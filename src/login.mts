@@ -141,6 +141,17 @@ app.post("/login/verifyMFAToken", async (request, response) => {
 
         const mfaSecret = decrypt(userData.dataValues.mfa_secret);
 
+        if (!isMFASetup) {
+            const secretKey = process.env.SECRET_KEY;
+            const payload = { userId: userData.dataValues.id, username: userData.dataValues.username };
+
+            if (!secretKey) return response.status(500).json({ message: "Server Configuration error" });
+
+            const token = jwt.sign(payload, secretKey, { expiresIn: "10h" });
+
+            return response.status(200).json({ token });
+        }
+
         if (mfaSecret) {
             const isMfaValid = otplib.authenticator.check(mfaToken, mfaSecret);
 
@@ -150,15 +161,9 @@ app.post("/login/verifyMFAToken", async (request, response) => {
 
             if (isMFASetup) {
                 const previousTimestamp = userData.dataValues.mfa_timestamp;
-                console.log("previousTimestamp:", previousTimestamp);
 
                 if (isFinalStep) {
                     const timeDifference = Date.now() - previousTimestamp;
-                    console.log("timeDifference: ", timeDifference);
-
-                    if (!previousTimestamp) {
-                        return response.status(500).json({ error: "Timestamp not found, please retry the MFA setup." });
-                    }
 
                     if (timeDifference < 25000) {
                         return response.status(401).json({ error: "The second token must be from a diffenrent time window" });
@@ -185,15 +190,6 @@ app.post("/login/verifyMFAToken", async (request, response) => {
             } else {
                 return response.status(400).json({ error: "MFA setup not in progress" });
             }
-        } else {
-            const secretKey: string | undefined = process.env.SECRET_KEY;
-            const payload = { userId: userData.dataValues.id, username: userData.dataValues.username }
-
-            if (!secretKey) return response.sendStatus(500).json({ message: "Server Configuration error" });
-
-            const token = jwt.sign(payload, secretKey, { expiresIn: "10h" });
-
-            return response.status(200).json({ token });
         }
     } catch (error) {
         return response.status(500).json({ error: "An error occurred" });
