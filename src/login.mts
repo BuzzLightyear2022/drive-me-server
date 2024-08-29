@@ -122,15 +122,15 @@ app.post("/login/userAuthentication", async (request, response) => {
 
 app.post("/login/generateMFASecret", async (request, response) => {
     const userId: string = request.body.userId;
-    const MFASecret = await generateMFASecret(userId);
+    const MFASecret: string | undefined = await generateMFASecret(userId);
     return response.status(200).json({ MFASecretImage: MFASecret });
 });
 
 app.post("/login/verifyMFAToken", async (request, response) => {
-    const userId = request.body.userId;
-    const mfaToken = request.body.MFAToken;
-    const isMFASetup = request.body.isMFASetup;
-    const isFinalStep = request.body.isFinalStep;
+    const userId: string = request.body.userId;
+    const mfaToken: string = request.body.MFAToken;
+    const isMFASetup: boolean = request.body.isMFASetup;
+    const isFinalStep: boolean = request.body.isFinalStep;
 
     console.log(request.body);
 
@@ -139,17 +139,30 @@ app.post("/login/verifyMFAToken", async (request, response) => {
 
         if (!userData) return response.status(401).json({ error: "User not found" });
 
-        const mfaSecret = decrypt(userData.dataValues.mfa_secret);
+        const mfaSecret: string | null = decrypt(userData.dataValues.mfa_secret);
+        const isMFAEnabled: boolean = userData.dataValues.mfa_enabled;
 
         if (!isMFASetup) {
-            const secretKey = process.env.SECRET_KEY;
-            const payload = { userId: userData.dataValues.id, username: userData.dataValues.username };
+            if (isMFAEnabled) {
+                if (!mfaSecret) {
+                    return response.status(400).json({ error: "MFA secret not found" });
+                }
 
-            if (!secretKey) return response.status(500).json({ message: "Server Configuration error" });
+                const isMFAValid: boolean = otplib.authenticator.check(mfaToken, mfaSecret);
 
-            const token = jwt.sign(payload, secretKey, { expiresIn: "10h" });
+                if (!isMFAValid) {
+                    return response.status(401).json({ error: "Invalid MFA token" });
+                } else {
+                    const secretKey = process.env.SECRET_KEY;
+                    const payload = { userId: userData.dataValues.id, username: userData.dataValues.username };
 
-            return response.status(200).json({ token });
+                    if (!secretKey) return response.status(500).json({ message: "Server Configuration error" });
+
+                    const token = jwt.sign(payload, secretKey, { expiresIn: "10h" });
+
+                    return response.status(200).json({ token });
+                }
+            }
         }
 
         if (isMFASetup) {
