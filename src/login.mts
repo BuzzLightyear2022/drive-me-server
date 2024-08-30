@@ -148,7 +148,12 @@ app.post("/login/verifyMFAToken", async (request, response) => {
                     userData.setDataValue("failed_attempts", 0);
                     await userData.save();
 
-                    return response.status(200).json({ token });
+                    return response.status(200).json({
+                        message: "MFA Authentication success",
+                        token: token,
+                        isMFASetup: false,
+                        isFinalStep: false
+                    });
                 }
             } else {
                 return response.status(403).json("Access denied, Please contact support");
