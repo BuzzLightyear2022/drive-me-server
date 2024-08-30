@@ -38,10 +38,6 @@ const generateMFASecret = async (userId: string) => {
     }
 }
 
-const saveMFASecret = async () => {
-
-}
-
 export const authenticateToken = (request: express.Request, response: express.Response, next: any) => {
     const token = request.header("Authorization");
     const secretKey = process.env.SECRET_KEY as string;
@@ -60,26 +56,6 @@ export const authenticateToken = (request: express.Request, response: express.Re
         request.user = user;
         next();
     });
-}
-
-const verifyMfaToken = async (userId: string, mfaToken: string) => {
-    const userData = await UserModel.findOne({ where: { id: userId } });
-
-    if (userData) {
-        const encryptedSecret = userData.dataValues.mfa_secret;
-
-        const decryptedSecret = decrypt(encryptedSecret);
-
-        if (decryptedSecret) {
-            const isMfaValid = otplib.authenticator.check(mfaToken, decryptedSecret);
-
-            if (isMfaValid) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
 }
 
 app.post("/login/userAuthentication", async (request, response) => {
@@ -151,6 +127,14 @@ app.post("/login/verifyMFAToken", async (request, response) => {
                 const isMFAValid: boolean = otplib.authenticator.check(mfaToken, mfaSecret);
 
                 if (!isMFAValid) {
+                    userData.setDataValue("failed_attempts", userData.dataValues.failed_attempts + 1);
+
+                    if (userData.dataValues.failed_attempts >= 3) {
+                        userData.setDataValue("is_locked", true);
+                    }
+
+                    await userData.save();
+
                     return response.status(401).json({ error: "Invalid MFA token" });
                 } else {
                     const secretKey = process.env.SECRET_KEY;
@@ -210,54 +194,3 @@ app.post("/login/verifyMFAToken", async (request, response) => {
         return response.status(500).json({ error: "An error occurred" });
     }
 });
-
-app.post("/api/check-mfa-secret", (request, response) => {
-    const userId = request.session.userId;
-
-    if (userId) {
-        const isRegistered = checkMFASecretInDatabase(userId);
-        response.json({ isRegistered: isRegistered });
-    }
-});
-
-// (async () => {
-//     app.post("/login/userAuthentication", async (request: express.Request, response: express.Response) => {
-//         const username = request.body.username;
-//         const password = request.body.password;
-
-//         bcrypt.genSalt(10, (err, salt) => {
-//             bcrypt.hash(password, salt, (err, hashedPassword) => {
-//                 // ハッシュ化されたパスワードを表示
-//                 // console.log(hashedPassword);
-//             });
-//         });
-
-//         try {
-//             const userData = await UserModel.findOne({ where: { username: username } });
-
-//             if (!userData) return response.status(401).json({ error: "udn" });
-
-//             if (userData && userData.dataValues.is_locked) return response.status(403).json({ error: "locked" });
-
-//             const hashedPassword: string = userData.dataValues.hashed_password;
-//             const isPwCorrect = await bcrypt.compare(password, hashedPassword);
-
-//             if (!isPwCorrect) {
-//                 userData.setDataValue("failed_attempts", userData.dataValues.failed_attempts + 1);
-
-//                 if (userData.dataValues.failed_attempts >= 3) {
-//                     userData.setDataValue("is_locked", true);
-//                 }
-
-//                 await userData.save();
-//                 return response.status(401).json({ error: "ipw" });
-//             }
-
-//             userData.setDataValue("failed_attempts", 0);
-//             userData.setDataValue("is_locked", false);
-//             await userData.save();
-//         } catch (error) {
-//             return response.status(500).json({ error: "An error occurred" });
-//         }
-//     });
-// })();
