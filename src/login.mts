@@ -163,12 +163,12 @@ app.post("/login/verifyMFAToken", async (request, response) => {
                     return response.status(403).json({ error: "Access denied, Please contanct support" });
                 } else if (!isMfaValid) {
                     userData.setDataValue("failed_attempts", userData.dataValues.failed_attempts + 1);
+                    await userData.save();
 
                     if (userData.dataValues.failed_attempts >= 3) {
                         userData.setDataValue("is_locked", true);
+                        await userData.save();
                     }
-
-                    await userData.save();
 
                     return response.status(401).json({ error: "Invalid MFA token" });
                 }
