@@ -117,9 +117,10 @@ app.post("/login/verifyMFAToken", async (request, response) => {
 
         const mfaSecret: string | null = decrypt(userData.dataValues.mfa_secret);
         const isMFAEnabled: boolean = userData.dataValues.mfa_enabled;
+        const isLocked: boolean = userData.dataValues.is_locked;
 
         if (!isMFASetup) {
-            if (isMFAEnabled) {
+            if (isMFAEnabled && !isLocked) {
                 if (!mfaSecret) {
                     return response.status(400).json({ error: "MFA secret not found" });
                 }
@@ -146,6 +147,8 @@ app.post("/login/verifyMFAToken", async (request, response) => {
 
                     return response.status(200).json({ token });
                 }
+            } else {
+                return response.status(403).json("Access denied, Please contact support");
             }
         }
 
