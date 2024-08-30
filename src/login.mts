@@ -178,6 +178,7 @@ app.post("/login/verifyMFAToken", async (request, response) => {
 
             if (isFinalStep) {
                 const timeDifference = Date.now() - previousTimestamp;
+                console.log(timeDifference);
 
                 if (timeDifference < 25000) {
                     return response.status(401).json({ error: "The second token must be from a diffenrent time window" });
