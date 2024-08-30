@@ -8,7 +8,6 @@ import otplib from "otplib";
 import qrcode from "qrcode";
 import { encrypt } from "./common_modules/encrypt.mjs";
 import { decrypt } from "./common_modules/decrypt.mjs";
-import { checkMFASecretInDatabase } from "./common_modules/check_MFA_secret_in_database.mjs";
 import dotenv from "dotenv"
 dotenv.config();
 
@@ -86,6 +85,9 @@ app.post("/login/userAuthentication", async (request, response) => {
 
         const mfaEnabled: boolean = !!userData.dataValues.mfa_enabled;
 
+        userData.setDataValue("failed_attempts", 0);
+        await userData.save();
+
         return response.status(200).json({
             message: "Password vilidated, proceed to MFA",
             userId: userData.dataValues.id,
@@ -107,8 +109,6 @@ app.post("/login/verifyMFAToken", async (request, response) => {
     const mfaToken: string = request.body.MFAToken;
     const isMFASetup: boolean = request.body.isMFASetup;
     const isFinalStep: boolean = request.body.isFinalStep;
-
-    console.log(request.body);
 
     try {
         const userData = await UserModel.findOne({ where: { id: userId } });
@@ -145,6 +145,9 @@ app.post("/login/verifyMFAToken", async (request, response) => {
 
                     const token = jwt.sign(payload, secretKey, { expiresIn: "10h" });
 
+                    userData.setDataValue("failed_attempts", 0);
+                    await userData.save();
+
                     return response.status(200).json({ token });
                 }
             } else {
@@ -180,7 +183,10 @@ app.post("/login/verifyMFAToken", async (request, response) => {
                     return response.status(401).json({ error: "The second token must be from a diffenrent time window" });
                 }
 
-                await UserModel.update({ mfa_enabled: true }, { where: { id: userId } });
+                userData.setDataValue("mfa_enabled", true);
+                userData.setDataValue("failed_attempts", 0);
+                await userData.save();
+
                 return response.status(200).json({
                     message: "MFA has been successfully enabled",
                     success: true,
@@ -189,7 +195,10 @@ app.post("/login/verifyMFAToken", async (request, response) => {
                     isFinalStep: true
                 });
             } else {
-                await UserModel.update({ mfa_timestamp: Date.now() }, { where: { id: userId } });
+                userData.setDataValue("mfa_timestamp", Date.now());
+                userData.setDataValue("failed_attempts", 0);
+                await userData.save();
+
                 return response.status(200).json({
                     message: "First MFA token is valid, proceed to the second MFA verification",
                     success: true,
