@@ -150,7 +150,7 @@ app.post("/login/verifyMFAToken", async (request, response) => {
 
                     return response.status(200).json({
                         message: "MFA Authentication success",
-                        token: token,
+                        accessToken: token,
                         isMFASetup: false,
                         isFinalStep: false
                     });
