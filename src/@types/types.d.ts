@@ -7,6 +7,7 @@ export type User = {
     mfa_secret: string,
     mfa_enabled: boolean,
     mfa_timestamp: number,
+    role: "admin" | "employee" | "part-time",
     createdAt: Date,
     updatedAt: Date
 }

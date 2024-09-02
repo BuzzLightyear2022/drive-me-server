@@ -193,6 +193,10 @@ export const UserModel: ModelStatic<Model<User>> = sqlConnection.define("Users",
     mfa_enabled: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+    },
+    role: {
+        type: DataTypes.STRING,
+        defaultValue: null
     }
 });
 

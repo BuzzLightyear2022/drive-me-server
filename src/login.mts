@@ -139,7 +139,11 @@ app.post("/login/verifyMFAToken", async (request, response) => {
                     return response.status(401).json({ error: "Invalid MFA token" });
                 } else {
                     const secretKey = process.env.SECRET_KEY;
-                    const payload = { userId: userData.dataValues.id, username: userData.dataValues.username };
+                    const payload = {
+                        userId: userData.dataValues.id,
+                        username: userData.dataValues.username,
+                        role: userData.dataValues.role
+                    };
 
                     if (!secretKey) return response.status(500).json({ message: "Server Configuration error" });
 
