@@ -99,6 +99,7 @@ app.post("/login/userAuthentication", async (request, response) => {
 });
 
 app.post("/login/generateMFASecret", async (request, response) => {
+    console.log(request.body);
     const userId: string = request.body.userId;
     const MFASecret: string | undefined = await generateMFASecret(userId);
     return response.status(200).json({ MFASecretImage: MFASecret });
