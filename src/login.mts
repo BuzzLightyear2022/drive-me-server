@@ -109,7 +109,6 @@ app.post("/login/verifyMFAToken", async (request, response) => {
     const mfaToken: string = request.body.MFAToken;
     const isMFASetup: boolean = request.body.isMFASetup;
     const isFinalStep: boolean = request.body.isFinalStep;
-    const addUser: boolean = request.body.addUser;
 
     try {
         const userData = await UserModel.findOne({ where: { id: userId } });
@@ -158,7 +157,6 @@ app.post("/login/verifyMFAToken", async (request, response) => {
                         accessToken: token,
                         isMFASetup: false,
                         isFinalStep: false,
-                        addUser: addUser
                     });
                 }
             } else {
