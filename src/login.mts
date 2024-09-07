@@ -58,7 +58,6 @@ export const authenticateToken = (request: express.Request, response: express.Re
 }
 
 app.post("/login/userAuthentication", async (request, response) => {
-    console.log(request.body);
     const username = request.body.username;
     const password = request.body.password;
 
@@ -106,6 +105,7 @@ app.post("/login/generateMFASecret", async (request, response) => {
 });
 
 app.post("/login/verifyMFAToken", async (request, response) => {
+    console.log(request.body);
     const userId: string = request.body.userId;
     const mfaToken: string = request.body.MFAToken;
     const isMFASetup: boolean = request.body.isMFASetup;
