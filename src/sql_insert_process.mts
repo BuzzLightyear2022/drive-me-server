@@ -15,7 +15,7 @@ const upload = multer({ storage: storage });
         { name: "userData" }
     ]), async (request: express.Request, response: express.Response) => {
         console.log(request.body);
-        const userData = JSON.parse(request.body.userData);
+        const userData = JSON.parse(request.body["userData"]);
 
         try {
             UserModel.create(userData);
