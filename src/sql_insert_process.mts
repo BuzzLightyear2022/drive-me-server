@@ -3,12 +3,29 @@ import multer from "multer";
 import express from "express";
 import fs from "fs";
 import WebSocket from "ws";
-import { RentalCarModel, ReservationModel, RentalCarStatusModel, LoanerRentalReservationModel } from "./sql_setup.mjs";
+import { RentalCarModel, ReservationModel, RentalCarStatusModel, LoanerRentalReservationModel, UserModel } from "./sql_setup.mjs";
 import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from "./@types/types.js";
 import { authenticateToken } from "./login.mjs";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+(async () => {
+    app.post("/sqlInsert/user", authenticateToken, upload.fields([
+        { name: "userData" }
+    ]), async (request: express.Request, response: express.Response) => {
+        const userData = JSON.parse(request.body.userData);
+
+        try {
+            UserModel.create(userData);
+            return response.status(200).send();
+        } catch (error: unknown) {
+            return response.status(500).json({
+                error: error
+            });
+        }
+    });
+})();
 
 (async () => {
     app.post("/sqlInsert/vehicleAttributes", authenticateToken, upload.fields([
@@ -63,7 +80,7 @@ const upload = multer({ storage: storage });
 })();
 
 (async () => {
-    app.post("/sqlInsert/reservation", upload.fields([
+    app.post("/sqlInsert/reservation", authenticateToken, upload.fields([
         { name: "data" }
     ]), async (request: express.Request, response: express.Response) => {
         const jsonData: Reservation = JSON.parse(request.body.data);
