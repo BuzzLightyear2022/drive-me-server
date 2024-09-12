@@ -22,9 +22,16 @@ const upload = multer({ storage: storage });
             const saltRounds = 10;
             const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
 
-            const insertData = {}
+            const insertData = {
+                username: request.body.userData.username,
+                hashed_password: hashedPassword,
+                mfa_enabled: false,
+                role: request.body.userData.role,
+                failed_attempts: 0,
+                is_locked: false,
+            }
 
-            // UserModel.create(request.body.userData);
+            UserModel.create(insertData);
             return response.status(200).send();
         } catch (error: unknown) {
             return response.status(500).json({

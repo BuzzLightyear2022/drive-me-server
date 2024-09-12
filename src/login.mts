@@ -106,7 +106,6 @@ app.post("/login/generateMFASecret", async (request, response) => {
 });
 
 app.post("/login/verifyMFAToken", async (request, response) => {
-    console.log(request.body);
     const userId: string = request.body.userId;
     const mfaToken: string = request.body.MFAToken;
     const isMFASetup: boolean = request.body.isMFASetup;
@@ -117,7 +116,8 @@ app.post("/login/verifyMFAToken", async (request, response) => {
 
         if (!userData) return response.status(401).json({ error: "User not found" });
 
-        const mfaSecret: string | null = decrypt(userData.dataValues.mfa_secret);
+        const cryptedMFASecret = userData.dataValues.mfa_secret;
+        const mfaSecret = decrypt(cryptedMFASecret);
         const isMFAEnabled: boolean = userData.dataValues.mfa_enabled;
         const isLocked: boolean = userData.dataValues.is_locked;
 
@@ -186,25 +186,28 @@ app.post("/login/verifyMFAToken", async (request, response) => {
             }
 
             if (isFinalStep) {
-                const previousTimestamp: number = userData.dataValues.mfa_timestamp;
-                const previousWindow: number = Math.floor(previousTimestamp / 30000);
-                const currentWindow: number = Math.floor(Date.now() / 30000);
+                const previousTimestamp: number | undefined = userData.dataValues.mfa_timestamp;
 
-                if (previousWindow === currentWindow) {
-                    return response.status(401).json({ error: "The second token must be from a diffenrent time window" });
+                if (previousTimestamp) {
+                    const previousWindow: number = Math.floor(previousTimestamp / 30000);
+                    const currentWindow: number = Math.floor(Date.now() / 30000);
+
+                    if (previousWindow === currentWindow) {
+                        return response.status(401).json({ error: "The second token must be from a diffenrent time window" });
+                    }
+
+                    userData.setDataValue("mfa_enabled", true);
+                    userData.setDataValue("failed_attempts", 0);
+                    await userData.save();
+
+                    return response.status(200).json({
+                        message: "MFA has been successfully enabled",
+                        success: true,
+                        userId: userId,
+                        isMFASetup: true,
+                        isFinalStep: true
+                    });
                 }
-
-                userData.setDataValue("mfa_enabled", true);
-                userData.setDataValue("failed_attempts", 0);
-                await userData.save();
-
-                return response.status(200).json({
-                    message: "MFA has been successfully enabled",
-                    success: true,
-                    userId: userId,
-                    isMFASetup: true,
-                    isFinalStep: true
-                });
             } else {
                 userData.setDataValue("mfa_timestamp", Date.now());
                 userData.setDataValue("failed_attempts", 0);

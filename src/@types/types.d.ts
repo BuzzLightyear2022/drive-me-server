@@ -4,12 +4,12 @@ export type User = {
     hashed_password: string,
     failed_attempts: number,
     is_locked: boolean,
-    mfa_secret: string,
+    mfa_secret?: string,
     mfa_enabled: boolean,
-    mfa_timestamp: number,
+    mfa_timestamp?: number,
     role: "admin" | "employee" | "part-time",
-    createdAt: Date,
-    updatedAt: Date
+    createdAt?: Date,
+    updatedAt?: Date
 }
 
 export type RentalCar = {
