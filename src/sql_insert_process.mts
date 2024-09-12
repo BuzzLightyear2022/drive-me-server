@@ -3,6 +3,7 @@ import multer from "multer";
 import express from "express";
 import fs from "fs";
 import WebSocket from "ws";
+import * as bcrypt from "bcrypt";
 import { RentalCarModel, ReservationModel, RentalCarStatusModel, LoanerRentalReservationModel, UserModel } from "./sql_setup.mjs";
 import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from "./@types/types.js";
 import { authenticateToken } from "./login.mjs";
@@ -15,9 +16,15 @@ const upload = multer({ storage: storage });
         { name: "userData" }
     ]), async (request: express.Request, response: express.Response) => {
         try {
-            const hashedPassword: string = request.body.userData.password;
-            console.log("hashedPassword: ", hashedPassword);
-            UserModel.create(request.body.userData);
+            console.log("request userdata: ", request.body.userData);
+            const plainPassword: string = request.body.userData.password;
+
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
+
+            const insertData = {}
+
+            // UserModel.create(request.body.userData);
             return response.status(200).send();
         } catch (error: unknown) {
             return response.status(500).json({

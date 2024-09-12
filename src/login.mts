@@ -58,7 +58,6 @@ export const authenticateToken = (request: express.Request, response: express.Re
 }
 
 app.post("/login/userAuthentication", async (request, response) => {
-    console.log(request.body);
     const username = request.body.username;
     const password = request.body.password;
 
