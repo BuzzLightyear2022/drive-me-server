@@ -15,6 +15,8 @@ const upload = multer({ storage: storage });
         { name: "userData" }
     ]), async (request: express.Request, response: express.Response) => {
         try {
+            const hashedPassword: string = request.body.userData.password;
+            console.log("hashedPassword: ", hashedPassword);
             UserModel.create(request.body.userData);
             return response.status(200).send();
         } catch (error: unknown) {
