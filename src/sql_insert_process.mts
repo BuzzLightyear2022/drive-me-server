@@ -14,11 +14,8 @@ const upload = multer({ storage: storage });
     app.post("/sqlInsert/user", authenticateToken, upload.fields([
         { name: "userData" }
     ]), async (request: express.Request, response: express.Response) => {
-        console.log(request.body["userData"]);
-        const userData = JSON.parse(request.body["userData"]);
-
         try {
-            UserModel.create(userData);
+            UserModel.create(request.body.userData);
             return response.status(200).send();
         } catch (error: unknown) {
             return response.status(500).json({
