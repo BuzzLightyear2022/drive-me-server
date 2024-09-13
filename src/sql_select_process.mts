@@ -301,6 +301,43 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
     });
 })();
 
+(async () => {
+    app.post("/sqlSelect/getRentalcarAttributesByCarModel", authenticateToken, async (request: express.Request, response: express.Response) => {
+        const carModel: string = request.body.carModel;
+
+        try {
+            const rentalcarAttributesByCarModel: Model<RentalCar, RentalCar>[] | null = await RentalCarModel.findAll({
+                attributes: {
+                    include: [
+                        "modelCode",
+                        "modelTrim",
+                        "driveType",
+                        "transmission",
+                        "bodyColor"
+                    ]
+                },
+                where: {
+                    carModel: carModel
+                }
+            });
+
+            if (rentalcarAttributesByCarModel) {
+                return response.status(200).json(rentalcarAttributesByCarModel);
+            } else {
+                return response.status(404).json({
+                    error: 404,
+                    message: "Failed to select rentalcar attributes by carModel"
+                });
+            }
+        } catch (error: unknown) {
+            return response.status(500).json({
+                error: error,
+                message: "Failed to select rentalcar attributes by carModel"
+            });
+        }
+    });
+})();
+
 // (async () => {
 //     app.post("/sqlSelect/latestStatusOfRentalCars", authenticateToken, async (request: express.Request, response: express.Response) => {
 //         const rentalClass: string | null = request.body.rentalClass;
