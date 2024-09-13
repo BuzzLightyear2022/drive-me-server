@@ -307,21 +307,15 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
 
         try {
             const rentalcarAttributesByCarModel: Model<RentalCar, RentalCar>[] | null = await RentalCarModel.findAll({
-                attributes: {
-                    include: [
-                        "modelCode",
-                        "modelTrim",
-                        "driveType",
-                        "transmission",
-                        "bodyColor"
-                    ]
-                },
+                attributes: [
+                    [Sequelize.fn("DISTINCT", Sequelize.col("modelCode")), "modelCode"]
+                ],
                 where: {
                     carModel: carModel
                 }
             });
 
-            if (rentalcarAttributesByCarModel) {
+            if (rentalcarAttributesByCarModel.length > 0) {
                 return response.status(200).json(rentalcarAttributesByCarModel);
             } else {
                 return response.status(404).json({
