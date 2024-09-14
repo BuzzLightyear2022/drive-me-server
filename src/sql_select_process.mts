@@ -309,7 +309,7 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
             const rentalcarAttributesByCarModel: Model<RentalCar, RentalCar>[] | null = await RentalCarModel.findAll({
                 attributes: [
                     [Sequelize.fn("DISTINCT", Sequelize.col("modelCode")), "modelCode"],
-                    [Sequelize.fn("DISTINCT", Sequelize.col("modelTrim")), "modelTrim"],
+                    // [Sequelize.fn("DISTINCT", Sequelize.col("modelTrim")), "modelTrim"],
                     // [Sequelize.fn("DISTINCT", Sequelize.col("driveType")), "driveType"],
                     // [Sequelize.fn("DISTINCT", Sequelize.col("transmission")), "transmission"],
                     // [Sequelize.fn("DISTINCT", Sequelize.col("bodyColor")), "bodyColor"]
@@ -321,14 +321,14 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
 
             if (rentalcarAttributesByCarModel.length > 0) {
                 const modelCodes = rentalcarAttributesByCarModel.map(item => item.get("modelCode"));
-                const modelTrims = rentalcarAttributesByCarModel.map(item => item.get("modelTrim"));
+                // const modelTrims = rentalcarAttributesByCarModel.map(item => item.get("modelTrim"));
                 // const driveTypes = rentalcarAttributesByCarModel.map(item => item.get("driveType"));
                 // const transmissions = rentalcarAttributesByCarModel.map(item => item.get("transmission"));
                 // const bodyColors = rentalcarAttributesByCarModel.map(item => item.get("bodyColor"));
 
                 return response.status(200).json({
                     modelCodes: modelCodes,
-                    modelTrims: modelTrims,
+                    // modelTrims: modelTrims,
                     // driveTypes: driveTypes,
                     // transmissions: transmissions,
                     // bodyColors: bodyColors
