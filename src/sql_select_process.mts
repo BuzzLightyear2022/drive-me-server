@@ -309,10 +309,10 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
             const rentalcarAttributesByCarModel: Model<RentalCar, RentalCar>[] | null = await RentalCarModel.findAll({
                 attributes: [
                     [Sequelize.fn("DISTINCT", Sequelize.col("modelCode")), "modelCode"],
-                    // [Sequelize.fn("DISTINCT", Sequelize.col("modelTrim")), "modelTrim"],
-                    // [Sequelize.fn("DISTINCT", Sequelize.col("driveType")), "driveType"],
-                    // [Sequelize.fn("DISTINCT", Sequelize.col("transmission")), "transmission"],
-                    // [Sequelize.fn("DISTINCT", Sequelize.col("bodyColor")), "bodyColor"]
+                    [Sequelize.fn("DISTINCT", Sequelize.col("modelTrim")), "modelTrim"],
+                    [Sequelize.fn("DISTINCT", Sequelize.col("driveType")), "driveType"],
+                    [Sequelize.fn("DISTINCT", Sequelize.col("transmission")), "transmission"],
+                    [Sequelize.fn("DISTINCT", Sequelize.col("bodyColor")), "bodyColor"]
                 ],
                 where: {
                     carModel: carModel,
