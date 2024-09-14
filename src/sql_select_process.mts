@@ -328,12 +328,18 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
                 const transmissions = rentalcarAttributesByCarModel.map(item => item.get("transmission"));
                 const bodyColors = rentalcarAttributesByCarModel.map(item => item.get("bodyColor"));
 
+                const uniqueModelCodes = [...new Set(modelCodes)];
+                const uniqueModelTrims = [...new Set(modelTrims)];
+                const uniqueDriveTypes = [...new Set(driveTypes)];
+                const uniqueTransmissions = [...new Set(transmissions)];
+                const uniqueBodyColors = [...new Set(bodyColors)];
+
                 return response.status(200).json({
-                    modelCodes: modelCodes,
-                    modelTrims: modelTrims,
-                    driveTypes: driveTypes,
-                    transmissions: transmissions,
-                    bodyColors: bodyColors
+                    modelCodes: uniqueModelCodes,
+                    modelTrims: uniqueModelTrims,
+                    driveTypes: uniqueDriveTypes,
+                    transmissions: uniqueTransmissions,
+                    bodyColors: uniqueBodyColors
                 });
             } else {
                 return response.status(404).json({
