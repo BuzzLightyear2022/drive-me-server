@@ -323,7 +323,7 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
 
             if (rentalcarAttributesByCarModel.length > 0) {
                 const modelCodes = rentalcarAttributesByCarModel.map(item => item.get("modelCode"));
-                const modelTrims = rentalcarAttributesByCarModel.map(item => item.get("modelTrim"));
+                const modelTrims = rentalcarAttributesByCarModel.map(item => item.get("modelTrim")).filter(value => value !== "" && value !== null);
                 const driveTypes = rentalcarAttributesByCarModel.map(item => item.get("driveType"));
                 const transmissions = rentalcarAttributesByCarModel.map(item => item.get("transmission"));
                 const bodyColors = rentalcarAttributesByCarModel.map(item => item.get("bodyColor"));
