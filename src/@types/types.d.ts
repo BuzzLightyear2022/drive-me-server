@@ -17,6 +17,7 @@ export type RentalCar = {
     imageFileName?: string | null,
     carModel: string,
     modelCode: string,
+    modelTrim: string,
     nonSmoking: boolean,
     insurancePriority: boolean,
     licensePlateRegion: string,
