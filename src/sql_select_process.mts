@@ -316,7 +316,11 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
             });
 
             if (rentalcarAttributesByCarModel.length > 0) {
-                return response.status(200).json(rentalcarAttributesByCarModel);
+                const modelCodes: unknown[] = rentalcarAttributesByCarModel.map(item => item.get("modelCode"));
+
+                return response.status(200).json({
+                    modelCodes: modelCodes
+                });
             } else {
                 return response.status(404).json({
                     error: 404,
