@@ -319,6 +319,8 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
                 }
             });
 
+            console.log("rentalcar attributes by carmodel: ", rentalcarAttributesByCarModel);
+
             if (rentalcarAttributesByCarModel.length > 0) {
                 const modelCodes = rentalcarAttributesByCarModel.map(item => item.get("modelCode"));
                 // const modelTrims = rentalcarAttributesByCarModel.map(item => item.get("modelTrim"));
