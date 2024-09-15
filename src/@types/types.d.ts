@@ -33,6 +33,7 @@ export type RentalCar = {
     hasDVD: boolean,
     hasTelevision: boolean,
     hasExternalInput: boolean,
+    hasETC: boolean,
     hasSpareKey: boolean,
     hasJAFCard: boolean,
     JAFCardNumber?: number,
