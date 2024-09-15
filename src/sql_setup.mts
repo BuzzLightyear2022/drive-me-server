@@ -45,6 +45,7 @@ export const RentalCarModel: ModelStatic<Model<RentalCar>> = sqlConnection.defin
     hasDVD: DataTypes.BOOLEAN,
     hasTelevision: DataTypes.BOOLEAN,
     hasExternalInput: DataTypes.BOOLEAN,
+    hasETC: DataTypes.BOOLEAN,
     hasSpareKey: DataTypes.BOOLEAN,
     hasJAFCard: DataTypes.BOOLEAN,
     JAFCardNumber: DataTypes.STRING,
