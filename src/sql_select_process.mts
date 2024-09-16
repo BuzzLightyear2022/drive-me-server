@@ -312,7 +312,8 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
                     "modelTrim",
                     "bodyColor",
                     "driveType",
-                    "transmission"
+                    "transmission",
+                    "navigation"
                 ],
                 where: {
                     carModel: carModel,
@@ -327,19 +328,22 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
                 const driveTypes = rentalcarAttributesByCarModel.map(item => item.get("driveType")).filter(value => value !== "" && value !== null);
                 const transmissions = rentalcarAttributesByCarModel.map(item => item.get("transmission")).filter(value => value !== "" && value !== null);
                 const bodyColors = rentalcarAttributesByCarModel.map(item => item.get("bodyColor")).filter(value => value !== "" && value !== null);
+                const navigations = rentalcarAttributesByCarModel.map(item => item.get("navigation")).filter(value => value !== "" && value !== null);
 
                 const uniqueModelCodes = [...new Set(modelCodes)];
                 const uniqueModelTrims = [...new Set(modelTrims)];
                 const uniqueDriveTypes = [...new Set(driveTypes)];
                 const uniqueTransmissions = [...new Set(transmissions)];
                 const uniqueBodyColors = [...new Set(bodyColors)];
+                const uniqueNavigations = [...new Set(navigations)];
 
                 return response.status(200).json({
                     modelCodes: uniqueModelCodes,
                     modelTrims: uniqueModelTrims,
                     driveTypes: uniqueDriveTypes,
                     transmissions: uniqueTransmissions,
-                    bodyColors: uniqueBodyColors
+                    bodyColors: uniqueBodyColors,
+                    navigations: uniqueNavigations
                 });
             } else {
                 return response.status(404).json({
@@ -354,6 +358,10 @@ import { RentalCar, Reservation, RentalCarStatus, LoanerRentalReservation } from
             });
         }
     });
+})();
+
+(async () => {
+
 })();
 
 // (async () => {
