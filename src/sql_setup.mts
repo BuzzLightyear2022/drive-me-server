@@ -51,6 +51,7 @@ export const RentalCarModel: ModelStatic<Model<RentalCar>> = sqlConnection.defin
     JAFCardNumber: DataTypes.STRING,
     JAFCardExp: DataTypes.DATE,
     otherFeatures: DataTypes.TEXT,
+    display_order: DataTypes.INTEGER
 });
 
 export const ReservationModel: ModelStatic<Model<Reservation>> = sqlConnection.define('Reservations', {

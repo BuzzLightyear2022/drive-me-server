@@ -38,7 +38,8 @@ export type RentalCar = {
     hasJAFCard: boolean,
     JAFCardNumber?: number,
     JAFCardExp?: Date,
-    otherFeatures?: string
+    otherFeatures?: string,
+    display_order?: number,
     createdAt: datetime,
     updatedAt: datetime
 }
